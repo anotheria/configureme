@@ -4,6 +4,14 @@
 
 	de : {
 		message: "Hallo Welt",
+		DE : {
+			bayern: {
+				message : "Servus!",
+			},
+			berlin: {
+				message : "Moin!",
+			},
+		}
 	},
 	
 	es : {
