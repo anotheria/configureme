@@ -1,0 +1,12 @@
+/** Dis is a camment! */
+{ 
+	message : "Hello World",
+
+	de : {
+		message: "Hallo Welt",
+	},
+	
+	es : {
+		message: "Holla Monde",
+	},
+}
