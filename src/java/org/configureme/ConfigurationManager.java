@@ -18,6 +18,15 @@ public enum ConfigurationManager {
 	
 	INSTANCE;
 	
+	/**
+	 * Returns true if the object is properly annotated and can be configured by the configuration manager
+	 * @param o
+	 * @return
+	 */
+	public boolean isConfigurable(Object o){
+		return false;
+	}
+	
 	public Configuration getConfiguration(String artefactName){
 		return getConfiguration(artefactName, GlobalEnvironment.INSTANCE);
 	}
@@ -27,6 +36,7 @@ public enum ConfigurationManager {
 		try{
 			config = ConfigurationRepository.INSTANCE.getConfiguration(artefactName, in);
 		}catch(Exception e){
+			e.printStackTrace();
 			//only for prototype, 'real' versions will have proper exception handling
 		}
 		

@@ -10,15 +10,15 @@ public class AttributeValue {
 	
 	private static Logger log = Logger.getLogger(AttributeValue.class);
 	
-	private Map<org.configureme.Environment, String> values;
+	private Map<String, String> values;
 	
 	public AttributeValue(){
-		values = new ConcurrentHashMap<Environment, String>();
+		values = new ConcurrentHashMap<String, String>();
 	}
 	
 	public String get(Environment in){
-		log.debug("looking up in "+in);
-		String retValue = values.get(in);
+		log.debug("looking up in "+in +"("+in.expandedStringForm()+")");
+		String retValue = values.get(in.expandedStringForm());
 		if (retValue!=null)
 			return retValue;
 		Environment reduced = in.reduce();
@@ -29,7 +29,7 @@ public class AttributeValue {
 	}
 	
 	public void set(String value, Environment in){
-		values.put(in, value);
+		values.put(in.expandedStringForm(), value);
 	}
 	
 	public String toString(){
