@@ -28,6 +28,10 @@ public class DynamicEnvironment implements Environment, Cloneable{
 		return ret.toString();
 	}
 	
+	public String expandedStringForm(){
+		return toString();
+	}
+	
 	public DynamicEnvironment add(String anElement){
 		elements.add(anElement);
 		return this;

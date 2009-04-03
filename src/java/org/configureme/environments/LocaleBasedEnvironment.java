@@ -55,6 +55,10 @@ public class LocaleBasedEnvironment implements Environment{
 		return locale.toString();
 	}
 
+	public String expandedStringForm(){
+		return toString();
+	}
+
 	@Override
 	public boolean isReduceable() {
 		return !isEmpty(locale.getLanguage());

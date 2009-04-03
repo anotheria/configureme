@@ -9,4 +9,6 @@ public interface Environment {
 	public boolean isReduceable();
 	
 	public Environment reduce();
+	
+	public String expandedStringForm();
 }

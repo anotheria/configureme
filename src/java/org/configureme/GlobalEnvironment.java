@@ -13,5 +13,11 @@ public enum GlobalEnvironment implements Environment{
 		throw new AssertionError("Global Environment is not reduceable");
 	}
 	
+	public String toString(){
+		return "global";
+	}
 	
+	public String expandedStringForm(){
+		return "";
+	}
 }
