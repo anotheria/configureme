@@ -28,6 +28,10 @@ public enum ConfigurationRepository {
 		return artefacts.get(name);
 	}
 	
+	public boolean hasConfiguration(String name){
+		return getArtefact(name) != null;
+	}
+	
 	public Configuration getConfiguration(String name, Environment environment){
 		if (environment==null)
 			environment = GlobalEnvironment.INSTANCE;

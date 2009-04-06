@@ -12,4 +12,12 @@ public @interface ConfigureMe {
 	 * Artefact name. If skipped the class name (without package) is used.
 	 */
 	String name() default "";
+	
+	/**
+	 * If true the configuration for the artefact will be watched and the artefact reconfigured as soon as the config changes. It implicitely means that the instance  
+	 * to the artefact will be stored in the configuration management. Don't use on objects which are supposed to die soon after usage (at the end of a request or similar,
+	 * cause it could lead to memory leaks.
+	 * @return
+	 */
+	boolean watch() default true;
 }

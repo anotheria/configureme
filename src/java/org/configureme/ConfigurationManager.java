@@ -1,14 +1,16 @@
 package org.configureme;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.List;
 
+import net.anotheria.util.StringUtils;
+
 import org.apache.log4j.Logger;
 import org.configureme.annotations.Configure;
 import org.configureme.annotations.ConfigureMe;
+import org.configureme.annotations.Set;
 import org.configureme.parser.ConfigurationParser;
 import org.configureme.parser.ConfigurationParserException;
 import org.configureme.parser.ParsedArtefact;
@@ -16,10 +18,10 @@ import org.configureme.parser.ParsedAttribute;
 import org.configureme.parser.json.JsonParser;
 import org.configureme.repository.Artefact;
 import org.configureme.repository.ConfigurationRepository;
-
-
-import net.anotheria.util.IOUtils;
-import net.anotheria.util.StringUtils;
+import org.configureme.sources.ConfigurationSourceKey;
+import org.configureme.sources.ConfigurationSourceRegistry;
+import org.configureme.sources.ConfigurationSourceKey.Format;
+import org.configureme.sources.ConfigurationSourceKey.Type;
 
 public enum ConfigurationManager {
 	
@@ -56,7 +58,7 @@ public enum ConfigurationManager {
 		String artefactName = "";
 		ConfigureMe ann = clazz.getAnnotation(ConfigureMe.class);
 		if (ann.name()==null || ann.name().length()==0)
-			artefactName = extractArtefactNameFromClassName(clazz);
+			artefactName = extractConfigurationNameFromClassName(clazz);
 		else
 			artefactName = ann.name(); 
 		//System.out.println("Configuring with name: "+artefactName);
@@ -95,25 +97,25 @@ public enum ConfigurationManager {
 		
 		//end set fields 
 		
-/*		Method[] methods = clazz.getDeclaredMethods();
+		Method[] methods = clazz.getDeclaredMethods();
 		for (Method method : methods){
-			if (m.isAnnotationPresent(SetWith.class)){
-				log.debug("method "+m+" is annotated");
-				SetWith c = m.getAnnotation(SetWith.class);
-				String attributeName = c.value();
+			if (method.isAnnotationPresent(Set.class)){
+				log.debug("method "+method+" is annotated");
+				Set setAnnotation = method.getAnnotation(Set.class);
+				String attributeName = setAnnotation.value();
 				String attributeValue = config.getAttribute(attributeName);
 				if (attributeValue!=null){
-					log.debug("setting "+m.getName()+" to "+attributeValue+" configured by "+attributeName);
+					log.debug("setting "+method.getName()+" to "+attributeValue+" configured by "+attributeName);
 					try{
-						m.invoke(component, resolveValue(m.getParameterTypes()[0], attributeValue));
+						method.invoke(o, resolveValue(method.getParameterTypes()[0], attributeValue));
 					}catch(Exception e){
-						log.warn(m.getName()+"invoke("+component+", "+attributeValue+")", e);
+						log.warn(method.getName()+"invoke("+o+", "+attributeValue+")", e);
 					}
 				}
 					
 			}
 		}
-*/
+
 
 		//if (component instanceof ConfigurationAware)
 		//	((ConfigurationAware)component).configurationFinished();
@@ -126,45 +128,44 @@ public enum ConfigurationManager {
 		return getConfiguration(artefactName, GlobalEnvironment.INSTANCE);
 	}
 	
-	public Configuration getConfiguration(String artefactName, Environment in){
-		Configuration config = null;
-		try{
-			config = ConfigurationRepository.INSTANCE.getConfiguration(artefactName, in);
-		}catch(Exception e){
-			e.printStackTrace();
-			//only for prototype, 'real' versions will have proper exception handling
-		}
+	public Configuration getConfiguration(String configurationName, Environment in){
 		
-		if (config==null){
-			readConfigFromFile(artefactName);
-		}
+		//for the first we will hardcode file as config source and json as config format.
+		ConfigurationSourceKey configSourceKey = new ConfigurationSourceKey();
+		configSourceKey.setFormat(Format.JSON);
+		configSourceKey.setType(Type.FILE);
+		configSourceKey.setName(configurationName);
+		
+		if (!ConfigurationRepository.INSTANCE.hasConfiguration(configurationName)){
+			if (!ConfigurationSourceRegistry.INSTANCE.isConfigurationAvailable(configSourceKey)){
+				throw new IllegalArgumentException("No such configuration: "+configurationName+" ("+configSourceKey+")");
+			}
+			//reading config
+			String content = ConfigurationSourceRegistry.INSTANCE.readConfigurationSource(configSourceKey);
 
-		
-		config = ConfigurationRepository.INSTANCE.getConfiguration(artefactName, in);
-		return config;
-	}
-	
-	private void readConfigFromFile(String artefactName){
-		String fileName = "src/examples/"+artefactName+".json";
-		try{
-			
-			String content = IOUtils.readFileAtOnceAsString(fileName);
 			content = StringUtils.removeCComments(content);
 			content = StringUtils.removeCPPComments(content);
 			ConfigurationParser parser = new JsonParser();
-			ParsedArtefact pa = parser.parseArtefact(artefactName, content);
-			System.out.println("Parsed "+pa);
+			ParsedArtefact pa = null;
+			try{
+				pa = parser.parseArtefact(configurationName, content);
+			}catch(ConfigurationParserException e){
+				log.error("getConfiguration("+configurationName+", "+in+")", e );
+				throw new IllegalArgumentException(configSourceKey+" is not parseable: "+e.getMessage());
+			}
+			//System.out.println("Parsed "+pa);
 			List<ParsedAttribute> attributes = pa.getAttributes();
-			Artefact art = ConfigurationRepository.INSTANCE.createArtefact(artefactName);
+			Artefact art = ConfigurationRepository.INSTANCE.createArtefact(configurationName);
 			for (ParsedAttribute a : attributes){
 				art.addAttributeValue(a.getName(), a.getValue(), a.getEnvironment());
 			}
 			
-		}catch(IOException e){
-			throw new IllegalArgumentException("File "+fileName+" not found (this exception should be replaced later)");
-		}catch(ConfigurationParserException e){
-			throw new IllegalArgumentException(fileName+" unparseable (this exception should be replaced later)");
 		}
+		
+		Configuration config = null;
+		
+		config = ConfigurationRepository.INSTANCE.getConfiguration(configurationName, in);
+		return config;
 	}
 	
 	public static final void setDefaultEnvironment(Environment anEnvironment){
@@ -175,7 +176,7 @@ public enum ConfigurationManager {
 		return defaultEnvironment;
 	}
 	
-	private static final String extractArtefactNameFromClassName(Class<?> targetClazz){
+	private static final String extractConfigurationNameFromClassName(Class<?> targetClazz){
 		return targetClazz.getName().substring(targetClazz.getName().lastIndexOf('.')+1).toLowerCase();
 	}
 

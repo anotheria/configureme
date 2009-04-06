@@ -5,7 +5,6 @@ import java.util.Locale;
 import org.apache.log4j.BasicConfigurator;
 import org.configureme.Configuration;
 import org.configureme.ConfigurationManager;
-import org.configureme.environments.DynamicEnvironment;
 import org.configureme.environments.LocaleBasedEnvironment;
 import org.junit.BeforeClass;
 import org.junit.Test;

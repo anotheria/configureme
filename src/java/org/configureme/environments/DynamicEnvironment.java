@@ -1,7 +1,6 @@
 package org.configureme.environments;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.configureme.Environment;
 
@@ -16,6 +15,15 @@ public class DynamicEnvironment implements Environment, Cloneable{
 	private DynamicEnvironment(DynamicEnvironment toReduce){
 		elements = new ArrayList<String>();
 		elements.addAll(toReduce.elements.subList(0, toReduce.elements.size()-1));
+	}
+	
+	public DynamicEnvironment(String start, String ... additional){
+		this();
+		add(start);
+		if (additional!=null){
+			for (String s : additional)
+				add(s);
+		}
 	}
 	
 	public String toString(){
