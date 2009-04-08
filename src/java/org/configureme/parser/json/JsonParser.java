@@ -7,7 +7,7 @@ import org.configureme.Environment;
 import org.configureme.environments.DynamicEnvironment;
 import org.configureme.parser.ConfigurationParser;
 import org.configureme.parser.ConfigurationParserException;
-import org.configureme.parser.ParsedArtefact;
+import org.configureme.parser.ParsedConfiguration;
 import org.configureme.parser.ParsedAttribute;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,11 +16,11 @@ import org.json.JSONObject;
 public class JsonParser implements ConfigurationParser {
 
 	@Override
-	public ParsedArtefact parseArtefact(String name, String content) throws ConfigurationParserException {
+	public ParsedConfiguration parseArtefact(String name, String content) throws ConfigurationParserException {
 		
 		try {
 			JSONObject j = new JSONObject(content);
-			ParsedArtefact pa = new ParsedArtefact(name);
+			ParsedConfiguration pa = new ParsedConfiguration(name);
 			
 			DynamicEnvironment env = new DynamicEnvironment();
 			

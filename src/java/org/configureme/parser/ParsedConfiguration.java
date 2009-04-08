@@ -3,7 +3,7 @@ package org.configureme.parser;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ParsedArtefact {
+public class ParsedConfiguration {
 	private List<ParsedAttribute> attributes;
 	
 	private long lastModificationTimestamp;
@@ -12,7 +12,7 @@ public class ParsedArtefact {
 	
 	private String name;
 	
-	public ParsedArtefact(String aName){
+	public ParsedConfiguration(String aName){
 		name = aName;
 		parseTimestamp = System.currentTimeMillis();
 		attributes = new ArrayList<ParsedAttribute>();

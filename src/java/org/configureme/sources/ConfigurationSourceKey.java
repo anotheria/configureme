@@ -39,7 +39,7 @@ public class ConfigurationSourceKey {
 	}
 	
 	public String toString(){
-		return getType().toString()+"::"+getName()+"."+getFormat();
+		return getType().toString()+"::"+getName()+"::"+getFormat();
 	}
 	
 	public boolean equals(Object o){
