@@ -13,7 +13,7 @@ import org.configureme.annotations.ConfigureMe;
 import org.configureme.annotations.Set;
 import org.configureme.parser.ConfigurationParser;
 import org.configureme.parser.ConfigurationParserException;
-import org.configureme.parser.ParsedArtefact;
+import org.configureme.parser.ParsedConfiguration;
 import org.configureme.parser.ParsedAttribute;
 import org.configureme.parser.json.JsonParser;
 import org.configureme.repository.Artefact;
@@ -62,8 +62,13 @@ public enum ConfigurationManager {
 		else
 			artefactName = ann.name(); 
 		//System.out.println("Configuring with name: "+artefactName);
-		
-		Configuration config = getConfiguration(artefactName, in);
+
+		ConfigurationSourceKey configSourceKey = new ConfigurationSourceKey();
+		configSourceKey.setFormat(Format.JSON);
+		configSourceKey.setType(Type.FILE);
+		configSourceKey.setName(artefactName);
+
+		Configuration config = getConfiguration(configSourceKey, in);
 		//System.out.println("Configuring with config: "+config);
 		
 //		if (component instanceof ConfigurationAware)
@@ -122,20 +127,30 @@ public enum ConfigurationManager {
 		if (log.isDebugEnabled()){
 			log.debug("Finished configuration of "+o+" as "+artefactName);
 		}
+		
+		if (ann.watch()){
+			ConfigurationSourceRegistry.INSTANCE.addWatchedConfigurable(configSourceKey, o);
+		}
+		
 	}
 	
 	public Configuration getConfiguration(String artefactName){
 		return getConfiguration(artefactName, GlobalEnvironment.INSTANCE);
 	}
 	
-	public Configuration getConfiguration(String configurationName, Environment in){
-		
-		//for the first we will hardcode file as config source and json as config format.
+	public Configuration getConfiguration(String artefactName, Environment in){
 		ConfigurationSourceKey configSourceKey = new ConfigurationSourceKey();
 		configSourceKey.setFormat(Format.JSON);
 		configSourceKey.setType(Type.FILE);
-		configSourceKey.setName(configurationName);
+		configSourceKey.setName(artefactName);
 		
+		return getConfiguration(configSourceKey, in);
+	}
+
+	private Configuration getConfiguration(ConfigurationSourceKey configSourceKey, Environment in){
+		
+		//for the first we will hardcode file as config source and json as config format.
+		String configurationName = configSourceKey.getName();
 		if (!ConfigurationRepository.INSTANCE.hasConfiguration(configurationName)){
 			if (!ConfigurationSourceRegistry.INSTANCE.isConfigurationAvailable(configSourceKey)){
 				throw new IllegalArgumentException("No such configuration: "+configurationName+" ("+configSourceKey+")");
@@ -146,7 +161,7 @@ public enum ConfigurationManager {
 			content = StringUtils.removeCComments(content);
 			content = StringUtils.removeCPPComments(content);
 			ConfigurationParser parser = new JsonParser();
-			ParsedArtefact pa = null;
+			ParsedConfiguration pa = null;
 			try{
 				pa = parser.parseArtefact(configurationName, content);
 			}catch(ConfigurationParserException e){
