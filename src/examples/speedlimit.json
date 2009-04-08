@@ -11,7 +11,7 @@
 	},
 	
 	Belgium: {
-		motorway: 120,
+		motorway: 120, 
 	},
 	
 	Denmark: {
@@ -19,3 +19,4 @@
 	},
 	
 }	
+ 
