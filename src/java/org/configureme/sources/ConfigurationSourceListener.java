@@ -1,5 +1,5 @@
 package org.configureme.sources;
 
 public interface ConfigurationSourceListener {
-	void configurationSourceUpdated();
+	void configurationSourceUpdated(ConfigurationSource target);
 }

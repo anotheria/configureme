@@ -3,6 +3,8 @@ package org.configureme.sources;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.configureme.repository.ConfigurationRepository;
+
 import net.anotheria.util.NumberUtils;
 
 public class ConfigurationSource {
@@ -15,6 +17,7 @@ public class ConfigurationSource {
 		key = aKey;
 		listeners = new ArrayList<ConfigurationSourceListener>(); 
 		lastChangeTimestamp = System.currentTimeMillis();
+		listeners.add(ConfigurationRepository.INSTANCE);
 	}
 	
 	public void addListener(ConfigurationSourceListener listener){
@@ -53,7 +56,7 @@ public class ConfigurationSource {
 	public void fireUpdateEvent(long timestamp){
 		synchronized(listeners){
 			for (ConfigurationSourceListener listener : listeners){
-				listener.configurationSourceUpdated();
+				listener.configurationSourceUpdated(this);
 			}
 		}
 		lastChangeTimestamp = timestamp;

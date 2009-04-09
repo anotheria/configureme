@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import net.anotheria.util.NumberUtils;
 
+import org.configureme.ConfigurableWrapper;
 import org.configureme.sources.ConfigurationSourceKey.Type;
 
 public enum ConfigurationSourceRegistry {
@@ -33,7 +34,8 @@ public enum ConfigurationSourceRegistry {
 		throw new IllegalArgumentException("Unsupported type: "+key.getType());
 	}
 	
-	public void addWatchedConfigurable(ConfigurationSourceKey key, Object configurable){
+	public void addWatchedConfigurable(ConfigurableWrapper wrapper){
+		ConfigurationSourceKey key = wrapper.getKey();
 		ConfigurationSource source = (ConfigurationSource) watchedSources.get(key);
 		if (source==null){
 			synchronized(watchedSources){
@@ -46,7 +48,6 @@ public enum ConfigurationSourceRegistry {
 		}
 		
 		// --->
-		ConfigurableWrapper wrapper = new ConfigurableWrapper(key, configurable);
 		source.addListener(wrapper);
 		
 	}

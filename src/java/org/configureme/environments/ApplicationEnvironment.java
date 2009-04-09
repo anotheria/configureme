@@ -51,6 +51,19 @@ public class ApplicationEnvironment implements Environment{
 	public String toString(){
 		StringBuilder ret = new StringBuilder();
 		
+		if (system!=null && system.length()>0){
+			ret.append(system);
+			if (app!=null && app.length()>0){
+				ret.append("_").append(app);
+				if (service!=null && service.length()>0){
+					ret.append("_").append(service);
+					if (host!=null && host.length()>0){
+						ret.append("_").append(host);
+					}
+				}
+			}
+		}
+		
 		return ret.toString();
 	}
 	

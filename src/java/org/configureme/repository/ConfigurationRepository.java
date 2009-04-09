@@ -7,9 +7,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.configureme.Configuration;
 import org.configureme.Environment;
 import org.configureme.GlobalEnvironment;
+import org.configureme.sources.ConfigurationSource;
+import org.configureme.sources.ConfigurationSourceListener;
 
 
-public enum ConfigurationRepository {
+public enum ConfigurationRepository implements ConfigurationSourceListener{
 	INSTANCE;
 	
 	private Map<String, Artefact> artefacts = new ConcurrentHashMap<String, Artefact>();
@@ -45,4 +47,12 @@ public enum ConfigurationRepository {
 		}
 		return configurationImpl;
 	}
+
+	@Override
+	public void configurationSourceUpdated(ConfigurationSource target) {
+		artefacts.remove(target.getKey().getName());
+		
+	}
+	
+	
 }
