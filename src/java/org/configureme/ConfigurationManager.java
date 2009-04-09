@@ -5,7 +5,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.BitSet;
 import java.util.List;
 
 import net.anotheria.util.StringUtils;
@@ -20,6 +19,7 @@ import org.configureme.annotations.BeforeReConfiguration;
 import org.configureme.annotations.Configure;
 import org.configureme.annotations.ConfigureMe;
 import org.configureme.annotations.Set;
+import org.configureme.environments.DynamicEnvironment;
 import org.configureme.parser.ConfigurationParser;
 import org.configureme.parser.ConfigurationParserException;
 import org.configureme.parser.ParsedConfiguration;
@@ -36,7 +36,7 @@ public enum ConfigurationManager {
 	
 	INSTANCE;
 	
-	private static Environment defaultEnvironment = GlobalEnvironment.INSTANCE;
+	private Environment defaultEnvironment = null;
 	
 	private static final Logger log = Logger.getLogger(ConfigurationManager.class);
 	
@@ -55,6 +55,14 @@ public enum ConfigurationManager {
 	@SuppressWarnings("unchecked") private static Class<? extends Annotation>[] CALL_AFTER_RE_CONFIGURATION = (Class<? extends Annotation>[]) new Class<?>[]{
 		AfterConfiguration.class, AfterReConfiguration.class
 	};
+	
+	public static final String PROP_NAME_DEFAULT_ENVIRONMENT = "configureme.defaultEnvironment";
+	
+	private ConfigurationManager(){
+		String defEnvironmentAsString = System.getProperty(PROP_NAME_DEFAULT_ENVIRONMENT, "");
+		defaultEnvironment = DynamicEnvironment.parse(defEnvironmentAsString);
+	}
+	
 	/**
 	 * Returns true if the object is properly annotated and can be configured by the configuration manager
 	 * @param o
@@ -251,11 +259,11 @@ public enum ConfigurationManager {
 		return config;
 	}
 	
-	public static final void setDefaultEnvironment(Environment anEnvironment){
+	public final void setDefaultEnvironment(Environment anEnvironment){
 		defaultEnvironment = anEnvironment;
 	}
 	
-	public static final Environment getDefaultEnvironment(){
+	public  final Environment getDefaultEnvironment(){
 		return defaultEnvironment;
 	}
 	

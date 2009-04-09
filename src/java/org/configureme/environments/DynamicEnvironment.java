@@ -2,7 +2,10 @@ package org.configureme.environments;
 
 import java.util.ArrayList;
 
+import net.anotheria.util.StringUtils;
+
 import org.configureme.Environment;
+import org.configureme.GlobalEnvironment;
 
 public class DynamicEnvironment implements Environment, Cloneable{
 
@@ -86,5 +89,15 @@ public class DynamicEnvironment implements Environment, Cloneable{
 	@Override
 	public DynamicEnvironment reduce() {
 		return new DynamicEnvironment(this);
+	}
+	
+	public static Environment parse(String s){
+		if (s==null || s.length()==0)
+			return GlobalEnvironment.INSTANCE;
+		String[] tokens = StringUtils.tokenize(s, '_');
+		DynamicEnvironment env = new DynamicEnvironment();
+		for (String t : tokens)
+			env.add(t);
+		return env;
 	}
 }
