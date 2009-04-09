@@ -1,13 +1,22 @@
 package org.configureme;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.BitSet;
 import java.util.List;
 
 import net.anotheria.util.StringUtils;
 
 import org.apache.log4j.Logger;
+import org.configureme.annotations.AfterConfiguration;
+import org.configureme.annotations.AfterInitialConfiguration;
+import org.configureme.annotations.AfterReConfiguration;
+import org.configureme.annotations.BeforeConfiguration;
+import org.configureme.annotations.BeforeInitialConfiguration;
+import org.configureme.annotations.BeforeReConfiguration;
 import org.configureme.annotations.Configure;
 import org.configureme.annotations.ConfigureMe;
 import org.configureme.annotations.Set;
@@ -31,6 +40,21 @@ public enum ConfigurationManager {
 	
 	private static final Logger log = Logger.getLogger(ConfigurationManager.class);
 	
+	@SuppressWarnings("unchecked") private static Class<? extends Annotation>[] CALL_BEFORE_INITIAL_CONFIGURATION = (Class<? extends Annotation>[]) new Class<?>[]{
+		BeforeInitialConfiguration.class, BeforeConfiguration.class
+	};
+	
+	@SuppressWarnings("unchecked") private static Class<? extends Annotation>[] CALL_AFTER_INITIAL_CONFIGURATION = (Class<? extends Annotation>[]) new Class<?>[]{
+		AfterConfiguration.class, AfterInitialConfiguration.class
+	};
+
+	@SuppressWarnings("unchecked") private static Class<? extends Annotation>[] CALL_BEFORE_RE_CONFIGURATION = (Class<? extends Annotation>[]) new Class<?>[]{
+		BeforeReConfiguration.class, BeforeConfiguration.class
+	};
+
+	@SuppressWarnings("unchecked") private static Class<? extends Annotation>[] CALL_AFTER_RE_CONFIGURATION = (Class<? extends Annotation>[]) new Class<?>[]{
+		AfterConfiguration.class, AfterReConfiguration.class
+	};
 	/**
 	 * Returns true if the object is properly annotated and can be configured by the configuration manager
 	 * @param o
@@ -68,11 +92,53 @@ public enum ConfigurationManager {
 		configSourceKey.setType(Type.FILE);
 		configSourceKey.setName(artefactName);
 
-		Configuration config = getConfiguration(configSourceKey, in);
-		//System.out.println("Configuring with config: "+config);
+		configureInitially(configSourceKey, o, in, ann);
 		
-//		if (component instanceof ConfigurationAware)
-//			((ConfigurationAware)component).configurationStarted();
+	}
+	
+	private void configureInitially(ConfigurationSourceKey key, Object o, Environment in, ConfigureMe ann){
+		
+		configure(key, o, in, CALL_BEFORE_INITIAL_CONFIGURATION, CALL_AFTER_INITIAL_CONFIGURATION);
+		
+		if (ann.watch()){
+			ConfigurableWrapper wrapper = new ConfigurableWrapper(key, o, in);
+			ConfigurationSourceRegistry.INSTANCE.addWatchedConfigurable(wrapper);
+		}
+		
+	}
+	
+	private void callAnnotations(Object configurable, Method[] methods, Class<? extends Annotation> annotationClasses[]){
+		//check for annotations to call and call 'before' annotations
+		for (Method m : methods){
+			//System.out.println("Checking methid "+m);
+			for (Class<? extends Annotation> anAnnotationClass : annotationClasses){
+				//System.out.println("\tChecking annotation "+anAnnotationClass);
+				Annotation anAnnotation = m.getAnnotation(anAnnotationClass);
+				//System.out.println("\t\t-->"+anAnnotation);
+				if (anAnnotation!=null){
+					try {
+						m.invoke(configurable);
+					} catch (IllegalAccessException e) {
+						log.error("callAnnotations("+methods+", "+annotationClasses+")", e);
+						throw new AssertionError("Error declaration in method "+m+", wrong declaration (public void foo() expected)? - "+e.getMessage());
+					} catch (InvocationTargetException e) {
+						log.error("callAnnotations("+methods+", "+annotationClasses+")", e);
+						throw new AssertionError("Error declaration in method "+m+", wrong declaration (public void foo() expected)? - "+e.getMessage());
+					}
+				}
+					
+			}
+		}
+	}
+	
+	private void configure(ConfigurationSourceKey key, Object o, Environment in, Class<? extends Annotation> callBefore[],  Class<? extends Annotation> callAfter[] ){
+		Configuration config = getConfiguration(key, in);
+		
+		Class<?> clazz = o.getClass();
+
+		Method[] methods = clazz.getDeclaredMethods();
+		callAnnotations(o, methods, callBefore);
+
 
 		//first set fields
 		Field[] fields = clazz.getDeclaredFields();
@@ -102,7 +168,6 @@ public enum ConfigurationManager {
 		
 		//end set fields 
 		
-		Method[] methods = clazz.getDeclaredMethods();
 		for (Method method : methods){
 			if (method.isAnnotationPresent(Set.class)){
 				log.debug("method "+method+" is annotated");
@@ -122,16 +187,19 @@ public enum ConfigurationManager {
 		}
 
 
-		//if (component instanceof ConfigurationAware)
-		//	((ConfigurationAware)component).configurationFinished();
+		callAnnotations(o, methods, callAfter);
+
 		if (log.isDebugEnabled()){
-			log.debug("Finished configuration of "+o+" as "+artefactName);
+			log.debug("Finished configuration of "+o+" as "+key);
 		}
+	}
+	
+	void reconfigure(ConfigurationSourceKey key, Object o, Environment in){
+		//call annotations
 		
-		if (ann.watch()){
-			ConfigurationSourceRegistry.INSTANCE.addWatchedConfigurable(configSourceKey, o);
-		}
+		configure(key, o, in, CALL_BEFORE_RE_CONFIGURATION, CALL_AFTER_RE_CONFIGURATION);
 		
+		//call after annotations
 	}
 	
 	public Configuration getConfiguration(String artefactName){

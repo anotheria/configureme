@@ -1,0 +1,11 @@
+{
+	somevalue: 10,
+
+	live: {
+		somevalue: 50,
+	},
+	
+	test: {
+		somevalue: 28,
+	},
+} 
