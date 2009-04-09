@@ -10,19 +10,12 @@ public class ConfigurableWrapper implements ConfigurationSourceListener{
 	private Object configurable;
 	private Environment environment;
 	
-	public Environment getEnvironment() {
-		return environment;
-	}
-
-	public void setEnvironment(Environment environment) {
-		this.environment = environment;
-	}
-
 	private ConfigurationSourceKey key;
 	
 	public ConfigurableWrapper(ConfigurationSourceKey aKey, Object aConfigurable, Environment anEnvironment){
 		key = aKey;
 		configurable = aConfigurable;
+		environment = anEnvironment;
 	}
 
 	public Object getConfigurable() {
@@ -39,6 +32,14 @@ public class ConfigurableWrapper implements ConfigurationSourceListener{
 
 	public void setKey(ConfigurationSourceKey key) {
 		this.key = key;
+	}
+
+	public Environment getEnvironment() {
+		return environment;
+	}
+
+	public void setEnvironment(Environment environment) {
+		this.environment = environment;
 	}
 
 	public String toString(){
