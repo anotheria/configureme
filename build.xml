@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+
+<project name="configureme" default="all" basedir=".">
+	
+	<property name="output.dir" value="${basedir}/build"/>
+	<property name="classes.dir" value="${output.dir}/classes"/>
+
+	<property name="src" value="${basedir}/src/java"/>
+	
+	<property name="dist.dir" value="${basedir}/dist"/>
+	
+	<property name="javadoc.dest" value="${basedir}/../javadoc"/>
+	
+	<property name="lib.project" value="${basedir}/lib"/>
+
+	<property name="project.name" value="configureme"/>
+	<property name="target.jar.name" value="${project.name}.jar"/>
+	
+	<!-- these libraries are needed to compile the application -->
+	<path id="compile.classpath">
+		<!-- just include every jar in the lib directory -->
+		<fileset dir="lib">
+			<include name="*.jar"/>
+		</fileset>
+	</path>
+
+	<target name="clean">
+		<delete dir="${output.dir}"/>
+	</target>
+
+	<target name="prepare">
+		<mkdir dir="${dist.dir}"/>
+		<mkdir dir="${classes.dir}"/>
+	</target>
+	
+	<target name="compile" depends="prepare">
+		<javac destdir="${classes.dir}" srcdir="${src}" debug="on" deprecation="off" optimize="on"
+			classpathref="compile.classpath">
+		</javac>
+	</target>
+	
+	<target name="jar" depends="compile">
+		<jar jarfile="${dist.dir}/${target.jar.name}">
+         	<fileset dir="${classes.dir}">
+         		<include name="**/*"/>
+         	</fileset>
+		</jar>
+	</target>
+	
+	<target name="dist.clean" depends="clean">
+		<delete dir="${dist.dir}"/>
+	</target>
+
+	<target name="dist" depends="jar">
+	</target>
+	
+	<target name="all" depends="dist"/>
+	
+	<target name="javadoc" depends="compile">
+		<mkdir dir="${javadoc.dest}/${project.name}"/>
+	    <javadoc source="1.6" packagenames="org.configureme.*" 
+	    	private="true" author="true"
+	    	sourcepath="${src}" destdir="${javadoc.dest}/${project.name}" 
+	    	bottom="Copyright &#169; 1998-2007 Anotheria.net. All Rights Reserved.&lt;br/&gt;"
+		>
+	      <tag name="created" scope="all" description="Created: " />
+	      <link href="http://java.sun.com/j2se/1.5.0/docs/api"/>
+	    </javadoc>
+	</target>
+</project>
