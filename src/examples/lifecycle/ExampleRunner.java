@@ -28,7 +28,7 @@ public class ExampleRunner {
 		long endTime = System.currentTimeMillis()+1000*60*5;
 		while(System.currentTimeMillis()<endTime){
 			System.out.println("Waiting further "+((endTime-System.currentTimeMillis())/1000)+" seconds, edit lifecycleexamples.json in classpath to force reconfiguration." );
-			Thread.currentThread().sleep(1000*15);
+			Thread.sleep(1000*15);
 		}
 		
 		System.out.println("Exiting.");

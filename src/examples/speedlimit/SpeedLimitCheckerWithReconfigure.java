@@ -19,7 +19,7 @@ public class SpeedLimitCheckerWithReconfigure {
 		showLimits(new DynamicEnvironment("Belgium"));
 		showLimits(new DynamicEnvironment("Spain"));
 		showLimits(new DynamicEnvironment("Spain", "Madrid"));
-		Thread.currentThread().sleep(1000*60*5);
+		Thread.sleep(1000*60*5);
 	}
 	
 	private static void showLimits(Environment in){
