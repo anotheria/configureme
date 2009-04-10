@@ -1,12 +1,13 @@
 package org.configureme;
 
-import org.configureme.environments.DynamicEnvironment;
+import org.configureme.environments.ApplicationEnvironmentTest;
+import org.configureme.environments.DynamicEnvironmentTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(value=Suite.class)
-@SuiteClasses(DynamicEnvironment.class)
+@SuiteClasses(value={DynamicEnvironmentTest.class, ApplicationEnvironmentTest.class})
 public class ConfigureMeTestSuite {
 
 }
