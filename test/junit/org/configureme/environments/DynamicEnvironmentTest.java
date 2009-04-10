@@ -13,18 +13,19 @@ public class DynamicEnvironmentTest {
 		testDynamicEnvironment(new DynamicEnvironment("a", "b", "c"));
 	}
 	
-	@Test public void basicTest(){
+	@Test public void testEquals(){
 		DynamicEnvironment de1 = new DynamicEnvironment("a");
 		DynamicEnvironment de2 = new DynamicEnvironment("a");
 		DynamicEnvironment de3 = (DynamicEnvironment)de1.clone();
 		DynamicEnvironment de4 = de1.reduce(); de4.add("a");
-		DynamicEnvironment de5 = (DynamicEnvironment)de1.clone();; de5.add("a"); de5.reduceThis();
+		DynamicEnvironment de5 = (DynamicEnvironment)de1.clone(); de5.extendThis("a"); de5.reduceThis();
 		
 		assertEquals("Object must be equal to itself", de1, de1);
 		assertEquals("Object must be equal to the same object", de1, de2);
 		assertEquals("Object must be equal to the cloned object", de1, de3);
 		assertEquals("Object must be equal to the reduced object", de1, de4);
 		assertEquals("Object must be equal to the extended and reduced object", de1, de5);
+		assertFalse("Object must not be equal to GlobalEnvironment :", de1.equals(GlobalEnvironment.INSTANCE));
 		
 		assertTrue(de1.isReduceable());
 		assertTrue(de2.isReduceable());
