@@ -4,8 +4,6 @@ import org.configureme.sources.ConfigurationSource;
 import org.configureme.sources.ConfigurationSourceKey;
 import org.configureme.sources.ConfigurationSourceListener;
 
-import net.anotheria.util.NumberUtils;
-
 public class ConfigurableWrapper implements ConfigurationSourceListener{
 	private Object configurable;
 	private Environment environment;
