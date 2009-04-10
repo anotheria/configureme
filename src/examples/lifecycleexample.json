@@ -6,6 +6,6 @@
 	},
 	
 	test: {
-		somevalue: 28,
+		somevalue: 32,
 	},
 } 

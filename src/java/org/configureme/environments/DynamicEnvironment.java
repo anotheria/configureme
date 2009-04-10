@@ -68,19 +68,6 @@ public class DynamicEnvironment implements Environment, Cloneable{
 		}
 	}
 	
-	public static void main(String a[]){
-		test(new DynamicEnvironment());
-		test(new DynamicEnvironment().add("a"));
-		test(new DynamicEnvironment().add("a").add("b"));
-		test(new DynamicEnvironment().add("a").add("b").add("c"));
-	}
-	
-	private static void test(DynamicEnvironment de){
-		System.out.println("environment: "+de+", reduceable: "+de.isReduceable());
-		if (de.isReduceable())
-			System.out.println("\t-->"+de.reduce());
-	}
-
 	@Override
 	public boolean isReduceable() {
 		return elements!=null && elements.size()>0;
@@ -92,12 +79,16 @@ public class DynamicEnvironment implements Environment, Cloneable{
 	}
 	
 	public static Environment parse(String s){
-		if (s==null || s.length()==0)
+		if (s==null || s.length()==0 || s.trim().length()==0)
 			return GlobalEnvironment.INSTANCE;
 		String[] tokens = StringUtils.tokenize(s, '_');
 		DynamicEnvironment env = new DynamicEnvironment();
 		for (String t : tokens)
 			env.add(t);
 		return env;
+	}
+	
+	public boolean equals(Object o){
+		return o == this || ((o instanceof DynamicEnvironment) && ((DynamicEnvironment)o).elements.equals(elements));
 	}
 }
