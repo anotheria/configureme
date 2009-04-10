@@ -90,4 +90,36 @@ public class ApplicationEnvironment implements Environment{
 			return new ApplicationEnvironment(this);
 		}
 	}
+
+	public String getSystem() {
+		return system;
+	}
+
+	public String getApp() {
+		return app;
+	}
+
+	public String getService() {
+		return service;
+	}
+
+	public String getHost() {
+		return host;
+	}
+	
+	private static boolean stringEquals(String a, String b){
+		return a == b ||
+			(a!=null && b!=null && a.equals(b));
+	}
+	
+	public boolean equals(Object o){
+		if (!(o instanceof ApplicationEnvironment))
+			return false;
+		ApplicationEnvironment anotherEnvironment = (ApplicationEnvironment)o;
+		return stringEquals(system, anotherEnvironment.system) && 
+			stringEquals(app, anotherEnvironment.app) && 
+			stringEquals(host, anotherEnvironment.host) &&	
+			stringEquals(service, anotherEnvironment.service);
+	}
+
 }
