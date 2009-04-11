@@ -40,4 +40,11 @@ public class DynamicEnvironmentTest {
 		assertEquals("Parsed environment is not equal to parameter environment", de, parsed);
 		assertEquals("Parsed environment expanded form is not equal to parameter environment extended form", s, parsed.expandedStringForm());
 	} 
+	
+	@Test(expected=AssertionError.class) public void reduceUnreduceable(){
+		DynamicEnvironment empty = new DynamicEnvironment();
+		assertFalse(empty.isReduceable());
+		empty.reduceThis();
+		fail("assertion error should be thrown if trying to reduce an unreduceable environment");
+	}
 }

@@ -9,14 +9,11 @@ import java.net.URL;
 
 import net.anotheria.util.NumberUtils;
 
-import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
-import org.configureme.sources.ConfigurationSourceKey.Format;
-import org.configureme.sources.ConfigurationSourceKey.Type;
 
-public class FileUtility {
+public class FileLoader implements SourceLoader{
 	
-	private static Logger log = Logger.getLogger(FileUtility.class);
+	private static Logger log = Logger.getLogger(FileLoader.class);
 	
 	public static final String getFileName(ConfigurationSourceKey source){
 		if (source.getType()!=ConfigurationSourceKey.Type.FILE)
@@ -24,19 +21,19 @@ public class FileUtility {
 		return source.getName()+"."+source.getFormat().getExtension();
 	}
 	
-	public static boolean isFileAvailable(ConfigurationSourceKey key){
+	public boolean isAvailable(ConfigurationSourceKey key){
 		//ensure an exception is thrown if we are not file.
 		String fileName = getFileName(key);
-		ClassLoader myLoader = FileUtility.class.getClassLoader();
+		ClassLoader myLoader = getClass().getClassLoader();
 
 		URL u = myLoader.getResource(fileName);
 		return u!=null;
 	}
 
-	public static long getSourceLastChangeTimestamp(ConfigurationSourceKey key){
+	public long getLastChangeTimestamp(ConfigurationSourceKey key){
 		//ensure an exception is thrown if we are not file.
 		String fileName = getFileName(key);
-		ClassLoader myLoader = FileUtility.class.getClassLoader();
+		ClassLoader myLoader = getClass().getClassLoader();
 
 		URL u = myLoader.getResource(fileName);
 		if (u==null){
@@ -50,10 +47,10 @@ public class FileUtility {
 		return ret;
 	}
 	
-	public static String getSourceContent(ConfigurationSourceKey key){
+	public String getContent(ConfigurationSourceKey key){
 		//ensure an exception is thrown if we are not file.
 		String fileName = getFileName(key);
-		ClassLoader myLoader = FileUtility.class.getClassLoader();
+		ClassLoader myLoader = getClass().getClassLoader();
 
 		URL u = myLoader.getResource(fileName);
 		if (u==null){
@@ -73,15 +70,5 @@ public class FileUtility {
 			throw new RuntimeException("can't read source: "+key, e);
 		}
 	}
-
-	public static void main(String a[]){
-		BasicConfigurator.configure();
-		ConfigurationSourceKey key = new ConfigurationSourceKey();
-		key.setFormat(Format.JSON);
-		key.setType(Type.FILE);
-		key.setName("helloworld");
-		
-		System.out.println(getFileName(key));
-		System.out.println(getSourceLastChangeTimestamp(key));
-	}
+//*/
 }

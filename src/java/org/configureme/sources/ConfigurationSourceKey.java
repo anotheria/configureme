@@ -2,7 +2,8 @@ package org.configureme.sources;
 
 public class ConfigurationSourceKey {
 	public enum Type {
-		FILE;
+		FILE,
+		FIXTURE,
 	};
 	
 	public enum Format{
@@ -18,6 +19,16 @@ public class ConfigurationSourceKey {
 	private Type type;
 	private Format format;
 	private String name;
+	
+	public ConfigurationSourceKey(){
+		
+	}
+	
+	public ConfigurationSourceKey(Type aType, Format aFormat, String aName){
+		type = aType;
+		format = aFormat;
+		name = aName;
+	}
 
 	public Type getType() {
 		return type;

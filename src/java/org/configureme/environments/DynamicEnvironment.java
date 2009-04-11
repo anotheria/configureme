@@ -58,6 +58,7 @@ public class DynamicEnvironment implements Environment, Cloneable{
 		elements.remove(elements.size()-1);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public Object clone(){
 		try{
 			DynamicEnvironment ret = (DynamicEnvironment)super.clone();

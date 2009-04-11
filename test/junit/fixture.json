@@ -1,0 +1,21 @@
+/** This is a camment! */
+{ 
+	shortValue : 100,
+	longValue  : 1234567890,
+	intValue   : 1000,
+	booleanValue : false,
+	stringValue  : "foo",
+	byteValue    : -125,
+	floatValue   : 12.5,
+	doubleValue  : 1234.11
+	
+	a: {
+		intValue : 2000,
+		stringValue : "aaaaa";
+		
+		b: {
+			intValue : 3000,
+			stringValue: "bbbbb",
+		},
+	},
+}

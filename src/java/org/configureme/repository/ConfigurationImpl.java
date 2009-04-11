@@ -31,6 +31,11 @@ public class ConfigurationImpl implements Configuration{
 	public String toString(){
 		return getName()+": "+attributes;
 	}
-	
+
+	public boolean equals(Object o){
+		return o instanceof ConfigurationImpl &&
+		 name.equals(((ConfigurationImpl)o).name) && 
+		 attributes.equals(((ConfigurationImpl)o).attributes);
+	}
 
 }
