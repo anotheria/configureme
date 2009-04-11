@@ -6,6 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 import net.anotheria.util.StringUtils;
 
@@ -40,6 +41,11 @@ public enum ConfigurationManager {
 	
 	private static final Logger log = Logger.getLogger(ConfigurationManager.class);
 	
+	private ConfigurationSourceKey.Type defaultConfigurationSourceType = Type.FILE;
+	private ConfigurationSourceKey.Format defaultConfigurationSourceFormat = Format.JSON;
+	
+	private ConcurrentHashMap<ConfigurationSourceKey.Format, ConfigurationParser> parsers;
+	
 	@SuppressWarnings("unchecked") private static Class<? extends Annotation>[] CALL_BEFORE_INITIAL_CONFIGURATION = (Class<? extends Annotation>[]) new Class<?>[]{
 		BeforeInitialConfiguration.class, BeforeConfiguration.class
 	};
@@ -61,6 +67,9 @@ public enum ConfigurationManager {
 	private ConfigurationManager(){
 		String defEnvironmentAsString = System.getProperty(PROP_NAME_DEFAULT_ENVIRONMENT, "");
 		defaultEnvironment = DynamicEnvironment.parse(defEnvironmentAsString);
+		
+		parsers = new ConcurrentHashMap<Format, ConfigurationParser>();
+		parsers.put(Format.JSON, new JsonParser());
 	}
 	
 	/**
@@ -97,7 +106,7 @@ public enum ConfigurationManager {
 
 		ConfigurationSourceKey configSourceKey = new ConfigurationSourceKey();
 		configSourceKey.setFormat(Format.JSON);
-		configSourceKey.setType(Type.FILE);
+		configSourceKey.setType(defaultConfigurationSourceType);
 		configSourceKey.setName(artefactName);
 
 		configureInitially(configSourceKey, o, in, ann);
@@ -214,11 +223,11 @@ public enum ConfigurationManager {
 		return getConfiguration(artefactName, GlobalEnvironment.INSTANCE);
 	}
 	
-	public Configuration getConfiguration(String artefactName, Environment in){
+	public Configuration getConfiguration(String configurationName, Environment in){
 		ConfigurationSourceKey configSourceKey = new ConfigurationSourceKey();
-		configSourceKey.setFormat(Format.JSON);
-		configSourceKey.setType(Type.FILE);
-		configSourceKey.setName(artefactName);
+		configSourceKey.setFormat(defaultConfigurationSourceFormat);
+		configSourceKey.setType(defaultConfigurationSourceType);
+		configSourceKey.setName(configurationName);
 		
 		return getConfiguration(configSourceKey, in);
 	}
@@ -236,7 +245,7 @@ public enum ConfigurationManager {
 
 			content = StringUtils.removeCComments(content);
 			content = StringUtils.removeCPPComments(content);
-			ConfigurationParser parser = new JsonParser();
+			ConfigurationParser parser = parsers.get(configSourceKey.getFormat());
 			ParsedConfiguration pa = null;
 			try{
 				pa = parser.parseArtefact(configurationName, content);
@@ -290,4 +299,6 @@ public enum ConfigurationManager {
 			return Double.valueOf(value);
 		throw new IllegalArgumentException("Can't resolve type: "+type+", value: "+value);
 	} 
+	
+	
 }

@@ -94,17 +94,8 @@ public class LocaleBasedEnvironment implements Environment{
 		return s==null || s.length()==0;
 	}
 	
-	public static void main(String a[]){
-		System.out.println("START");
-		LocaleBasedEnvironment bayern = new LocaleBasedEnvironment.Builder(Locale.GERMANY).variant("bayern_munich").build();
-		Environment e = bayern;
-		System.out.println(e);
-		do{
-			e = e.reduce();
-			System.out.println(e);
-			
-		}while(e.isReduceable());
-		System.out.println("DONE");
-			
+	public boolean equals(Object o){
+		return o instanceof LocaleBasedEnvironment && ((LocaleBasedEnvironment)o).locale.equals(locale);
 	}
+	
 }

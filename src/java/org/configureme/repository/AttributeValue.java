@@ -17,14 +17,14 @@ public class AttributeValue {
 	}
 	
 	public String get(Environment in){
-		log.debug("looking up in "+in +"("+in.expandedStringForm()+")");
+		if (log.isDebugEnabled())
+			log.debug("looking up in "+in +"("+in.expandedStringForm()+")");
 		String retValue = values.get(in.expandedStringForm());
 		if (retValue!=null)
 			return retValue;
+		if (!in.isReduceable())
+			return null;
 		Environment reduced = in.reduce();
-		if (reduced!=null){
-			log.debug("Fallback "+in+" -> "+reduced);
-		}
 		return reduced==null ? null : get(reduced);
 	}
 	
