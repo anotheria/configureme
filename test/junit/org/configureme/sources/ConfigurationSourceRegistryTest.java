@@ -6,6 +6,7 @@ import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
 
 import org.configureme.ConfigurableWrapper;
+import org.configureme.GlobalEnvironment;
 import org.configureme.sources.ConfigurationSourceKey.Format;
 import org.configureme.sources.ConfigurationSourceKey.Type;
 import org.junit.Before;
@@ -34,11 +35,13 @@ public class ConfigurationSourceRegistryTest {
 	@Test public void testWatchedResourceCaching(){
 		ConfigurationSourceKey presentKey = new ConfigurationSourceKey(Type.FIXTURE, Format.JSON, "fixture");
 		assertTrue(ConfigurationSourceRegistry.INSTANCE.isConfigurationAvailable(presentKey));
-		ConfigurationSourceRegistry.INSTANCE.addWatchedConfigurable(new ConfigurableWrapper(presentKey,null,null));
+		ConfigurationSourceRegistry.INSTANCE.addWatchedConfigurable(new ConfigurableWrapper(presentKey, new Object(), GlobalEnvironment.INSTANCE));
 		
 		FixtureLoader.setContent(null);
 		//since the key is registered as watched the configurationsourceregistry thinks its there, even its not.
 		assertTrue(ConfigurationSourceRegistry.INSTANCE.isConfigurationAvailable(presentKey));
+		ConfigurationSourceRegistry.INSTANCE.removeWatchedConfigurable(new ConfigurableWrapper(presentKey, new Object(), GlobalEnvironment.INSTANCE));
+		
 		
 	}
 	
