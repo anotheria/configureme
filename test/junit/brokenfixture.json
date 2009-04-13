@@ -1,5 +1,6 @@
 /** This is a camment! */
 { 
+	this-will-break-the-file
 	shortValue : 100,
 	longValue  : 1234567890123,
 	intValue   : 1000,
