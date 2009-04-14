@@ -1,6 +1,9 @@
 package org.configureme.repository;
 
+import java.util.Collection;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.configureme.Configuration;
@@ -17,6 +20,15 @@ public class ConfigurationImpl implements Configuration{
 	@Override
 	public String getAttribute(String attributeName) {
 		return attributes.get(attributeName);
+	}
+	
+	@Override
+	public Collection<String> getAttributeNames(){
+		return attributes.keySet();
+	}
+	
+	public Set<Entry<String,String>> getEntries(){
+		return attributes.entrySet();
 	}
 
 	@Override
