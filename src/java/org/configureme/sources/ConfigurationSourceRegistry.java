@@ -55,7 +55,23 @@ public enum ConfigurationSourceRegistry {
 		source.addListener(listener);
 	}
 	
+	public void removeListener(ConfigurationSourceKey key, ConfigurationSourceListener listener){
+		ConfigurationSource source = (ConfigurationSource) watchedSources.get(key);
+		if (source==null){
+			return;
+		}
+		
+		source.removeListener(listener);
+	}
+
+	public void removeWatchedConfigurable(ConfigurableWrapper wrapper){
+		removeListener(wrapper.getKey(), wrapper);
+	}
+
 	public void addWatchedConfigurable(ConfigurableWrapper wrapper){
+		if (wrapper.getConfigurable()==null){
+			throw new AssertionError("configurable is null");
+		}
 		ConfigurationSourceKey key = wrapper.getKey();
 		addListener(key, wrapper);
 	}
@@ -68,14 +84,17 @@ public enum ConfigurationSourceRegistry {
 		public void run(){
 			try{
 				while(!Thread.interrupted()){
-					Thread.sleep(1000L*15);
+					Thread.sleep(1000L*10);
 					Collection<ConfigurationSource> allSources = watchedSources.values();
 					for (ConfigurationSource source : allSources){
 						SourceLoader loader = loaders.get(source.getKey().getType());
+						//System.out.println("source: "+source);
+						
 						long lastUpdate = loader.getLastChangeTimestamp(source.getKey());
 						log.debug("Checking source: "+source+", lastUpdateonFs= "+NumberUtils.makeISO8601TimestampString(lastUpdate));
 						if (source.isOlderAs(lastUpdate)){
 							log.debug("firing update event: "+ source);
+							//System.out.println("firing update on source: "+source);
 							source.fireUpdateEvent(lastUpdate);
 						}
 						

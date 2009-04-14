@@ -8,16 +8,7 @@ public class ConfigurationParserException extends Exception {
 		super(message);
 	}
 
-	public ConfigurationParserException() {
-		super();
-	}
-
 	public ConfigurationParserException(String message, Throwable cause) {
 		super(message, cause);
 	}
-
-	public ConfigurationParserException(Throwable cause) {
-		super(cause);
-	}
-
 }

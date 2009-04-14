@@ -43,7 +43,9 @@ public enum ConfigurationRepository implements ConfigurationSourceListener{
 		ConfigurationImpl configurationImpl = new ConfigurationImpl(a.getName());
 		List<String> attributeNames = a.getAttributeNames();
 		for (String attributeName : attributeNames){
-			configurationImpl.setAttribute(attributeName, a.getAttribute(attributeName).getValue(environment));
+			String attributeValue = a.getAttribute(attributeName).getValue(environment);
+			if (attributeValue!=null)
+				configurationImpl.setAttribute(attributeName, attributeValue);
 		}
 		return configurationImpl;
 	}
@@ -51,7 +53,6 @@ public enum ConfigurationRepository implements ConfigurationSourceListener{
 	@Override
 	public void configurationSourceUpdated(ConfigurationSource target) {
 		artefacts.remove(target.getKey().getName());
-		
 	}
 	
 	

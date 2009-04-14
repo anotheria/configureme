@@ -34,7 +34,6 @@ public class JsonParser implements ConfigurationParser {
 				}
 			}
 			
-			System.out.println("Returning: "+pa);
 			return pa;
 			
 		} catch (JSONException e) {
@@ -44,8 +43,6 @@ public class JsonParser implements ConfigurationParser {
 	
 	private List<ParsedAttribute> parse(String key, JSONObject root, DynamicEnvironment environment) throws JSONException{
 		List<ParsedAttribute> ret = new ArrayList<ParsedAttribute>();
-		
-		System.out.println("Parsing "+key+" in "+environment);
 		
 		Object value = root.get(key);
 		// an object value means a change in environment, let's see what it is

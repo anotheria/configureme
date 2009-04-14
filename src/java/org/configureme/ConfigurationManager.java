@@ -5,7 +5,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.anotheria.util.StringUtils;
@@ -20,6 +22,7 @@ import org.configureme.annotations.BeforeReConfiguration;
 import org.configureme.annotations.Configure;
 import org.configureme.annotations.ConfigureMe;
 import org.configureme.annotations.Set;
+import org.configureme.annotations.SetAll;
 import org.configureme.environments.DynamicEnvironment;
 import org.configureme.parser.ConfigurationParser;
 import org.configureme.parser.ConfigurationParserException;
@@ -106,7 +109,7 @@ public enum ConfigurationManager {
 
 		ConfigurationSourceKey configSourceKey = new ConfigurationSourceKey();
 		configSourceKey.setFormat(Format.JSON);
-		configSourceKey.setType(defaultConfigurationSourceType);
+		configSourceKey.setType(ann.type());
 		configSourceKey.setName(artefactName);
 
 		configureInitially(configSourceKey, o, in, ann);
@@ -149,6 +152,7 @@ public enum ConfigurationManager {
 	}
 	
 	private void configure(ConfigurationSourceKey key, Object o, Environment in, Class<? extends Annotation> callBefore[],  Class<? extends Annotation> callAfter[] ){
+		//System.out.println("CALLED configure("+key+", "+o+","+in+")");
 		Configuration config = getConfiguration(key, in);
 		
 		Class<?> clazz = o.getClass();
@@ -163,6 +167,8 @@ public enum ConfigurationManager {
 			if (f.isAnnotationPresent(Configure.class)){
 				String attributeName = f.getName();
 				String attributeValue = config.getAttribute(attributeName);
+				if (attributeValue==null)
+					continue;
 				if (Modifier.isPublic(f.getModifiers()) ){
 					try{
 						f.set(o, resolveValue(f.getType(), attributeValue));
@@ -182,10 +188,20 @@ public enum ConfigurationManager {
 				}
 			}
 		}
-		
-		//end set fields 
+		//end set fields
 		
 		for (Method method : methods){
+			if (method.isAnnotationPresent(SetAll.class)){
+				Collection<Entry<String,String>> entries = config.getEntries();
+				log.debug("Calling method "+method+" with "+entries);
+				for (Entry<String,String> entry : entries){
+					try{
+						method.invoke(o, entry.getKey(), entry.getValue());
+					}catch(Exception e){
+						log.warn(method.getName()+"invoke("+o+", "+entry.getKey()+", "+entry.getValue()+")", e);
+					}
+				}
+			}
 			if (method.isAnnotationPresent(Set.class)){
 				log.debug("method "+method+" is annotated");
 				Set setAnnotation = method.getAnnotation(Set.class);
@@ -220,7 +236,7 @@ public enum ConfigurationManager {
 	}
 	
 	public Configuration getConfiguration(String artefactName){
-		return getConfiguration(artefactName, GlobalEnvironment.INSTANCE);
+		return getConfiguration(artefactName, defaultEnvironment);
 	}
 	
 	public Configuration getConfiguration(String configurationName, Environment in){

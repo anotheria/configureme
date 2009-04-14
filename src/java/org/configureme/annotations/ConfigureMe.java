@@ -5,6 +5,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.configureme.sources.ConfigurationSourceKey;
+import org.configureme.sources.ConfigurationSourceKey.Type;
+
 @Retention (RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface ConfigureMe {
@@ -20,4 +23,6 @@ public @interface ConfigureMe {
 	 * @return
 	 */
 	boolean watch() default true;
+	
+	ConfigurationSourceKey.Type type() default Type.FILE;
 }
