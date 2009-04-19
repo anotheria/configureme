@@ -36,17 +36,36 @@ import org.configureme.sources.ConfigurationSourceRegistry;
 import org.configureme.sources.ConfigurationSourceKey.Format;
 import org.configureme.sources.ConfigurationSourceKey.Type;
 
+/**
+ * Configuration manager is a utility class for retrieval of configurations and automatical configurations of components.
+ * Configured components are 'watched', any changes in the configuration source (file) lead to a reconfiguration. 
+ * The configuration manager also supports retrieval of the configurations in different environments. Its usually a good idea to specify a <b>defaultEnvironment</b>
+ * by <code>-Dconfigureme.defaultEnvironment=a_b_c</code>...
+ * @author lrosenberg
+ *
+ */
 public enum ConfigurationManager {
-	
+	/**
+	 * The configurationmanager is a singleton. 
+	 */
 	INSTANCE;
 	
 	private Environment defaultEnvironment = null;
 	
 	private static final Logger log = Logger.getLogger(ConfigurationManager.class);
 	
+	/**
+	 * Default configuration source type (file is default, but fixture is also supported for junit tests and configserver may be supported in the near future). 
+	 */
 	private ConfigurationSourceKey.Type defaultConfigurationSourceType = Type.FILE;
+	/**
+	 * The format of the configuration file. At the moment only json is supported. The format of the configuration file decides which parser is used to parse the configuration.
+	 */
 	private ConfigurationSourceKey.Format defaultConfigurationSourceFormat = Format.JSON;
 	
+	/**
+	 * A map which contains configuration parser for different formats.
+	 */
 	private ConcurrentHashMap<ConfigurationSourceKey.Format, ConfigurationParser> parsers;
 	
 	@SuppressWarnings("unchecked") private static Class<? extends Annotation>[] CALL_BEFORE_INITIAL_CONFIGURATION = (Class<? extends Annotation>[]) new Class<?>[]{
@@ -86,31 +105,37 @@ public enum ConfigurationManager {
 		return clazz.isAnnotationPresent(ConfigureMe.class);
 	}
 	
+	/**
+	 * Configures a configurable component in the default environment. The object must be annotated with ConfigureMe and the configuration must be present.
+	 * @param o object to configure
+	 */
 	public void configure(Object o){
 		configure(o, defaultEnvironment);
 	}
 	
+	/**
+	 * Configures a configurable component in the givent environment. The object must be annotated with ConfigureMe and the configuration must be present.
+	 * @param o object to configure
+	 * @param in the environment for the configuration
+	 */
 	public void configure(Object o, Environment in){
 		
 		if (!isConfigurable(o))
 			throw new IllegalArgumentException("Class "+o.getClass()+" is not annotated as ConfigureMe, called with: "+o);
 		
 		Class<?> clazz = o.getClass();
-		//System.out.println("Starting configuring "+o);
 		
-		
-		String artefactName = "";
+		String configurationName = "";
 		ConfigureMe ann = clazz.getAnnotation(ConfigureMe.class);
 		if (ann.name()==null || ann.name().length()==0)
-			artefactName = extractConfigurationNameFromClassName(clazz);
+			configurationName = extractConfigurationNameFromClassName(clazz);
 		else
-			artefactName = ann.name(); 
-		//System.out.println("Configuring with name: "+artefactName);
+			configurationName = ann.name(); 
 
 		ConfigurationSourceKey configSourceKey = new ConfigurationSourceKey();
 		configSourceKey.setFormat(Format.JSON);
 		configSourceKey.setType(ann.type());
-		configSourceKey.setName(artefactName);
+		configSourceKey.setName(configurationName);
 
 		configureInitially(configSourceKey, o, in, ann);
 		
@@ -127,6 +152,12 @@ public enum ConfigurationManager {
 		
 	}
 	
+	/**
+	 * This method is used internally for calls to annotations at the start and the end of each configuration.
+	 * @param configurable
+	 * @param methods
+	 * @param annotationClasses
+	 */
 	private void callAnnotations(Object configurable, Method[] methods, Class<? extends Annotation> annotationClasses[]){
 		//check for annotations to call and call 'before' annotations
 		for (Method m : methods){
