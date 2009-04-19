@@ -135,4 +135,33 @@ public class AutoConfigTest {
 		assertEquals(1000, configurable.onlyInA);
 		assertEquals(1000, configurable.onlyInB);
 	}
+	
+	@Test public void configureAll(){
+		TestAllConfigurable configurable = new TestAllConfigurable();
+		ConfigurationManager.INSTANCE.configure(configurable);
+		
+		assertEquals(100, configurable.getShortValue());
+		assertEquals(1234567890123L, configurable.getLongValue());
+		assertEquals(1000, configurable.getIntValue());
+		assertEquals(true, configurable.getBooleanValue());
+		assertEquals("foo", configurable.getStringValue());
+		assertEquals(-125, configurable.getByteValue());
+		assertEquals(12.5f, configurable.getFloatValue());
+		assertEquals(1234.11, configurable.getDoubleValue());
+	}
+
+	@Test public void configureAllWithExclusion(){
+		TestNotConfigurable configurable = new TestNotConfigurable();
+		ConfigurationManager.INSTANCE.configure(configurable);
+		
+		assertEquals(100, configurable.getShortValue());
+		assertEquals(0L, configurable.getLongValue());
+		assertEquals(1000, configurable.getIntValue());
+		assertEquals(false, configurable.getBooleanValue());
+		assertEquals("foo", configurable.getStringValue());
+		assertEquals(0, configurable.getByteValue());
+		assertEquals(12.5f, configurable.getFloatValue());
+		assertEquals(0.0, configurable.getDoubleValue());
+	}
+
 }

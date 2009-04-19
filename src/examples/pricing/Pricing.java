@@ -1,18 +1,17 @@
 package pricing;
 
-import org.configureme.annotations.Configure;
 import org.configureme.annotations.ConfigureMe;
 
-@ConfigureMe 
+@ConfigureMe (allfields=true) 
 public class Pricing {
 	/**
 	 * The local currency.
 	 */
-	@Configure private String currency;
+	private String currency;
 	/**
 	 * The price of the BigPack in local currency.
 	 */
-	@Configure private float price;
+	private float price;
 	
 	public void setCurrency(String aCurrency){
 		currency = aCurrency;

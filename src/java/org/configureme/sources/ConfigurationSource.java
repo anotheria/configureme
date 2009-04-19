@@ -3,6 +3,7 @@ package org.configureme.sources;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.configureme.repository.ConfigurationRepository;
 
 import net.anotheria.util.NumberUtils;
@@ -12,6 +13,8 @@ public class ConfigurationSource {
 	private ConfigurationSourceKey key;
 	private List<ConfigurationSourceListener> listeners;
 	private long lastChangeTimestamp;
+	
+	private static Logger log = Logger.getLogger(ConfigurationSource.class);
 	
 	public ConfigurationSource(ConfigurationSourceKey aKey){
 		key = aKey;
@@ -56,7 +59,12 @@ public class ConfigurationSource {
 	public void fireUpdateEvent(long timestamp){
 		synchronized(listeners){
 			for (ConfigurationSourceListener listener : listeners){
-				listener.configurationSourceUpdated(this);
+				try{
+					log.debug("Calling configurationSourceUpdated on "+listener);
+					listener.configurationSourceUpdated(this);
+				}catch(Exception e){
+					log.error("Error in notifying configuration source listener:"+listener, e);
+				}
 			}
 		}
 		lastChangeTimestamp = timestamp;

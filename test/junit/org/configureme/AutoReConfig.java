@@ -60,7 +60,7 @@ public class AutoReConfig {
 				finished = true;
 			}else{
 				try{
-					System.out.println("test waits 12 seconds for the reconfiguration ...");
+					System.out.println("test waits 12 seconds for the reconfiguration (Max: "+((timeToWait-System.currentTimeMillis())/1000)+") ...");
 					Thread.sleep(1000L*12);
 				}catch(InterruptedException e){}
 			}

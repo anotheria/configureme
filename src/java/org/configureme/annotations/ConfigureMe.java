@@ -25,4 +25,9 @@ public @interface ConfigureMe {
 	boolean watch() default true;
 	
 	ConfigurationSourceKey.Type type() default Type.FILE;
+	
+	/**
+	 * If set the configurationmanager will try to set all fields regardless if they are marked configured or not. Fields which are annotated DontConfigure will be ignored.  
+	 */
+	boolean allfields() default false;
 }
