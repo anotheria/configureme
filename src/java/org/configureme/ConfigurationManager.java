@@ -21,6 +21,7 @@ import org.configureme.annotations.BeforeInitialConfiguration;
 import org.configureme.annotations.BeforeReConfiguration;
 import org.configureme.annotations.Configure;
 import org.configureme.annotations.ConfigureMe;
+import org.configureme.annotations.DontConfigure;
 import org.configureme.annotations.Set;
 import org.configureme.annotations.SetAll;
 import org.configureme.environments.DynamicEnvironment;
@@ -121,7 +122,7 @@ public enum ConfigurationManager {
 	public void configure(Object o, Environment in){
 		
 		if (!isConfigurable(o))
-			throw new IllegalArgumentException("Class "+o.getClass()+" is not annotated as ConfigureMe, called with: "+o);
+			throw new IllegalArgumentException("Class "+o.getClass()+" is not annotated as ConfigureMe, called with: "+o+", class: "+o.getClass());
 		
 		Class<?> clazz = o.getClass();
 		
@@ -187,15 +188,19 @@ public enum ConfigurationManager {
 		Configuration config = getConfiguration(key, in);
 		
 		Class<?> clazz = o.getClass();
-
+		ConfigureMe ann = clazz.getAnnotation(ConfigureMe.class);
+		if (ann==null)
+			throw new AssertionError("An unannotated class shouldn't make it sofar");
+		
 		Method[] methods = clazz.getDeclaredMethods();
 		callAnnotations(o, methods, callBefore);
 
+		boolean configureAllFields = ann.allfields(); 
 
 		//first set fields
 		Field[] fields = clazz.getDeclaredFields();
 		for (Field f : fields){
-			if (f.isAnnotationPresent(Configure.class)){
+			if (f.isAnnotationPresent(Configure.class) || (configureAllFields && !f.isAnnotationPresent(DontConfigure.class))){
 				String attributeName = f.getName();
 				String attributeValue = config.getAttribute(attributeName);
 				if (attributeValue==null)

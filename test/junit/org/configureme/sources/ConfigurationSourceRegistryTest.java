@@ -33,14 +33,16 @@ public class ConfigurationSourceRegistryTest {
 	}
 	
 	@Test public void testWatchedResourceCaching(){
+		Object dummy = new Object();
 		ConfigurationSourceKey presentKey = new ConfigurationSourceKey(Type.FIXTURE, Format.JSON, "fixture");
 		assertTrue(ConfigurationSourceRegistry.INSTANCE.isConfigurationAvailable(presentKey));
-		ConfigurationSourceRegistry.INSTANCE.addWatchedConfigurable(new ConfigurableWrapper(presentKey, new Object(), GlobalEnvironment.INSTANCE));
+		ConfigurationSourceRegistry.INSTANCE.addWatchedConfigurable(new ConfigurableWrapper(presentKey, dummy, GlobalEnvironment.INSTANCE));
 		
 		FixtureLoader.setContent(null);
 		//since the key is registered as watched the configurationsourceregistry thinks its there, even its not.
 		assertTrue(ConfigurationSourceRegistry.INSTANCE.isConfigurationAvailable(presentKey));
-		ConfigurationSourceRegistry.INSTANCE.removeWatchedConfigurable(new ConfigurableWrapper(presentKey, new Object(), GlobalEnvironment.INSTANCE));
+		//cleanup
+		ConfigurationSourceRegistry.INSTANCE.removeWatchedConfigurable(new ConfigurableWrapper(presentKey, dummy, GlobalEnvironment.INSTANCE));
 		
 		
 	}

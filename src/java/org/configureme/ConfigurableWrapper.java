@@ -20,24 +20,12 @@ public class ConfigurableWrapper implements ConfigurationSourceListener{
 		return configurable;
 	}
 
-	public void setConfigurable(Object configurable) {
-		this.configurable = configurable;
-	}
-
 	public ConfigurationSourceKey getKey() {
 		return key;
 	}
 
-	public void setKey(ConfigurationSourceKey key) {
-		this.key = key;
-	}
-
 	public Environment getEnvironment() {
 		return environment;
-	}
-
-	public void setEnvironment(Environment environment) {
-		this.environment = environment;
 	}
 
 	public String toString(){
@@ -47,5 +35,12 @@ public class ConfigurableWrapper implements ConfigurationSourceListener{
 	@Override
 	public void configurationSourceUpdated(ConfigurationSource source) {
 		ConfigurationManager.INSTANCE.reconfigure(key, configurable, environment);
+	}
+	
+	public boolean equals(Object anotherObject){
+		if (!(anotherObject instanceof ConfigurableWrapper ))
+			return false;
+		ConfigurableWrapper w = (ConfigurableWrapper)anotherObject;
+		return key.equals(w.getKey()) && configurable.equals(w.getConfigurable()) && environment.equals(w.getEnvironment());
 	}
 }
