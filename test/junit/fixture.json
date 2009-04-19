@@ -20,4 +20,7 @@
 			onlyInB: 1000,
 		},
 	},
+	
+	//lets test whether we can remove c++ ocmments properly
+	url: "http://www.google.com",
 }
