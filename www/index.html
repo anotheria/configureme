@@ -38,7 +38,27 @@ Examples demonstrate:
 <li>Speedlimit: cascading </li>
 <li>LifeCycle: lifecycle <a href="http://infra.anotheria.net:9080/confluence/display/CONFIGUREME/Annotations">annotations</a>, before/after configuration, re-configuration</li>
 </ul>
-
+<h1>Packaging</h1>
+<h3>SourceCode:</h3>
+<p>The source code is organized into three folders:
+	<ul>
+	<li>src/java - the core code of the project </li>
+	<li>src/examples - examples for the usage and example config files</li>
+	<li>test/junit - set of junit4 test</li>
+	<li>lib - the required libraries: log4j, json parser and ano-util (string utilities)</li>
+	<li>build.xml - the ant build file</li>
+	<li>.project, .classpath - project files for eclipse</li>
+	</ul>
+</p>
+<h3>Testing:</h3>
+<p>
+ConfigureMe comes with a jUnit4 TestSuite: <code>org.configureme.ConfigureMeTestSuite</code>. Current test coverage according to Emma is >85%.
+</p>
+<h3>Building:</h3>
+<p>
+To build ConfigureMe from source just <a href="https://configureme.dev.java.net/source/browse/configureme/">check it out</a> and run <code>ant dist</code> from the project root directory.  
+</p>
+<h1>Besides...</h1>
 <h3>Participation:</h3>
 <p>This is an open source project which may provide an opportunity for developers 
 to participate in a variety of ways.  If you are interested in participating please 
