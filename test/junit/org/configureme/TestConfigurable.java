@@ -8,6 +8,7 @@ import org.configureme.annotations.BeforeInitialConfiguration;
 import org.configureme.annotations.BeforeReConfiguration;
 import org.configureme.annotations.Configure;
 import org.configureme.annotations.ConfigureMe;
+import org.configureme.annotations.SetAll;
 import org.configureme.sources.ConfigurationSourceKey;
 
 @ConfigureMe(name="fixture", type=ConfigurationSourceKey.Type.FIXTURE, watch=false)
@@ -132,4 +133,8 @@ public class TestConfigurable {
 	@AfterConfiguration public void after(){ afterConfigCalled = true; }
 	@AfterInitialConfiguration public void afterInitial(){ afterInitialConfigCalled = true; }
 	@AfterReConfiguration public void afterRe(){ afterReConfigCalled = true; }
+	
+	@SetAll public void debugOutConfig(String name, String property){
+		System.out.println("Config property "+name+" = "+property);
+	}
 }

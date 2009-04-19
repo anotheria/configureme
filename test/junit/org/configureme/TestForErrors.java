@@ -1,6 +1,7 @@
 package org.configureme;
 
 import org.configureme.annotations.BeforeConfiguration;
+import org.configureme.annotations.Configure;
 import org.configureme.annotations.ConfigureMe;
 import org.configureme.annotations.Set;
 import org.junit.Test;
@@ -34,6 +35,14 @@ public class TestForErrors {
 		assertFalse("setObject shouldn't have been called", a.isSetObjectCalled());
 	}
 	
+	@Test public void configureWithUnsupportedPublicAttributeType(){
+		ObjectWithUnsupportedPublicAttribute a = new ObjectWithUnsupportedPublicAttribute();
+		ConfigurationManager.INSTANCE.configure(a);
+		
+		assertTrue("intValue should have been set", a.isIntValueSet());
+		assertFalse("stringValue shouldn't have been set", a.isStringValueSet());
+	}
+
 	@Test(expected=IllegalArgumentException.class) public void configureFromBrokenFile(){
 		BrokenConfig object = new BrokenConfig(); 
 		ConfigurationManager.INSTANCE.configure(object);
@@ -75,6 +84,39 @@ public class TestForErrors {
 		}
 	}
 	
+	@ConfigureMe(name="fixture")
+	private class ObjectWithUnsupportedPublicAttribute{
+		
+		@Configure public int intValue = 0;
+		@Configure public int stringValue = 0; 
+		
+		public boolean isIntValueSet() { 
+			return intValue!=0;
+		}
+
+		public boolean isStringValueSet() { 
+			return stringValue!=0;
+		}
+	}
+
+	@ConfigureMe(name="fixture")
+	@SuppressWarnings("unused")
+	private class ObjectWithUnsupportedMethods{
+		
+		@Configure private int intValue = 0;
+		@Configure private String stringValue = "";
+		
+		public void setIntValue(){
+			//missing parameter
+			throw new AssertionError("Can't be called!");
+		}
+		
+		public void setStringValueXXX(String s){
+			throw new AssertionError("Method setStringValue is missing!");
+		}
+		
+	}
+
 	@ConfigureMe(name="brokenfixture")
 	private class BrokenConfig{
 		
