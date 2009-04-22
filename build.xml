@@ -40,7 +40,7 @@
 	</target>
 	
 	<target name="jar" depends="compile">
-		<jar jarfile="${dist.dir}/${target.jar.name}">
+		<jar jarfile="${dist.dir}/${target.jar.name}" index="true">
          	<fileset dir="${classes.dir}">
          		<include name="**/*"/>
          	</fileset>
