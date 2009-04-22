@@ -38,7 +38,7 @@ import org.configureme.sources.ConfigurationSourceKey.Format;
 import org.configureme.sources.ConfigurationSourceKey.Type;
 
 /**
- * Configuration manager is a utility class for retrieval of configurations and automatical configurations of components.
+ * Configuration manager (this is the one YOU must use) is a utility class for retrieval of configurations and automatical configurations of components.
  * Configured components are 'watched', any changes in the configuration source (file) lead to a reconfiguration. 
  * The configuration manager also supports retrieval of the configurations in different environments. Its usually a good idea to specify a <b>defaultEnvironment</b>
  * by <code>-Dconfigureme.defaultEnvironment=a_b_c</code>...
@@ -51,6 +51,9 @@ public enum ConfigurationManager {
 	 */
 	INSTANCE;
 	
+	/**
+	 * The default environment for configuration.
+	 */
 	private Environment defaultEnvironment = null;
 	
 	private static final Logger log = Logger.getLogger(ConfigurationManager.class);
@@ -69,24 +72,42 @@ public enum ConfigurationManager {
 	 */
 	private ConcurrentHashMap<ConfigurationSourceKey.Format, ConfigurationParser> parsers;
 	
+	/**
+	 * Annotations to call before initial configuration
+	 */
 	@SuppressWarnings("unchecked") private static Class<? extends Annotation>[] CALL_BEFORE_INITIAL_CONFIGURATION = (Class<? extends Annotation>[]) new Class<?>[]{
 		BeforeInitialConfiguration.class, BeforeConfiguration.class
 	};
 	
+	/**
+	 * Annotations to call after initial configuration
+	 */
 	@SuppressWarnings("unchecked") private static Class<? extends Annotation>[] CALL_AFTER_INITIAL_CONFIGURATION = (Class<? extends Annotation>[]) new Class<?>[]{
 		AfterConfiguration.class, AfterInitialConfiguration.class
 	};
 
+	/**
+	 * Annotations to call before reconfiguration
+	 */
 	@SuppressWarnings("unchecked") private static Class<? extends Annotation>[] CALL_BEFORE_RE_CONFIGURATION = (Class<? extends Annotation>[]) new Class<?>[]{
 		BeforeReConfiguration.class, BeforeConfiguration.class
 	};
 
+	/**
+	 * Annotations to call before after reconfiguration
+	 */
 	@SuppressWarnings("unchecked") private static Class<? extends Annotation>[] CALL_AFTER_RE_CONFIGURATION = (Class<? extends Annotation>[]) new Class<?>[]{
 		AfterConfiguration.class, AfterReConfiguration.class
 	};
 	
+	/**
+	 * Property name for the system property which ConfigurationManager checks to set its defaultEnvironment with at startup.
+	 */
 	public static final String PROP_NAME_DEFAULT_ENVIRONMENT = "configureme.defaultEnvironment";
 	
+	/**
+	 * Initializes the one and only instance of the ConfigurationManager.
+	 */
 	private ConfigurationManager(){
 		String defEnvironmentAsString = System.getProperty(PROP_NAME_DEFAULT_ENVIRONMENT, "");
 		defaultEnvironment = DynamicEnvironment.parse(defEnvironmentAsString);
@@ -96,8 +117,9 @@ public enum ConfigurationManager {
 	}
 	
 	/**
-	 * Returns true if the object is properly annotated and can be configured by the configuration manager
-	 * @param o
+	 * Returns true if the object is properly annotated and can be configured by the configuration manager. Calling configure with an Object o as parameter, where isConfigurable(o) will result in an 
+	 * Error.
+	 * @param o object to check
 	 * @return
 	 */
 	public boolean isConfigurable(Object o){
@@ -107,7 +129,7 @@ public enum ConfigurationManager {
 	}
 	
 	/**
-	 * Configures a configurable component in the default environment. The object must be annotated with ConfigureMe and the configuration must be present.
+	 * Configures a configurable component in the default environment. The object must be annotated with ConfigureMe and the configuration source must be present.
 	 * @param o object to configure
 	 */
 	public void configure(Object o){
@@ -142,6 +164,13 @@ public enum ConfigurationManager {
 		
 	}
 	
+	/**
+	 * Internal method used at initial, user triggered configuration
+	 * @param key the source key
+	 * @param o the object to configure 
+	 * @param in the environment
+	 * @param ann the configureme annotation instance with which o.getClass() was annotated.
+	 */
 	private void configureInitially(ConfigurationSourceKey key, Object o, Environment in, ConfigureMe ann){
 		
 		configure(key, o, in, CALL_BEFORE_INITIAL_CONFIGURATION, CALL_AFTER_INITIAL_CONFIGURATION);
@@ -172,17 +201,25 @@ public enum ConfigurationManager {
 						m.invoke(configurable);
 					} catch (IllegalAccessException e) {
 						log.error("callAnnotations("+methods+", "+annotationClasses+")", e);
-						throw new AssertionError("Error declaration in method "+m+", wrong declaration (public void foo() expected)? - "+e.getMessage());
+						throw new AssertionError("Error declaration in method "+m+", wrong declaration (public void "+m.getName()+" expected)? - "+e.getMessage());
 					} catch (InvocationTargetException e) {
-						log.error("callAnnotations("+methods+", "+annotationClasses+")", e);
-						throw new AssertionError("Error declaration in method "+m+", wrong declaration (public void foo() expected)? - "+e.getMessage());
+						log.error("callAnnotations(Exception in annotated method: "+m+")", e);
+						throw new RuntimeException("Exception in annotated method: "+e.getMessage(), e);
 					}
 				}
 					
 			}
-		}
+		} 
 	}
 	
+	/**
+	 * This method executes the configuration. 
+	 * @param key the key for the configuration source
+	 * @param o the object to configure
+	 * @param in environment in which the object runs
+	 * @param callBefore annotations, methods annotated with those will be called prior to the configuration
+	 * @param callAfter annotations, methods annotated with those will be called after the configuration
+	 */
 	private void configure(ConfigurationSourceKey key, Object o, Environment in, Class<? extends Annotation> callBefore[],  Class<? extends Annotation> callAfter[] ){
 		//System.out.println("CALLED configure("+key+", "+o+","+in+")");
 		Configuration config = getConfiguration(key, in);
@@ -263,18 +300,35 @@ public enum ConfigurationManager {
 		}
 	}
 	
+	/**
+	 * Called by ConfigurationSource monitors/listeners to trigger a reconfiguration of a component.
+	 * @param key
+	 * @param o
+	 * @param in
+	 */
 	void reconfigure(ConfigurationSourceKey key, Object o, Environment in){
-		//call annotations
-		
 		configure(key, o, in, CALL_BEFORE_RE_CONFIGURATION, CALL_AFTER_RE_CONFIGURATION);
-		
-		//call after annotations
 	}
 	
-	public Configuration getConfiguration(String artefactName){
-		return getConfiguration(artefactName, defaultEnvironment);
+
+	/**
+	 * Returns a configuration snapshot for this configurationname in the global environment. Snapshot means that only the part of the 
+	 * configuration which is valid now and only for global environment is returned.
+	 * @param configurationName the name of the configuration to check
+	 * @return
+	 */
+	public Configuration getConfiguration(String configurationName){
+		return getConfiguration(configurationName, defaultEnvironment);
 	}
 	
+	/**
+	 * Returns a configuration snapshot for this configurationname in the given environment. Snapshot means that only the part of the 
+	 * configuration which is valid now and only for the given environment is returned.
+	 * defaultConfigurationSourceFormat and defaultConfigurationSourceType are used for format and type. At the moment its JSON and File.
+	 * @param configurationName the name of the configuration source.
+	 * @param in the environment
+	 * @return
+	 */
 	public Configuration getConfiguration(String configurationName, Environment in){
 		ConfigurationSourceKey configSourceKey = new ConfigurationSourceKey();
 		configSourceKey.setFormat(defaultConfigurationSourceFormat);
@@ -284,6 +338,12 @@ public enum ConfigurationManager {
 		return getConfiguration(configSourceKey, in);
 	}
 
+	/**
+	 * Internal method for configuration retrieval.
+	 * @param configSourceKey
+	 * @param in
+	 * @return
+	 */
 	private Configuration getConfiguration(ConfigurationSourceKey configSourceKey, Environment in){
 		
 		//for the first we will hardcode file as config source and json as config format.
@@ -300,7 +360,7 @@ public enum ConfigurationManager {
 			ConfigurationParser parser = parsers.get(configSourceKey.getFormat());
 			ParsedConfiguration pa = null;
 			try{
-				pa = parser.parseArtefact(configurationName, content);
+				pa = parser.parseConfiguration(configurationName, content);
 			}catch(ConfigurationParserException e){
 				log.error("getConfiguration("+configurationName+", "+in+")", e );
 				throw new IllegalArgumentException(configSourceKey+" is not parseable: "+e.getMessage());
@@ -320,14 +380,27 @@ public enum ConfigurationManager {
 		return config;
 	}
 	
+	/**
+	 * Sets the default environment. The default environment is used in methods configure(Object) and getConfiguration(String) which have no explicit Environemnt parameter.
+	 * @param anEnvironment
+	 */
 	public final void setDefaultEnvironment(Environment anEnvironment){
 		defaultEnvironment = anEnvironment;
 	}
 	
+	/**
+	 * Returns the previously set default Environment. If no environment has been set, either by method call, or by property, GlobalEnvironment.INSTANCE is returned.
+	 * @return
+	 */
 	public  final Environment getDefaultEnvironment(){
 		return defaultEnvironment;
 	}
 	
+	/**
+	 * Calculates default configuration artefact name for a java class. For MyConfigurable it would be "myconfigurable".
+	 * @param targetClazz 
+	 * @return
+	 */
 	private static final String extractConfigurationNameFromClassName(Class<?> targetClazz){
 		return targetClazz.getName().substring(targetClazz.getName().lastIndexOf('.')+1).toLowerCase();
 	}

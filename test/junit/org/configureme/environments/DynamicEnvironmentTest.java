@@ -17,7 +17,7 @@ public class DynamicEnvironmentTest {
 		DynamicEnvironment de1 = new DynamicEnvironment("a");
 		DynamicEnvironment de2 = new DynamicEnvironment("a");
 		DynamicEnvironment de3 = (DynamicEnvironment)de1.clone();
-		DynamicEnvironment de4 = de1.reduce(); de4.add("a");
+		DynamicEnvironment de4 = de1.add("dummy"); de4.reduceThis();
 		DynamicEnvironment de5 = (DynamicEnvironment)de1.clone(); de5.extendThis("a"); de5.reduceThis();
 		
 		assertEquals("Object must be equal to itself", de1, de1);

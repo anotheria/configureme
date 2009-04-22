@@ -36,4 +36,9 @@ public class ConfigurationSourceKeyTest {
 		assertFalse(key1.hashCode()==key3.hashCode());
 		assertFalse(key1.hashCode()==key4.hashCode());		
 	}
+	
+	@Test public void ensureCodeIsWatchedWhenAddingNewFilesAndFormats(){
+		assertEquals(2, ConfigurationSourceKey.Type.values().length);
+		assertEquals(3, ConfigurationSourceKey.Format.values().length);
+	}
 }

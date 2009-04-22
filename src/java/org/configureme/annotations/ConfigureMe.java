@@ -8,6 +8,10 @@ import java.lang.annotation.Target;
 import org.configureme.sources.ConfigurationSourceKey;
 import org.configureme.sources.ConfigurationSourceKey.Type;
 
+/**
+ * Marks a class configurable. 
+ * @author lrosenberg
+ */
 @Retention (RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface ConfigureMe {

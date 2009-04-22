@@ -8,10 +8,24 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.configureme.Configuration;
 
+/**
+ * An implementation of the Configuration. This is a de-facto configuration snapshot of a configuration in a defined environment.
+ * @author lrosenberg
+ */
 public class ConfigurationImpl implements Configuration{
+	/**
+	 * The name of the configuration
+	 */
 	private String name;
+	/**
+	 * The attributes 
+	 */
 	private Map<String,String> attributes;
 	
+	/**
+	 * Creates a new ConfigurationImpl
+	 * @param aName
+	 */
 	public ConfigurationImpl(String aName){
 		name = aName;
 		attributes = new ConcurrentHashMap<String, String>();
@@ -27,6 +41,7 @@ public class ConfigurationImpl implements Configuration{
 		return attributes.keySet();
 	}
 	
+	@Override
 	public Set<Entry<String,String>> getEntries(){
 		return attributes.entrySet();
 	}
@@ -36,15 +51,20 @@ public class ConfigurationImpl implements Configuration{
 		return name;
 	}
 	
+	/**
+	 * Sets the value of the attribute (in the selected environment).
+	 * @param attributeName
+	 * @param attributeValue
+	 */
 	public void setAttribute(String attributeName, String attributeValue){
 		attributes.put(attributeName, attributeValue);
 	}
 	
-	public String toString(){
+	@Override public String toString(){
 		return getName()+": "+attributes;
 	}
 
-	public boolean equals(Object o){
+	@Override public boolean equals(Object o){
 		return o instanceof ConfigurationImpl &&
 		 name.equals(((ConfigurationImpl)o).name) && 
 		 attributes.equals(((ConfigurationImpl)o).attributes);

@@ -29,6 +29,30 @@ public class LocaleBasedEnvironmentTest {
 		assertFalse(env1.equals(env3));
 		assertFalse(env1.equals(null));
 	}
+
+	@Test public void testEmptyVariant(){
+		  String country = "DE";
+		  String language = "de";
+		  String variant1 = " ";
+		  String variant2 = "";
+		  
+		  LocaleBasedEnvironment env1 = new LocaleBasedEnvironment(new Locale(language, country, variant1));
+		  LocaleBasedEnvironment env2 = new LocaleBasedEnvironment(new Locale(language, country, variant2));
+
+		  LocaleBasedEnvironment env3 = new LocaleBasedEnvironment.Builder().language(language).country(country).variant(variant1).build();
+		  LocaleBasedEnvironment env4 = new LocaleBasedEnvironment.Builder().language(language).country(country).variant(variant2).build();
+
+
+		  assertEquals(env1, env2);
+		  assertEquals(env1.reduce(), env2.reduce());
+
+		  assertEquals(env3, env4);
+		  assertEquals(env3.reduce(), env4.reduce());
+
+		  //test cross
+		  assertEquals(env1, env3);
+		  assertEquals(env2.reduce(), env4.reduce());
+}
 	
 	@Test public void testReduce(){
 		  String country = "DE";

@@ -28,4 +28,11 @@ public class FileLoaderTest {
 		loader.getContent(key);
 		fail("An exception should have been thrown.");
 	}
+
+	@Test (expected=RuntimeException.class) public void loadDirectory(){
+		ConfigurationSourceKey key = new ConfigurationSourceKey(Type.FILE, Format.JSON, "empty");
+		FileLoader loader = new FileLoader();
+		loader.getContent(key);
+		fail("An exception should have been thrown.");
+	}
 }

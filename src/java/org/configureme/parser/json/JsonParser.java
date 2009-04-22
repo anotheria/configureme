@@ -16,7 +16,7 @@ import org.json.JSONObject;
 public class JsonParser implements ConfigurationParser {
 
 	@Override
-	public ParsedConfiguration parseArtefact(String name, String content) throws ConfigurationParserException {
+	public ParsedConfiguration parseConfiguration(String name, String content) throws ConfigurationParserException {
 		
 		try {
 			JSONObject j = new JSONObject(content);
@@ -55,16 +55,12 @@ public class JsonParser implements ConfigurationParser {
 					ret.addAll(subAttributes);
 			}
 			environment.reduceThis();
-		}
-		// other cases can just be set as strings
-		else {
-			
+		}else{
 			ParsedAttribute at = new ParsedAttribute();
 			at.setName(key);
 			at.setValue(root.getString(key));//.getString(key));
 			at.setEnvironment((Environment)environment.clone());
 			ret.add(at);
-			
 		}
 		return ret;
 	}

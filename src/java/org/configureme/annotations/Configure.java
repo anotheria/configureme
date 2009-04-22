@@ -5,11 +5,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Retention (RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
 /**
  * Mark a field configurable
  */
+@Retention (RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
 public @interface Configure {
 
 }
