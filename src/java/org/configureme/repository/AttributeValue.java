@@ -6,6 +6,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.log4j.Logger;
 import org.configureme.Environment;
 
+/**
+ * The internal representation of the attribute value(s).  
+ * @author lrosenberg
+ */
 public class AttributeValue {
 	
 	private static Logger log = Logger.getLogger(AttributeValue.class);
@@ -24,8 +28,7 @@ public class AttributeValue {
 			return retValue;
 		if (!in.isReduceable())
 			return null;
-		Environment reduced = in.reduce();
-		return reduced==null ? null : get(reduced);
+		return get(in.reduce());
 	}
 	
 	public void set(String value, Environment in){

@@ -5,11 +5,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Retention (RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
 /**
  * Called immediately before initial configuration is finished.
  */
+@Retention (RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
 public @interface BeforeInitialConfiguration {
 
 }

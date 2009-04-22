@@ -4,6 +4,7 @@ import org.configureme.annotations.BeforeConfiguration;
 import org.configureme.annotations.Configure;
 import org.configureme.annotations.ConfigureMe;
 import org.configureme.annotations.Set;
+import org.configureme.annotations.SetAll;
 import org.junit.Test;
 
 import static junit.framework.Assert.*;
@@ -26,6 +27,22 @@ public class TestForErrors {
 		ConfigurationManager.INSTANCE.configure(new ObjectWithBrokenAnnotation());
 		fail("exception should been thrown");
 	}
+	
+	@Test(expected=AssertionError.class)  public void configureWithHiddenAnnotations(){
+		ConfigurationManager.INSTANCE.configure(new ObjectWithHiddenAnnotation());
+		fail("exception should been thrown");
+	}
+
+	@Test(expected=RuntimeException.class) public void configureWithErrorAnnotations(){
+		ConfigurationManager.INSTANCE.configure(new ObjectWithErrorAnnotation());
+		fail("exception should been thrown");
+	}
+
+	@Test public void configureWithExceptionsInSetMethods(){
+		ConfigurationManager.INSTANCE.configure(new ObjectWithExceptionsInSetMethods());
+		
+	}
+	
 	
 	@Test public void configureWithUnsupportedAttributeType(){
 		ObjectWithUnsupportedAttribute a = new ObjectWithUnsupportedAttribute();
@@ -58,6 +75,20 @@ public class TestForErrors {
 	private class ObjectWithBrokenAnnotation{
 		@BeforeConfiguration public void methodWithWrongNumberOfAttributes(String foo){
 			
+		}
+	}
+
+	@ConfigureMe(name="fixture")
+	private class ObjectWithHiddenAnnotation{
+		@SuppressWarnings("unused") @BeforeConfiguration private void methodWithWrongVisibility(){
+			
+		}
+	}
+
+	@ConfigureMe(name="fixture")
+	private class ObjectWithErrorAnnotation{
+		@BeforeConfiguration public void methodWithWrongVisibility(){
+			throw new RuntimeException("Hello world!");
 		}
 	}
 
@@ -120,6 +151,39 @@ public class TestForErrors {
 	@ConfigureMe(name="brokenfixture")
 	private class BrokenConfig{
 		
+	}
+	
+	@SuppressWarnings("unused")
+	@ConfigureMe(name="fixture")
+	private class ObjectWithMissingMethods{
+		
+		@Configure private int intValue = 0;
+		//missing method setIntValue
+	}
+	
+	@ConfigureMe(name="fixture")
+	private class ObjectWithExceptionsInSetMethods{
+		
+		@Configure private int intValue;
+		
+		@Set("intValue") public void aSetMethod(){
+			throw new RuntimeException("Set failed");
+		}
+		@SetAll public void aSetAllMethod(){
+			throw new RuntimeException("Set all failed");
+		}
+		//missing method setIntValue
+		
+		public void setIntValue(int aValue){
+			throw new RuntimeException("setIntValue");
+		}
+	}
+	
+
+
+	@Test public void testSingleton(){
+		assertEquals("Only one instance allowed", 1, ConfigurationManager.values().length);
+		assertSame(ConfigurationManager.INSTANCE, ConfigurationManager.valueOf("INSTANCE"));
 	}
 
 }

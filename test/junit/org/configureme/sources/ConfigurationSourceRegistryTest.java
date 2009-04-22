@@ -3,6 +3,7 @@ package org.configureme.sources;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.fail;
 
 import org.configureme.ConfigurableWrapper;
@@ -58,5 +59,18 @@ public class ConfigurationSourceRegistryTest {
 		ConfigurationSourceKey presentKey = new ConfigurationSourceKey(Type.FIXTURE, Format.JSON, "fixture");
 		String content = ConfigurationSourceRegistry.INSTANCE.readConfigurationSource(presentKey);
 		assertEquals(content, FixtureLoader.getContent());
+	}
+	
+	@Test public void testForEnum(){
+		assertEquals(1, ConfigurationSourceRegistry.values().length);
+		assertNotNull(ConfigurationSourceRegistry.valueOf("INSTANCE"));
+	}
+	
+	@Test public void removeUnknownListener(){
+		ConfigurationSourceRegistry.INSTANCE.removeListener(new ConfigurationSourceKey(Type.FIXTURE, Format.JSON, "not-existent"), null);
+	}
+	
+	@Test(expected=AssertionError.class) public void addNullConfigurable(){
+		ConfigurationSourceRegistry.INSTANCE.addWatchedConfigurable(new ConfigurableWrapper(null, null, null));
 	}
 }

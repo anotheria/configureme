@@ -36,7 +36,7 @@ public class ConfigurationSource {
 	}
 	
 	public String toString(){
-		return "ConfigurationSource "+key+", listeners: "+listeners.size()+", "+NumberUtils.makeISO8601TimestampString(lastChangeTimestamp);
+		return "ConfigurationSource "+key+", listeners: "+listeners.size()+", "+NumberUtils.makeISO8601TimestampString(getLastChangeTimestamp());
 	}
 
 	public long getLastChangeTimestamp() {
@@ -46,10 +46,6 @@ public class ConfigurationSource {
 
 	public ConfigurationSourceKey getKey(){
 		return key;
-	}
-	
-	public void setLastChangeTimestamp(long lastChangeTimestamp) {
-		this.lastChangeTimestamp = lastChangeTimestamp;
 	}
 	
 	public boolean isOlderAs(long sourceChangeTimestamp){
@@ -69,5 +65,4 @@ public class ConfigurationSource {
 		}
 		lastChangeTimestamp = timestamp;
 	}
-
 }
