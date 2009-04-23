@@ -164,7 +164,7 @@ public class TestForErrors {
 	@ConfigureMe(name="fixture")
 	private class ObjectWithExceptionsInSetMethods{
 		
-		@Configure private int intValue;
+		@SuppressWarnings("unused") @Configure private int intValue;
 		
 		@Set("intValue") public void aSetMethod(){
 			throw new RuntimeException("Set failed");
