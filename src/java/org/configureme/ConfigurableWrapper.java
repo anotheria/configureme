@@ -7,13 +7,21 @@ import org.configureme.sources.ConfigurationSourceListener;
 /**
  * A wrapper object to store a configurable object in ram among the info about its configuration. It is used to keep reference to the object for later 
  * re-configuration. Its also registered at the appropriate ConfigurationSource as listener.
- * @author another
- *
+ * @author lrosenberg
  */
 public class ConfigurableWrapper implements ConfigurationSourceListener{
+	/**
+	 * The wrapped configurable object
+	 */
 	private Object configurable;
+	/**
+	 * The environment in which the object was configured (stored for reconfiguration).
+	 */
 	private Environment environment;
 	
+	/**
+	 * The key of objects configuration
+	 */
 	private ConfigurationSourceKey key;
 	
 	/**
@@ -28,19 +36,31 @@ public class ConfigurableWrapper implements ConfigurationSourceListener{
 		environment = anEnvironment;
 	}
 
+	/**
+	 * Returns the configurable object
+	 * @return
+	 */
 	public Object getConfigurable() {
 		return configurable;
 	}
 
+	/**
+	 * Returns the configuration key
+	 * @return
+	 */
 	public ConfigurationSourceKey getKey() {
 		return key;
 	}
 
+	/**
+	 * Returns the environment
+	 * @return
+	 */
 	public Environment getEnvironment() {
 		return environment;
 	}
 
-	public String toString(){
+	@Override public String toString(){
 		return getKey()+", "+getConfigurable();
 	}
 
@@ -52,7 +72,7 @@ public class ConfigurableWrapper implements ConfigurationSourceListener{
 		ConfigurationManager.INSTANCE.reconfigure(key, configurable, environment);
 	}
 	
-	public boolean equals(Object anotherObject){
+	@Override public boolean equals(Object anotherObject){
 		if (!(anotherObject instanceof ConfigurableWrapper ))
 			return false;
 		ConfigurableWrapper w = (ConfigurableWrapper)anotherObject;
