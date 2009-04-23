@@ -11,22 +11,37 @@ import org.configureme.ConfigurableWrapper;
 import org.configureme.sources.ConfigurationSourceKey.Type;
 
 /**
- * 
+ * ConfigurationSourceRegistry is the singleton object that controls and manages all known configuration sources. It also has an internal thread that checks the sources for update in defined time periods.
+ * Currently the update interval is 10 seconds.
  * @author lrosenberg
  */
 public enum ConfigurationSourceRegistry {
+	/**
+	 * The one and only instance of the ConfigurationSourceRegistry.
+	 */
 	INSTANCE;
 	
 	private static Logger log = Logger.getLogger(ConfigurationSourceRegistry.class);
-	
+	/**
+	 * The map with watched sources.
+	 */
 	private Map<ConfigurationSourceKey, ConfigurationSource> watchedSources = new ConcurrentHashMap<ConfigurationSourceKey, ConfigurationSource>();
+	/**
+	 * A map with loaders for different source types.
+	 */
 	private Map<ConfigurationSourceKey.Type, SourceLoader> loaders = new ConcurrentHashMap<Type, SourceLoader>();
 	
+	/**
+	 * Creates a new registry and starts the watcher thread.
+	 */
 	private ConfigurationSourceRegistry(){
 		loaders.put(Type.FILE, new FileLoader());
 		new WatcherThread().start();
 	}
 	
+	/**
+	 * Returns true if the key is translateable in an configuration source and the source exists. 
+	 */
 	public boolean isConfigurationAvailable(ConfigurationSourceKey key){
 		if (watchedSources.containsKey(key))
 			return true;
@@ -36,6 +51,11 @@ public enum ConfigurationSourceRegistry {
 		return loader.isAvailable(key);
 	}
 	
+	/**
+	 * Returns the content of the configation source defined by the key.
+	 * @param key
+	 * @return
+	 */
 	public String readConfigurationSource(ConfigurationSourceKey key){
 		SourceLoader loader = loaders.get(key.getType());
 		if (loader==null)
@@ -43,6 +63,11 @@ public enum ConfigurationSourceRegistry {
 		return loader.getContent(key);
 	}
 	
+	/**
+	 * Adds a listener for the defined source
+	 * @param key
+	 * @param listener
+	 */
 	public void addListener(ConfigurationSourceKey key, ConfigurationSourceListener listener){
 		ConfigurationSource source = (ConfigurationSource) watchedSources.get(key);
 		if (source==null){
@@ -59,6 +84,11 @@ public enum ConfigurationSourceRegistry {
 		source.addListener(listener);
 	}
 	
+	/**
+	 * Removes a listener
+	 * @param key
+	 * @param listener
+	 */
 	public void removeListener(ConfigurationSourceKey key, ConfigurationSourceListener listener){
 		ConfigurationSource source = (ConfigurationSource) watchedSources.get(key);
 		if (source==null){
@@ -68,10 +98,18 @@ public enum ConfigurationSourceRegistry {
 		source.removeListener(listener);
 	}
 
+	/**
+	 * Removes a watched configurable.
+	 * @param wrapper
+	 */
 	public void removeWatchedConfigurable(ConfigurableWrapper wrapper){
 		removeListener(wrapper.getKey(), wrapper);
 	}
 
+	/**
+	 * Adds a watched configurable
+	 * @param wrapper
+	 */
 	public void addWatchedConfigurable(ConfigurableWrapper wrapper){
 		if (wrapper.getConfigurable()==null){
 			throw new AssertionError("configurable is null");
