@@ -12,7 +12,10 @@ import org.configureme.parser.ParsedAttribute;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
+/**
+ * ConfigurationParser implementation for JSON.  
+ * @author lrosenberg
+ */
 public class JsonParser implements ConfigurationParser {
 
 	@Override

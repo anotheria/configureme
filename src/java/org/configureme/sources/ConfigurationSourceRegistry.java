@@ -10,6 +10,10 @@ import org.apache.log4j.Logger;
 import org.configureme.ConfigurableWrapper;
 import org.configureme.sources.ConfigurationSourceKey.Type;
 
+/**
+ * 
+ * @author lrosenberg
+ */
 public enum ConfigurationSourceRegistry {
 	INSTANCE;
 	
