@@ -133,7 +133,7 @@ public enum ConfigurationSourceRegistry {
 						//System.out.println("source: "+source);
 						
 						long lastUpdate = loader.getLastChangeTimestamp(source.getKey());
-						log.debug("Checking source: "+source+", lastUpdateonFs= "+NumberUtils.makeISO8601TimestampString(lastUpdate));
+						log.debug("Checking source: "+source+", lastUpdateFromLoader= "+NumberUtils.makeISO8601TimestampString(lastUpdate)+", storedLastUpdate="+NumberUtils.makeISO8601TimestampString(source.getLastChangeTimestamp()));
 						if (source.isOlderAs(lastUpdate)){
 							log.debug("firing update event: "+ source);
 							//System.out.println("firing update on source: "+source);
