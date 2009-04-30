@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<project name="configureme" default="dist" basedir=".">
+
+	<!--  override default $src -->
+	<property name="src" value="src/java"/>
+
+	<import file="../build/basic-project.xml"/>	
+
+	<!-- 
+		checkout svn://svn.anotheria.net/opensource/build/trunk as ../build 
+		in order for this build script to work.
+	-->
+</project>
