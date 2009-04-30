@@ -23,5 +23,4 @@ import org.junit.runners.Suite.SuiteClasses;
 		AttributeValueTest.class, ConfigurationRepositoryTest.class, ArtefactTest.class, ConfigurableWrapperTest.class, ParsedConfigurationTest.class,
 		AutoConfigTest.class, TestForErrors.class, ReadConfigurationViaManager.class, AutoReConfig.class, ConfigurationSourceTest.class})
 public class ConfigureMeTestSuite {
-
 }
