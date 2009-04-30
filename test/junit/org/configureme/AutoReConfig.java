@@ -51,9 +51,9 @@ public class AutoReConfig {
 		content = StringUtils.replaceOnce(content, "foo", "bar");
 		content = StringUtils.replaceOnce(content, "1000", "999");
 		FixtureLoader.setContent(content);
-		FixtureLoader.setLastUpdateTimestamp(System.currentTimeMillis());
+		FixtureLoader.setLastUpdateTimestamp(System.currentTimeMillis()+1000);
 		//waiting for 
-		long timeToWait = System.currentTimeMillis()+1000L*60;
+		long timeToWait = System.currentTimeMillis()+1000L*30;
 		boolean finished = false;
 		while(System.currentTimeMillis()<timeToWait &&!finished){
 			if (configurable.getIntValue()==999){
@@ -65,7 +65,7 @@ public class AutoReConfig {
 				}catch(InterruptedException e){}
 			}
 		}
-		assertTrue("waiting for the reconfiguration should be finished", finished);
+		assertTrue("waiting for the reconfiguration should be finished, intValue="+configurable.getIntValue(), finished);
 		assertTrue(configurable.isBeforeReConfigCalled());
 		assertTrue(configurable.isAfterReConfigCalled());
 		assertEquals(configurable.getStringValue(), "bar");
