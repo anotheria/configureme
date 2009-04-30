@@ -75,28 +75,28 @@ public enum ConfigurationManager {
 	/**
 	 * Annotations to call before initial configuration
 	 */
-	@SuppressWarnings("unchecked") private static Class<? extends Annotation>[] CALL_BEFORE_INITIAL_CONFIGURATION = (Class<? extends Annotation>[]) new Class<?>[]{
+	@SuppressWarnings("unchecked") private static final Class<? extends Annotation>[] CALL_BEFORE_INITIAL_CONFIGURATION = (Class<? extends Annotation>[]) new Class<?>[]{
 		BeforeInitialConfiguration.class, BeforeConfiguration.class
 	};
 	
 	/**
 	 * Annotations to call after initial configuration
 	 */
-	@SuppressWarnings("unchecked") private static Class<? extends Annotation>[] CALL_AFTER_INITIAL_CONFIGURATION = (Class<? extends Annotation>[]) new Class<?>[]{
+	@SuppressWarnings("unchecked") private static final Class<? extends Annotation>[] CALL_AFTER_INITIAL_CONFIGURATION = (Class<? extends Annotation>[]) new Class<?>[]{
 		AfterConfiguration.class, AfterInitialConfiguration.class
 	};
 
 	/**
 	 * Annotations to call before reconfiguration
 	 */
-	@SuppressWarnings("unchecked") private static Class<? extends Annotation>[] CALL_BEFORE_RE_CONFIGURATION = (Class<? extends Annotation>[]) new Class<?>[]{
+	@SuppressWarnings("unchecked") private static final Class<? extends Annotation>[] CALL_BEFORE_RE_CONFIGURATION = (Class<? extends Annotation>[]) new Class<?>[]{
 		BeforeReConfiguration.class, BeforeConfiguration.class
 	};
 
 	/**
 	 * Annotations to call before after reconfiguration
 	 */
-	@SuppressWarnings("unchecked") private static Class<? extends Annotation>[] CALL_AFTER_RE_CONFIGURATION = (Class<? extends Annotation>[]) new Class<?>[]{
+	@SuppressWarnings("unchecked") private static final Class<? extends Annotation>[] CALL_AFTER_RE_CONFIGURATION = (Class<? extends Annotation>[]) new Class<?>[]{
 		AfterConfiguration.class, AfterReConfiguration.class
 	};
 	
@@ -405,7 +405,7 @@ public enum ConfigurationManager {
 		return targetClazz.getName().substring(targetClazz.getName().lastIndexOf('.')+1).toLowerCase();
 	}
 
-	private static final Object resolveValue(Class<?> type, String value){
+	private static Object resolveValue(Class<?> type, String value){
 		if (type.equals(String.class))
 			return value;
 		if (type.equals(Boolean.class) || type.equals(boolean.class))
