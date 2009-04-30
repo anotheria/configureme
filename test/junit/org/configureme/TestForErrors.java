@@ -66,6 +66,13 @@ public class TestForErrors {
 		fail("Expect an exception");
 	}
 	
+	@Test public void configureWithAttributesMissingInConfig(){
+		ObjectWithAttributesMissingInConfig object = new ObjectWithAttributesMissingInConfig();
+		assertEquals(100, object.missingValue);
+		ConfigurationManager.INSTANCE.configure(object);
+		assertEquals(100, object.missingValue);
+	}
+	
 	@ConfigureMe
 	private class FooConfig{
 		
@@ -176,6 +183,18 @@ public class TestForErrors {
 		
 		public void setIntValue(int aValue){
 			throw new RuntimeException("setIntValue");
+		}
+	}
+	
+	
+	@ConfigureMe(name="fixture")
+	private class ObjectWithAttributesMissingInConfig{
+		
+		@Configure public int missingValue = 100;
+		//missing method setIntValue
+		
+		public String toString(){
+			return ""+missingValue;
 		}
 	}
 	
