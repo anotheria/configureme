@@ -132,12 +132,16 @@ public enum ConfigurationSourceRegistry {
 						SourceLoader loader = loaders.get(source.getKey().getType());
 						//System.out.println("source: "+source);
 						
-						long lastUpdate = loader.getLastChangeTimestamp(source.getKey());
-						log.debug("Checking source: "+source+", lastUpdateFromLoader= "+NumberUtils.makeISO8601TimestampString(lastUpdate)+", storedLastUpdate="+NumberUtils.makeISO8601TimestampString(source.getLastChangeTimestamp()));
-						if (source.isOlderAs(lastUpdate)){
-							log.debug("firing update event: "+ source);
-							//System.out.println("firing update on source: "+source);
-							source.fireUpdateEvent(lastUpdate);
+						try{
+							long lastUpdate = loader.getLastChangeTimestamp(source.getKey());
+							log.debug("Checking source: "+source+", lastUpdateFromLoader= "+NumberUtils.makeISO8601TimestampString(lastUpdate)+", storedLastUpdate="+NumberUtils.makeISO8601TimestampString(source.getLastChangeTimestamp()));
+							if (source.isOlderAs(lastUpdate)){
+								log.debug("firing update event: "+ source);
+								//System.out.println("firing update on source: "+source);
+								source.fireUpdateEvent(lastUpdate);
+							}
+						}catch(IllegalArgumentException e){
+							log.warn("Apparently checking for non existing source, how did it came into the registry anyway?", e);
 						}
 						
 					}
