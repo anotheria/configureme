@@ -11,7 +11,7 @@ import org.configureme.sources.ConfigurationSourceListener;
  */
 public class ConfigurableWrapper implements ConfigurationSourceListener{
 	/**
-	 * The wrapped configurable object
+	 * The wrapped configurable object.
 	 */
 	private Object configurable;
 	/**
@@ -20,7 +20,7 @@ public class ConfigurableWrapper implements ConfigurationSourceListener{
 	private Environment environment;
 	
 	/**
-	 * The key of objects configuration
+	 * The key of objects configuration.
 	 */
 	private ConfigurationSourceKey key;
 	
@@ -37,7 +37,7 @@ public class ConfigurableWrapper implements ConfigurationSourceListener{
 	}
 
 	/**
-	 * Returns the configurable object
+	 * Returns the configurable object.
 	 * @return
 	 */
 	public Object getConfigurable() {
@@ -45,7 +45,7 @@ public class ConfigurableWrapper implements ConfigurationSourceListener{
 	}
 
 	/**
-	 * Returns the configuration key
+	 * Returns the configuration key.
 	 * @return
 	 */
 	public ConfigurationSourceKey getKey() {
@@ -53,7 +53,7 @@ public class ConfigurableWrapper implements ConfigurationSourceListener{
 	}
 
 	/**
-	 * Returns the environment
+	 * Returns the environment.
 	 * @return
 	 */
 	public Environment getEnvironment() {
