@@ -4,6 +4,9 @@
 
 	<!--  override default $src -->
 	<property name="src" value="src/java"/>
+	<!-- override javadoc packagename -->
+	<property name="javadoc.packagenames" value="org.configureme.*"/>
+		
 
 	<import file="../build/basic-project.xml"/>	
 
