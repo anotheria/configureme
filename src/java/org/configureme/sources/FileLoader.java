@@ -11,26 +11,16 @@ import net.anotheria.util.NumberUtils;
 
 import org.apache.log4j.Logger;
 
-/**
- * A source loader for files.
- * @author lrosenberg
- */
 public class FileLoader implements SourceLoader{
 	
 	private static Logger log = Logger.getLogger(FileLoader.class);
 	
-	/**
-	 * Returns the file name for the given source key.
-	 * @param source
-	 * @return
-	 */
 	public static final String getFileName(ConfigurationSourceKey source){
 		if (source.getType()!=ConfigurationSourceKey.Type.FILE)
 			throw new AssertionError("Can only load configuration sources with type "+ConfigurationSourceKey.Type.FILE);
 		return source.getName()+"."+source.getFormat().getExtension();
 	}
 	
-	@Override
 	public boolean isAvailable(ConfigurationSourceKey key){
 		//ensure an exception is thrown if we are not file.
 		String fileName = getFileName(key);
@@ -40,11 +30,10 @@ public class FileLoader implements SourceLoader{
 		return u!=null;
 	}
 
-	@Override
 	public long getLastChangeTimestamp(ConfigurationSourceKey key){
 		//ensure an exception is thrown if we are not file.
 		String fileName = getFileName(key);
-		ClassLoader myLoader = ClassLoader.getSystemClassLoader();
+		ClassLoader myLoader = getClass().getClassLoader();
 
 		URL u = myLoader.getResource(fileName);
 		if (u==null){
@@ -58,7 +47,6 @@ public class FileLoader implements SourceLoader{
 		return ret;
 	}
 	
-	@Override
 	public String getContent(ConfigurationSourceKey key){
 		//ensure an exception is thrown if we are not file.
 		String fileName = getFileName(key);
