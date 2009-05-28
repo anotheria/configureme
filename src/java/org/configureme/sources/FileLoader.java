@@ -44,7 +44,7 @@ public class FileLoader implements SourceLoader{
 	public long getLastChangeTimestamp(ConfigurationSourceKey key){
 		//ensure an exception is thrown if we are not file.
 		String fileName = getFileName(key);
-		ClassLoader myLoader = getClass().getClassLoader();
+		ClassLoader myLoader = ClassLoader.getSystemClassLoader();
 
 		URL u = myLoader.getResource(fileName);
 		if (u==null){
