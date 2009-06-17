@@ -41,4 +41,5 @@ public class ConfigurationSourceKeyTest {
 		assertEquals(2, ConfigurationSourceKey.Type.values().length);
 		assertEquals(3, ConfigurationSourceKey.Format.values().length);
 	}
-}
+} 
+//added nothing just to create a new version
