@@ -20,7 +20,9 @@ public enum ConfigurationSourceRegistry {
 	 * The one and only instance of the ConfigurationSourceRegistry.
 	 */
 	INSTANCE;
-	
+	/**
+	 * Logger.
+	 */
 	private static Logger log = Logger.getLogger(ConfigurationSourceRegistry.class);
 	/**
 	 * The map with watched sources.
@@ -118,12 +120,12 @@ public enum ConfigurationSourceRegistry {
 		addListener(key, wrapper);
 	}
 	
-	private class WatcherThread extends Thread{
+	private final class WatcherThread extends Thread{
 		private WatcherThread(){
 			setDaemon(true);
 		}
 		
-		public void run(){
+		@Override public void run(){
 			try{
 				while(!Thread.interrupted()){
 					Thread.sleep(1000L*10);
