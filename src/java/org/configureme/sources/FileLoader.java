@@ -17,6 +17,9 @@ import org.apache.log4j.Logger;
  */
 public class FileLoader implements SourceLoader{
 	
+	/**
+	 * Logger.
+	 */
 	private static Logger log = Logger.getLogger(FileLoader.class);
 	
 	/**

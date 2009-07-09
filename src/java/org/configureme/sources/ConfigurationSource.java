@@ -27,6 +27,9 @@ public class ConfigurationSource {
 	 */
 	private long lastChangeTimestamp;
 	
+	/**
+	 * Logger.
+	 */
 	private static Logger log = Logger.getLogger(ConfigurationSource.class);
 	
 	/**

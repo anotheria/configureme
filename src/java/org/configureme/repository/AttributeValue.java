@@ -12,6 +12,9 @@ import org.configureme.Environment;
  */
 public class AttributeValue {
 	
+	/**
+	 * The logger.
+	 */
 	private static Logger log = Logger.getLogger(AttributeValue.class);
 	/**
 	 * Internal map of the values. The keys are the extendedStringFrom of the environment in which the attribute applies.

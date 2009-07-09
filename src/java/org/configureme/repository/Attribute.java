@@ -10,6 +10,9 @@ import org.configureme.GlobalEnvironment;
  */
 public class Attribute {
 	
+	/**
+	 * The logger.
+	 */
 	private static Logger log = Logger.getLogger(Attribute.class);
 	/**
 	 * The name of the attribute
