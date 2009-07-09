@@ -102,9 +102,21 @@ public class ApplicationEnvironment implements Environment{
 	 * @author lrosenberg
 	 */
 	public static class Builder{
+		/**
+		 * system.
+		 */
 		private String system;
+		/**
+		 * app.
+		 */
 		private String app;
+		/**
+		 * service.
+		 */
 		private String service;
+		/**
+		 * host.
+		 */
 		private String host;
 		
 		/**
