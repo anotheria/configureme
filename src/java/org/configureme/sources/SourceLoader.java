@@ -10,19 +10,19 @@ public interface SourceLoader {
 	 * @param key the key of the configuration source which defines type, format and name
 	 * @return
 	 */
-	public boolean isAvailable(ConfigurationSourceKey key);
+	boolean isAvailable(ConfigurationSourceKey key);
 	
 	/**
 	 * Returns the last change timestamp for given key, for reconfiguration triggering.
 	 * @param key
 	 * @return
 	 */
-	public long getLastChangeTimestamp(ConfigurationSourceKey key);
+	long getLastChangeTimestamp(ConfigurationSourceKey key);
 	
 	/**
 	 * Returns the content of this configuration source (i.e. content of the file).
 	 * @param key
 	 * @return
 	 */
-	public String getContent(ConfigurationSourceKey key);
+	String getContent(ConfigurationSourceKey key);
 }

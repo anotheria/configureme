@@ -35,6 +35,7 @@ public enum ConfigurationSourceRegistry {
 	
 	/**
 	 * Creates a new registry and starts the watcher thread.
+	 * This constructor also adds the FileLoader.
 	 */
 	private ConfigurationSourceRegistry(){
 		loaders.put(Type.FILE, new FileLoader());
@@ -151,7 +152,11 @@ public enum ConfigurationSourceRegistry {
 			}catch(InterruptedException e){}
 		}
 	}
-	
+	/**
+	 * Adds a loader for a type.
+	 * @param type the type for the loader to handle.
+	 * @param loader the loader for the given type.
+	 */
 	protected void addLoader(ConfigurationSourceKey.Type type, SourceLoader loader){
 		loaders.put(type, loader);
 	}
