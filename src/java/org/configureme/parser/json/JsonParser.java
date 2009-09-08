@@ -27,15 +27,16 @@ public class JsonParser implements ConfigurationParser {
 			
 			DynamicEnvironment env = new DynamicEnvironment();
 			
-			for (String key : JSONObject.getNames(j)) {
-				
-				List<ParsedAttribute> attList = parse(key, j, env);
-				if (attList!=null){
-					for (ParsedAttribute att : attList){
-						pa.addAttribute(att);
+			String[] names = JSONObject.getNames(j);
+			if(names != null)
+				for (String key : names) {
+					List<ParsedAttribute> attList = parse(key, j, env);
+					if (attList!=null){
+						for (ParsedAttribute att : attList){
+							pa.addAttribute(att);
+						}
 					}
 				}
-			}
 			
 			return pa;
 			
@@ -52,11 +53,13 @@ public class JsonParser implements ConfigurationParser {
 		if (value instanceof JSONObject){
 			environment.extendThis(key);
 			JSONObject inc = (JSONObject) value;
-			for (String subKey : JSONObject.getNames(inc)){
-				List<ParsedAttribute> subAttributes = parse(subKey, inc, environment);
-				if (subAttributes!=null)
-					ret.addAll(subAttributes);
-			}
+			String[] names = JSONObject.getNames(inc);
+			if(names != null)
+				for (String subKey : names) {
+					List<ParsedAttribute> subAttributes = parse(subKey, inc, environment);
+					if (subAttributes!=null)
+						ret.addAll(subAttributes);
+				}
 			environment.reduceThis();
 		}else{
 			ParsedAttribute at = new ParsedAttribute();
