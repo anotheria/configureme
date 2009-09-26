@@ -56,6 +56,9 @@ public enum ConfigurationManager {
 	 */
 	private Environment defaultEnvironment = null;
 	
+	/**
+	 * Logger.
+	 */
 	private static final Logger log = Logger.getLogger(ConfigurationManager.class);
 	
 	/**
