@@ -24,6 +24,7 @@ import org.configureme.annotations.ConfigureMe;
 import org.configureme.annotations.DontConfigure;
 import org.configureme.annotations.Set;
 import org.configureme.annotations.SetAll;
+import org.configureme.annotations.SetIf;
 import org.configureme.environments.DynamicEnvironment;
 import org.configureme.parser.ConfigurationParser;
 import org.configureme.parser.ConfigurationParserException;
@@ -275,6 +276,20 @@ public enum ConfigurationManager {
 						method.invoke(o, entry.getKey(), entry.getValue());
 					}catch(Exception e){
 						log.warn(method.getName()+"invoke("+o+", "+entry.getKey()+", "+entry.getValue()+")", e);
+					}
+				}
+			}
+			if (method.isAnnotationPresent(SetIf.class)){
+				Collection<Entry<String,String>> entries = config.getEntries();
+				SetIf setIfAnnotation = method.getAnnotation(SetIf.class);
+				for (Entry<String,String> entry : entries){
+					if (SetIf.ConditionChecker.satisfyCondition(setIfAnnotation, entry.getKey())){
+						log.debug("Calling method "+method+" with parameters : \""+entry.getKey()+"\", \""+entry.getValue()+"\"");
+						try{
+							method.invoke(o, entry.getKey(), entry.getValue());
+						}catch(Exception e){
+							log.warn(method.getName()+"invoke("+o+", "+entry.getKey()+", "+entry.getValue()+")", e);
+						}
 					}
 				}
 			}
