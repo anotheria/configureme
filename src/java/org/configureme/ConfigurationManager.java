@@ -141,6 +141,35 @@ public enum ConfigurationManager {
 	}
 	
 	/**
+	 * Configures a configurable component in the default environment. The object must be annotated with ConfigureMe and the configuration source must be present.
+	 * @param o object to configure
+	 */
+	public void configureAs(Object o, String name){
+		configureAs(o, defaultEnvironment, name);
+	}
+
+	/**
+	 * Configures a configurable component in the givent environment. The object must be annotated with ConfigureMe and the configuration must be present.
+	 * @param o object to configure
+	 * @param in the environment for the configuration
+	 */
+	public void configureAs(Object o, Environment in, String configurationName){
+		if (!isConfigurable(o))
+			throw new IllegalArgumentException("Class "+o.getClass()+" is not annotated as ConfigureMe, called with: "+o+", class: "+o.getClass());
+		
+		Class<?> clazz = o.getClass();
+		ConfigureMe ann = clazz.getAnnotation(ConfigureMe.class);
+		
+		ConfigurationSourceKey configSourceKey = new ConfigurationSourceKey();
+		configSourceKey.setFormat(Format.JSON);
+		configSourceKey.setType(ann.type());
+		configSourceKey.setName(configurationName);
+
+		configureInitially(configSourceKey, o, in, ann);
+	}
+	
+
+	/**
 	 * Configures a configurable component in the givent environment. The object must be annotated with ConfigureMe and the configuration must be present.
 	 * @param o object to configure
 	 * @param in the environment for the configuration
@@ -159,13 +188,7 @@ public enum ConfigurationManager {
 		else
 			configurationName = ann.name(); 
 
-		ConfigurationSourceKey configSourceKey = new ConfigurationSourceKey();
-		configSourceKey.setFormat(Format.JSON);
-		configSourceKey.setType(ann.type());
-		configSourceKey.setName(configurationName);
-
-		configureInitially(configSourceKey, o, in, ann);
-		
+		configureAs(o, in, configurationName);
 	}
 	
 	/**
