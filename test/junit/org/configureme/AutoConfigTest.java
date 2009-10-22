@@ -1,8 +1,9 @@
 package org.configureme;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.configureme.environments.DynamicEnvironment;
 import org.configureme.sources.ConfigurationSourceRegistryTest;
@@ -40,8 +41,9 @@ public class AutoConfigTest {
 		assertEquals(true, configurable.getBooleanValue());
 		assertEquals("foo", configurable.getStringValue());
 		assertEquals(-125, configurable.getByteValue());
-		assertEquals(12.5f, configurable.getFloatValue());
-		assertEquals(1234.11, configurable.getDoubleValue());
+		assertEquals(12.5f, configurable.getFloatValue(),0);
+		assertEquals(1234.11, configurable.getDoubleValue(),0);
+		assertArrayEquals(new String[]{"str1","str2","str3"}, configurable.getStringArrayValue());
 		assertEquals(0, configurable.getOnlyInA());
 		assertEquals(0, configurable.getOnlyInB());
 	}
@@ -58,10 +60,11 @@ public class AutoConfigTest {
 		assertEquals(true, configurable.getBooleanValue());
 		assertEquals("aaaaa", configurable.getStringValue());
 		assertEquals(-125, configurable.getByteValue());
-		assertEquals(12.5f, configurable.getFloatValue());
-		assertEquals(1234.11, configurable.getDoubleValue());
+		assertEquals(12.5f, configurable.getFloatValue(),0);
+		assertEquals(1234.11, configurable.getDoubleValue(),0);
 		assertEquals(1000, configurable.getOnlyInA());
 		assertEquals(0, configurable.getOnlyInB());
+		assertArrayEquals(new String[]{"str1","str2","str3"}, configurable.getStringArrayValue());
 		
 		ConfigurationManager.INSTANCE.setDefaultEnvironment(old);
 	}
@@ -77,8 +80,9 @@ public class AutoConfigTest {
 		assertEquals(true, configurable.getBooleanValue());
 		assertEquals("bbbbb", configurable.getStringValue());
 		assertEquals(-125, configurable.getByteValue());
-		assertEquals(12.5f, configurable.getFloatValue());
-		assertEquals(1234.11, configurable.getDoubleValue());
+		assertEquals(12.5f, configurable.getFloatValue(),0);
+		assertEquals(1234.11, configurable.getDoubleValue(),0);
+		assertArrayEquals(new String[]{"str1","str2","str3"}, configurable.getStringArrayValue());
 		assertEquals(1000, configurable.getOnlyInA());
 		assertEquals(1000, configurable.getOnlyInB());
 	}
@@ -93,8 +97,9 @@ public class AutoConfigTest {
 		assertEquals(true, configurable.booleanValue);
 		assertEquals("foo", configurable.stringValue);
 		assertEquals(-125, configurable.byteValue);
-		assertEquals(12.5f, configurable.floatValue);
-		assertEquals(1234.11, configurable.doubleValue);
+		assertEquals(12.5f, configurable.floatValue,0);
+		assertEquals(1234.11, configurable.doubleValue,0);
+		assertArrayEquals(new String[]{"str1","str2","str3"}, configurable.stringArrayValue);
 		assertEquals(0, configurable.onlyInA);
 		assertEquals(0, configurable.onlyInB);
 	}
@@ -111,8 +116,9 @@ public class AutoConfigTest {
 		assertEquals(true, configurable.booleanValue);
 		assertEquals("aaaaa", configurable.stringValue);
 		assertEquals(-125, configurable.byteValue);
-		assertEquals(12.5f, configurable.floatValue);
-		assertEquals(1234.11, configurable.doubleValue);
+		assertEquals(12.5f, configurable.floatValue,0);
+		assertEquals(1234.11, configurable.doubleValue,0);
+		assertArrayEquals(new String[]{"str1","str2","str3"}, configurable.stringArrayValue);
 		assertEquals(1000, configurable.onlyInA);
 		assertEquals(0, configurable.onlyInB);
 		
@@ -130,8 +136,9 @@ public class AutoConfigTest {
 		assertEquals(true, configurable.booleanValue);
 		assertEquals("bbbbb", configurable.stringValue);
 		assertEquals(-125, configurable.byteValue);
-		assertEquals(12.5f, configurable.floatValue);
-		assertEquals(1234.11, configurable.doubleValue);
+		assertEquals(12.5f, configurable.floatValue,0);
+		assertEquals(1234.11, configurable.doubleValue,0);
+		assertArrayEquals(new String[]{"str1","str2","str3"}, configurable.stringArrayValue);
 		assertEquals(1000, configurable.onlyInA);
 		assertEquals(1000, configurable.onlyInB);
 	}
@@ -146,8 +153,9 @@ public class AutoConfigTest {
 		assertEquals(true, configurable.getBooleanValue());
 		assertEquals("foo", configurable.getStringValue());
 		assertEquals(-125, configurable.getByteValue());
-		assertEquals(12.5f, configurable.getFloatValue());
-		assertEquals(1234.11, configurable.getDoubleValue());
+		assertEquals(12.5f, configurable.getFloatValue(),0);
+		assertEquals(1234.11, configurable.getDoubleValue(),0);
+		assertArrayEquals(new String[]{"str1","str2","str3"}, configurable.getStringArrayValue());
 	}
 
 	@Test public void configureAllWithExclusion(){
@@ -160,8 +168,8 @@ public class AutoConfigTest {
 		assertEquals(false, configurable.getBooleanValue());
 		assertEquals("foo", configurable.getStringValue());
 		assertEquals(0, configurable.getByteValue());
-		assertEquals(12.5f, configurable.getFloatValue());
-		assertEquals(0.0, configurable.getDoubleValue());
+		assertEquals(12.5f, configurable.getFloatValue(),0);
+		assertEquals(0.0, configurable.getDoubleValue(),0);
 	}
 
 }

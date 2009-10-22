@@ -1,8 +1,6 @@
 package org.configureme;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.*;
 import net.anotheria.util.StringUtils;
 
 import org.apache.log4j.BasicConfigurator;
@@ -33,8 +31,9 @@ public class AutoReConfig {
 		assertEquals(true, configurable.getBooleanValue());
 		assertEquals("foo", configurable.getStringValue());
 		assertEquals(-125, configurable.getByteValue());
-		assertEquals(12.5f, configurable.getFloatValue());
-		assertEquals(1234.11, configurable.getDoubleValue());
+		assertEquals(12.5f, configurable.getFloatValue(),0);
+		assertEquals(1234.11, configurable.getDoubleValue(),0);
+		assertArrayEquals(new String[]{"str1","str2","str3"}, configurable.getStringArrayValue());
 		assertEquals(0, configurable.getOnlyInA());
 		assertEquals(0, configurable.getOnlyInB());
 		assertTrue(configurable.isBeforeConfigCalled());

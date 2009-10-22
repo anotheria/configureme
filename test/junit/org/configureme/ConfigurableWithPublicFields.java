@@ -1,5 +1,7 @@
 package org.configureme;
 
+import net.anotheria.util.StringUtils;
+
 import org.configureme.annotations.AfterConfiguration;
 import org.configureme.annotations.AfterInitialConfiguration;
 import org.configureme.annotations.AfterReConfiguration;
@@ -20,6 +22,7 @@ public class ConfigurableWithPublicFields {
 	@Configure public byte byteValue;
 	@Configure public float floatValue;
 	@Configure public double doubleValue ;
+	@Configure public String[] stringArrayValue;
 	@Configure public int onlyInA;
 	@Configure public int onlyInB;
 	
@@ -35,6 +38,7 @@ public class ConfigurableWithPublicFields {
 		ret += " byte: "+byteValue;
 		ret += " float: "+floatValue;
 		ret += " double: "+doubleValue;
+		ret += " stringArray: " + StringUtils.concatenateTokens(",",stringArrayValue);
 		ret += " onlyInA: "+onlyInA;
 		ret += " onlyInB: "+onlyInB;
 		return ret;

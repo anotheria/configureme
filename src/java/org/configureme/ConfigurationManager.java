@@ -28,8 +28,8 @@ import org.configureme.annotations.SetIf;
 import org.configureme.environments.DynamicEnvironment;
 import org.configureme.parser.ConfigurationParser;
 import org.configureme.parser.ConfigurationParserException;
-import org.configureme.parser.ParsedConfiguration;
 import org.configureme.parser.ParsedAttribute;
+import org.configureme.parser.ParsedConfiguration;
 import org.configureme.parser.json.JsonParser;
 import org.configureme.repository.Artefact;
 import org.configureme.repository.ConfigurationRepository;
@@ -463,6 +463,11 @@ public enum ConfigurationManager {
 			return Float.valueOf(value);
 		if (type.equals(Double.class) || type.equals(double.class))
 			return Double.valueOf(value);
+		
+		//Resolves value as string array where elements are separated by comma. E.g: val1,val2,val3
+		if (type.equals(String[].class))
+			return StringUtils.tokenize(value, ',');
+		
 		throw new IllegalArgumentException("Can't resolve type: "+type+", value: "+value);
 	} 
 	

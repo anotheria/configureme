@@ -10,6 +10,8 @@
 	floatValue   : 12.5,
 	doubleValue  : 1234.11,
 	
+	stringArrayValue	: "str1,str2,str3",
+	
 	a: {
 		intValue : 2000,
 		stringValue : "aaaaa",

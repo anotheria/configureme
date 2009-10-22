@@ -1,5 +1,7 @@
 package org.configureme;
 
+import net.anotheria.util.StringUtils;
+
 import org.configureme.annotations.AfterConfiguration;
 import org.configureme.annotations.AfterInitialConfiguration;
 import org.configureme.annotations.AfterReConfiguration;
@@ -20,6 +22,7 @@ public class TestReConfigurable extends TestConfigurable{
 	@Configure private byte byteValue;
 	@Configure private float floatValue;
 	@Configure private double doubleValue ;
+	@Configure private String[] stringArrayValue;
 	@Configure private int onlyInA;
 	@Configure private int onlyInB;
 	
@@ -35,6 +38,7 @@ public class TestReConfigurable extends TestConfigurable{
 		ret += " byte: "+byteValue;
 		ret += " float: "+floatValue;
 		ret += " double: "+doubleValue;
+		ret += " stringArray: " + StringUtils.concatenateTokens(",",stringArrayValue);
 		ret += " onlyInA: "+onlyInA;
 		ret += " onlyInB: "+onlyInB;
 		return ret;
@@ -88,6 +92,13 @@ public class TestReConfigurable extends TestConfigurable{
 	public void setDoubleValue(double doubleValue) {
 		this.doubleValue = doubleValue;
 	}
+	public String[] getStringArrayValue() {
+		return stringArrayValue;
+	}
+
+	public void setStringArrayValue(String[] stringArrayValue) {
+		this.stringArrayValue = stringArrayValue;
+	}
 	public int getOnlyInA() {
 		return onlyInA;
 	}
@@ -132,4 +143,5 @@ public class TestReConfigurable extends TestConfigurable{
 	@AfterConfiguration public void after(){ afterConfigCalled = true; }
 	@AfterInitialConfiguration public void afterInitial(){ afterInitialConfigCalled = true; }
 	@AfterReConfiguration public void afterRe(){ afterReConfigCalled = true; }
+
 }
