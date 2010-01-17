@@ -447,6 +447,8 @@ public enum ConfigurationManager {
 	}
 
 	private static Object resolveValue(Class<?> type, String value){
+		if (type==null)
+			throw new IllegalArgumentException("Checkstyle forced me to do this, apparently type is null which can't happen in resolveValue("+type+", "+value+")");
 		if (type.equals(String.class))
 			return value;
 		if (type.equals(Boolean.class) || type.equals(boolean.class))
