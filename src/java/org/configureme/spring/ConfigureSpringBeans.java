@@ -5,7 +5,7 @@ package org.configureme.spring;
 
 import org.apache.log4j.Logger;
 import org.configureme.ConfigurationManager;
-import org.configureme.environments.DynamicEnvironment;
+import org.configureme.Environment;
 
 /**
  * @author matthiaskoch
@@ -17,17 +17,17 @@ public class ConfigureSpringBeans {
 
 	public ConfigureSpringBeans(Object... beans) {
 		for (Object bean : beans) {
-			this.log.debug("ConfigureSpringBeans - try to configure bean: " + bean + " for default environment ");
+			log.debug("ConfigureSpringBeans - try to configure bean: " + bean + " for default environment ");
 			ConfigurationManager.INSTANCE.configure(bean);
-			this.log.info("ConfigureSpringBeans - successfully configured bean: " + bean);
+			log.info("ConfigureSpringBeans - successfully configured bean: " + bean);
 		}
 	}
 
-	public ConfigureSpringBeans(DynamicEnvironment environment, Object... beans) {
+	public ConfigureSpringBeans(Environment environment, Object... beans) {
 		for (Object bean : beans) {
-			this.log.debug("ConfigureSpringBeans - try to configure bean: " + bean + " for environment: " + environment);
+			log.debug("ConfigureSpringBeans - try to configure bean: " + bean + " for environment: " + environment);
 			ConfigurationManager.INSTANCE.configure(bean, environment);
-			this.log.info("ConfigureSpringBeans - successfully configured bean: " + bean + " for environment: " + environment);
+			log.info("ConfigureSpringBeans - successfully configured bean: " + bean + " for environment: " + environment);
 		}
 	}
 }
