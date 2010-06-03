@@ -29,7 +29,7 @@ public class TestConfigurable {
 	
 	private boolean beforeConfigCalled, afterConfigCalled, beforeInitialConfigCalled, afterInitialConfigCalled, beforeReConfigCalled, afterReConfigCalled;
 	
-	public String toString(){
+	@Override public String toString(){
 		String ret = "";
 		ret += "short: "+shortValue;
 		ret += " long: "+longValue;

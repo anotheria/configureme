@@ -67,7 +67,7 @@ public @interface SetIf {
 			case matches:
 				return attributeName.matches(annotation.value());
 			default:
-				return false;
+				throw new AssertionError("Unsupported setif conndition "+annotation.condition());
 			}
 		}
 	}

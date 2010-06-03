@@ -5,6 +5,8 @@ import org.configureme.annotations.Configure;
 import org.configureme.annotations.ConfigureMe;
 import org.configureme.annotations.Set;
 import org.configureme.annotations.SetAll;
+import org.configureme.annotations.SetIf;
+import org.configureme.annotations.SetIf.SetIfCondition;
 import org.junit.Test;
 
 import static junit.framework.Assert.*;
@@ -184,7 +186,11 @@ public class TestForErrors {
 		public void setIntValue(int aValue){
 			throw new RuntimeException("setIntValue");
 		}
-	}
+
+		@SetIf(value="int",condition=SetIfCondition.startsWith) public void aSetIfMethod(){
+			throw new RuntimeException("Set if failed");
+		}
+}
 	
 	
 	@ConfigureMe(name="fixture")
