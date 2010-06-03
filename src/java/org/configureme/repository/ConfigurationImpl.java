@@ -69,5 +69,9 @@ public class ConfigurationImpl implements Configuration{
 		 name.equals(((ConfigurationImpl)o).name) && 
 		 attributes.equals(((ConfigurationImpl)o).attributes);
 	}
+	
+	@Override public int hashCode(){
+		return name == null ? 0 : name.hashCode();
+	}
 
 }
