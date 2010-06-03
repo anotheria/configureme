@@ -29,6 +29,19 @@ public class LocaleBasedEnvironmentTest {
 		assertFalse(env1.equals(env3));
 		assertFalse(env1.equals(null));
 	}
+	
+	@Test public void testHashCode(){
+		LocaleBasedEnvironment env1 = new LocaleBasedEnvironment(new Locale("de", "DE", "munich"));
+		LocaleBasedEnvironment env2 = new LocaleBasedEnvironment(new Locale("de", "DE", "munich"));
+		LocaleBasedEnvironment env3 = new LocaleBasedEnvironment(new Locale("de", "DE", "cologne"));
+		
+		assertEquals("object must have the same hashcode as itself", env1.hashCode(), env1.hashCode());
+		assertEquals("object must be equal to itself", env2.hashCode(), env2.hashCode());
+		assertEquals("object must be equal to itself", env3.hashCode(), env3.hashCode());
+		
+		assertEquals("objects must have same hashCode is they are equal", env1.equals(env2), env1.hashCode()==env2.hashCode());
+		assertEquals("objects must have same hashCode is they are equal", env1.equals(env3), env1.hashCode()==env3.hashCode());
+	}
 
 	@Test public void testEmptyVariant(){
 		  String country = "DE";
