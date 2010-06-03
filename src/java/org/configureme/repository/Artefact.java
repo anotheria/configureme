@@ -33,13 +33,13 @@ public class Artefact {
 	
 	/**
 	 * Returns the attribute with the given name. Throws an IllegalArgumentException if there is no such attribute.
-	 * @param name
+	 * @param attributeName
 	 * @return
 	 */
-	public Attribute getAttribute(String name){
-		Attribute a = attributes.get(name);
+	public Attribute getAttribute(String attributeName){
+		Attribute a = attributes.get(attributeName);
 		if (a==null)
-			throw new IllegalArgumentException("Attribute "+name+" doesn't exists");
+			throw new IllegalArgumentException("Attribute "+attributeName+" doesn't exists");
 		return a;
 	}
 	

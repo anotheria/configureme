@@ -8,8 +8,9 @@ import org.configureme.ConfigurationManager;
 import org.configureme.Environment;
 
 /**
+ * Spring integration utility. 
+ * Missing example on usage!
  * @author matthiaskoch
- * 
  */
 public class ConfigureSpringBeans {
 
