@@ -198,6 +198,17 @@ public class ApplicationEnvironment implements Environment{
 	}
 	
 	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((app == null) ? 0 : app.hashCode());
+		result = prime * result + ((host == null) ? 0 : host.hashCode());
+		result = prime * result + ((service == null) ? 0 : service.hashCode());
+		result = prime * result + ((system == null) ? 0 : system.hashCode());
+		return result;
+	}
+
+	@Override
 	public boolean equals(Object o){
 		if (!(o instanceof ApplicationEnvironment))
 			return false;

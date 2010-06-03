@@ -163,4 +163,7 @@ public class LocaleBasedEnvironment implements Environment{
 		return o instanceof LocaleBasedEnvironment && ((LocaleBasedEnvironment)o).locale.equals(locale);
 	}
 	
+	@Override public int hashCode(){
+		return locale == null ? 42 : locale.hashCode();
+	}
 }

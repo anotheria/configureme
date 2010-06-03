@@ -137,8 +137,11 @@ public class DynamicEnvironment implements Environment, Cloneable{
 		return env;
 	}
 	
-	@Override
-	public boolean equals(Object o){
+	@Override public boolean equals(Object o){
 		return o == this || ((o instanceof DynamicEnvironment) && ((DynamicEnvironment)o).elements.equals(elements));
+	}
+	
+	@Override public int hashCode(){
+		return elements == null ? 42 : elements.hashCode();
 	}
 }
