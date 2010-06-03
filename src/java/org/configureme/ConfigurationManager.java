@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
@@ -227,7 +228,7 @@ public enum ConfigurationManager {
 					try {
 						m.invoke(configurable);
 					} catch (IllegalAccessException e) {
-						log.error("callAnnotations("+methods+", "+annotationClasses+")", e);
+						log.error("callAnnotations("+methods+", "+Arrays.toString(annotationClasses)+")", e);
 						throw new AssertionError("Error declaration in method "+m+", wrong declaration (public void "+m.getName()+" expected)? - "+e.getMessage());
 					} catch (InvocationTargetException e) {
 						log.error("callAnnotations(Exception in annotated method: "+m+")", e);
@@ -448,7 +449,7 @@ public enum ConfigurationManager {
 
 	private static Object resolveValue(Class<?> type, String value){
 		if (type==null)
-			throw new IllegalArgumentException("Checkstyle forced me to do this, apparently type is null which can't happen in resolveValue("+type+", "+value+")");
+			throw new IllegalArgumentException("Checkstyle forced me to do this, apparently type is null which can't happen in resolveValue(null, "+value+")");
 		if (type.equals(String.class))
 			return value;
 		if (type.equals(Boolean.class) || type.equals(boolean.class))
