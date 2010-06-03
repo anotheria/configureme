@@ -121,6 +121,11 @@ public enum ConfigurationSourceRegistry {
 		addListener(key, wrapper);
 	}
 	
+	/**
+	 * WatcherThread runs in background and checks whether a configuration source has been updated all X seconds. In case it did, it fires an update event on the source triggering a reconfiguration.
+	 * @author lrosenberg.
+	 *
+	 */
 	private final class WatcherThread extends Thread{
 		private WatcherThread(){
 			setDaemon(true);
