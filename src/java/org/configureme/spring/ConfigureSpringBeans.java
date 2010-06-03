@@ -14,8 +14,15 @@ import org.configureme.Environment;
  */
 public class ConfigureSpringBeans {
 
+	/**
+	 * Logger.
+	 */
 	private Logger	log	= Logger.getLogger(ConfigureSpringBeans.class);
 
+	/**
+	 * Constructor driven configuration.
+	 * @param beans
+	 */
 	public ConfigureSpringBeans(Object... beans) {
 		for (Object bean : beans) {
 			log.debug("ConfigureSpringBeans - try to configure bean: " + bean + " for default environment ");
@@ -24,6 +31,10 @@ public class ConfigureSpringBeans {
 		}
 	}
 
+	/**
+	 * Constructor driven configuration.
+	 * @param beans
+	 */
 	public ConfigureSpringBeans(Environment environment, Object... beans) {
 		for (Object bean : beans) {
 			log.debug("ConfigureSpringBeans - try to configure bean: " + bean + " for environment: " + environment);

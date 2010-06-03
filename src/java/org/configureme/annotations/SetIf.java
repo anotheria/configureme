@@ -49,6 +49,11 @@ public @interface SetIf {
 		matches
 	}
 
+	/**
+	 * Utility for checking if condition is met.
+	 * @author dzhmud.
+	 *
+	 */
 	public static final class ConditionChecker {
 		private ConditionChecker() {
 		}
