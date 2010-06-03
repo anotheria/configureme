@@ -29,8 +29,24 @@ public @interface SetIf {
 
 	SetIfCondition condition() default SetIfCondition.matches;
 
+	/**
+	 * Conditions to be checked by setif.
+	 * @author dzhmud.
+	 *
+	 */
 	public enum SetIfCondition {
-		startsWith, contains, matches
+		/**
+		 * does the key start with given annotation value,
+		 */
+		startsWith, 
+		/**
+		 * does the key contain given annotation value,
+		 */
+		contains, 
+		/**
+		 * does the key match given annotation value,
+		 */
+		matches
 	}
 
 	public static final class ConditionChecker {
