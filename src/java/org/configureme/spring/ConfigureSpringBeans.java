@@ -17,7 +17,7 @@ public class ConfigureSpringBeans {
 	/**
 	 * Logger.
 	 */
-	private Logger	log	= Logger.getLogger(ConfigureSpringBeans.class);
+	private static Logger log = Logger.getLogger(ConfigureSpringBeans.class);
 
 	/**
 	 * Constructor driven configuration.
