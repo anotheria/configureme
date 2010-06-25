@@ -41,5 +41,24 @@ public class ConfigurationSourceKeyTest {
 		assertEquals(2, ConfigurationSourceKey.Type.values().length);
 		assertEquals(3, ConfigurationSourceKey.Format.values().length);
 	}
+	
+	@Test public void testStaticFactoryMethods(){
+		String name = "bla";
+
+		ConfigurationSourceKey xml = ConfigurationSourceKey.xmlFile(name);
+		assertEquals(Format.XML, xml.getFormat());
+		assertEquals(Type.FILE, xml.getType());
+		assertEquals(name, xml.getName());
+	
+		ConfigurationSourceKey json = ConfigurationSourceKey.jsonFile(name);
+		assertEquals(Format.JSON, json.getFormat());
+		assertEquals(Type.FILE, json.getType());
+		assertEquals(name, json.getName());
+
+		ConfigurationSourceKey prop = ConfigurationSourceKey.propertyFile(name);
+		assertEquals(Format.PROPERTIES, prop.getFormat());
+		assertEquals(Type.FILE, prop.getType());
+		assertEquals(name, prop.getName());
+}
 } 
-//added nothing just to create a new version
+

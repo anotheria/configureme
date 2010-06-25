@@ -116,4 +116,32 @@ public class ConfigurationSourceKey {
 		result = 31 * result + name.hashCode();
 		return result;
 	}
+	
+	/**
+	 * Creates a new configuration source key for property files.
+	 * @param name name of the property file.
+	 * @return
+	 */
+	public static final ConfigurationSourceKey propertyFile(String name){
+		return new ConfigurationSourceKey(Type.FILE, Format.PROPERTIES, name);
+	}
+
+	/**
+	 * Creates a new configuration source key for xml files.
+	 * @param name name of the xml file.
+	 * @return
+	 */
+	public static final ConfigurationSourceKey xmlFile(String name){
+		return new ConfigurationSourceKey(Type.FILE, Format.XML, name);
+	}
+
+	/**
+	 * Creates a new configuration source key for json files.
+	 * @param name name of the json file.
+	 * @return
+	 */
+	public static final ConfigurationSourceKey jsonFile(String name){
+		return new ConfigurationSourceKey(Type.FILE, Format.JSON, name);
+	}
+
 }
