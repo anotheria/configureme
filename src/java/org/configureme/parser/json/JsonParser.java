@@ -3,6 +3,8 @@ package org.configureme.parser.json;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.anotheria.util.StringUtils;
+
 import org.configureme.Environment;
 import org.configureme.environments.DynamicEnvironment;
 import org.configureme.parser.ConfigurationParser;
@@ -21,6 +23,9 @@ public class JsonParser implements ConfigurationParser {
 	@Override
 	public ParsedConfiguration parseConfiguration(String name, String content) throws ConfigurationParserException {
 		
+		content = StringUtils.removeCComments(content);
+		content = StringUtils.removeCPPComments(content);
+
 		try {
 			JSONObject j = new JSONObject(content);
 			ParsedConfiguration pa = new ParsedConfiguration(name);

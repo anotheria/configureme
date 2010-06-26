@@ -32,6 +32,7 @@ import org.configureme.parser.ConfigurationParserException;
 import org.configureme.parser.ParsedAttribute;
 import org.configureme.parser.ParsedConfiguration;
 import org.configureme.parser.json.JsonParser;
+import org.configureme.parser.properties.PropertiesParser;
 import org.configureme.repository.Artefact;
 import org.configureme.repository.ConfigurationRepository;
 import org.configureme.sources.ConfigurationSourceKey;
@@ -119,6 +120,7 @@ public enum ConfigurationManager {
 		
 		parsers = new ConcurrentHashMap<Format, ConfigurationParser>();
 		parsers.put(Format.JSON, new JsonParser());
+		parsers.put(Format.PROPERTIES, new PropertiesParser());
 	}
 	
 	/**
@@ -145,16 +147,25 @@ public enum ConfigurationManager {
 	 * Configures a configurable component in the default environment. The object must be annotated with ConfigureMe and the configuration source must be present.
 	 * @param o object to configure
 	 */
-	public void configureAs(Object o, String name){
-		configureAs(o, defaultEnvironment, name);
+	public void configure(Object o, Format format){
+		configure(o, defaultEnvironment, format);
 	}
 
 	/**
-	 * Configures a configurable component in the givent environment. The object must be annotated with ConfigureMe and the configuration must be present.
+	 * Configures a configurable component in the default environment. The object must be annotated with ConfigureMe and the configuration source must be present.
 	 * @param o object to configure
-	 * @param in the environment for the configuration
 	 */
-	public void configureAs(Object o, Environment in, String configurationName){
+	public void configureAs(Object o, String name){
+		configureAs(o, defaultEnvironment, name, defaultConfigurationSourceFormat);
+	}
+
+	/**
+	 * Configures a configurable component in the given environment. The object must be annotated with ConfigureMe and the configuration must be present.
+	 * @param o object to configure.
+	 * @param in the environment for the configuration.
+	 * @param configurationName name of the configuration.
+	 */
+	public void configureAs(Object o, Environment in, String configurationName, Format format){
 		if (!isConfigurable(o))
 			throw new IllegalArgumentException("Class "+o.getClass()+" is not annotated as ConfigureMe, called with: "+o+", class: "+o.getClass());
 		
@@ -162,20 +173,38 @@ public enum ConfigurationManager {
 		ConfigureMe ann = clazz.getAnnotation(ConfigureMe.class);
 		
 		ConfigurationSourceKey configSourceKey = new ConfigurationSourceKey();
-		configSourceKey.setFormat(Format.JSON);
+		configSourceKey.setFormat(format);
 		configSourceKey.setType(ann.type());
 		configSourceKey.setName(configurationName);
 
 		configureInitially(configSourceKey, o, in, ann);
 	}
 	
+	/**
+	 * Configures a configurable component in the given environment. The object must be annotated with ConfigureMe and the configuration must be present.
+	 * @param o object to configure.
+	 * @param configSourceKey source definition.
+	 */
+	public void configureAs(Object o, Environment in, ConfigurationSourceKey configSourceKey){
+		if (!isConfigurable(o))
+			throw new IllegalArgumentException("Class "+o.getClass()+" is not annotated as ConfigureMe, called with: "+o+", class: "+o.getClass());
+		
+		Class<?> clazz = o.getClass();
+		ConfigureMe ann = clazz.getAnnotation(ConfigureMe.class);
 
+		configureInitially(configSourceKey, o, in, ann);
+	}
+
+	public void configure(Object o, Environment in){
+		configure(o, in, defaultConfigurationSourceFormat);
+	}
+	
 	/**
 	 * Configures a configurable component in the givent environment. The object must be annotated with ConfigureMe and the configuration must be present.
 	 * @param o object to configure
 	 * @param in the environment for the configuration
 	 */
-	public void configure(Object o, Environment in){
+	public void configure(Object o, Environment in, Format format){
 		
 		if (!isConfigurable(o))
 			throw new IllegalArgumentException("Class "+o.getClass()+" is not annotated as ConfigureMe, called with: "+o+", class: "+o.getClass());
@@ -189,7 +218,7 @@ public enum ConfigurationManager {
 		else
 			configurationName = ann.name(); 
 
-		configureAs(o, in, configurationName);
+		configureAs(o, in, configurationName, format);
 	}
 	
 	/**
@@ -397,9 +426,9 @@ public enum ConfigurationManager {
 			//reading config
 			String content = ConfigurationSourceRegistry.INSTANCE.readConfigurationSource(configSourceKey);
 
-			content = StringUtils.removeCComments(content);
-			content = StringUtils.removeCPPComments(content);
 			ConfigurationParser parser = parsers.get(configSourceKey.getFormat());
+			if (parser==null)
+				throw new IllegalArgumentException("Format "+configSourceKey.getFormat()+" is not supported (yet).");
 			ParsedConfiguration pa = null;
 			try{
 				pa = parser.parseConfiguration(configurationName, content);

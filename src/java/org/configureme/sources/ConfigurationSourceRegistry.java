@@ -110,7 +110,7 @@ public enum ConfigurationSourceRegistry {
 	}
 
 	/**
-	 * Adds a watched configurable
+	 * Adds a watched configurable.
 	 * @param wrapper
 	 */
 	public void addWatchedConfigurable(ConfigurableWrapper wrapper){

@@ -7,9 +7,12 @@ import org.configureme.Environment;
 import org.configureme.GlobalEnvironment;
 import org.configureme.environments.DynamicEnvironment;
 import org.configureme.environments.LocaleBasedEnvironment;
+import org.configureme.sources.ConfigurationSourceKey.Format;
 
-public class HelloWorldRunner {
-	public static void main(String a[]){
+public abstract class BaseHelloWorldRunner {
+	protected abstract Format getTargetConfigFormat();
+	
+	protected void runExample(){
 		System.out.println("Example for hello world (autoconfiguration of fields): ");
 		sayHello(GlobalEnvironment.INSTANCE, null);
 		sayHello(new LocaleBasedEnvironment.Builder().language("de").country("DE").variant("bayern").build(),"Bavaria");
@@ -25,23 +28,25 @@ public class HelloWorldRunner {
 		research(new LocaleBasedEnvironment(new Locale("es")), "Spanish speaking countries");
 		research(new LocaleBasedEnvironment.Builder().language("es").country("ES").variant("barcelona").build(),"Barcelona (no separate config == spain)");
 		research(new DynamicEnvironment().add("en").add("US").add("california").add("sunnyside").add("dublin"),"Dublin CA");
+		
+	}
 
-	}
-	
-	private static void sayHello(Environment in, String description){
-		if (description==null)
-			description = in.toString();
-		HelloWorld hello = new HelloWorld();
-		ConfigurationManager.INSTANCE.configure(hello, in);
-		System.out.println("Greeting people in "+description+" ("+in+")"+": ");
-		hello.greet();
-	}
-	
-	private static void research(Environment in, String description){
+	protected void research(Environment in, String description){
 		if (description==null)
 			description = in.toString();
 		LanguageResearcher researcher = new LanguageResearcher();
 		System.out.println("Researching "+description+" ("+in+")"+": ");
-		ConfigurationManager.INSTANCE.configure(researcher, in);
+		ConfigurationManager.INSTANCE.configure(researcher, in, getTargetConfigFormat());
 	}
+	
+	protected void sayHello(Environment in, String description){
+		if (description==null)
+			description = in.toString();
+		HelloWorld hello = new HelloWorld();
+		ConfigurationManager.INSTANCE.configure(hello, in, getTargetConfigFormat());
+		System.out.println("Greeting people in "+description+" ("+in+")"+": ");
+		hello.greet();
+	}
+
+
 }
