@@ -257,7 +257,7 @@ public enum ConfigurationManager {
 					try {
 						m.invoke(configurable);
 					} catch (IllegalAccessException e) {
-						log.error("callAnnotations("+methods+", "+Arrays.toString(annotationClasses)+")", e);
+						log.error("callAnnotations("+Arrays.toString(methods)+", "+Arrays.toString(annotationClasses)+")", e);
 						throw new AssertionError("Error declaration in method "+m+", wrong declaration (public void "+m.getName()+" expected)? - "+e.getMessage());
 					} catch (InvocationTargetException e) {
 						log.error("callAnnotations(Exception in annotated method: "+m+")", e);
