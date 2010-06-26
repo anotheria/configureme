@@ -1,9 +1,5 @@
 package org.configureme.parser.properties;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
 import net.anotheria.util.StringUtils;
 
 import org.configureme.environments.DynamicEnvironment;
@@ -12,6 +8,11 @@ import org.configureme.parser.ConfigurationParserException;
 import org.configureme.parser.ParsedAttribute;
 import org.configureme.parser.ParsedConfiguration;
 
+/**
+ * COnfigurationparser implementation for Property files.
+ * @author another
+ *
+ */
 public class PropertiesParser implements ConfigurationParser {
 
 	@Override
