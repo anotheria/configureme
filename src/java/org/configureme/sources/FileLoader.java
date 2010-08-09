@@ -51,7 +51,7 @@ public class FileLoader implements SourceLoader{
 
 		URL u = myLoader.getResource(fileName);
 		if (u==null){
-			throw new IllegalArgumentException("File: "+fileName+" doesn't exists ("+u+")");
+			throw new IllegalArgumentException("File: "+fileName+" doesn't exists (URL is null)");
 		}
 		
 		File f = new File(u.getFile());
@@ -69,12 +69,12 @@ public class FileLoader implements SourceLoader{
 
 		URL u = myLoader.getResource(fileName);
 		if (u==null){
-			throw new IllegalArgumentException("File: "+fileName+" doesn't exists ("+u+")");
+			throw new IllegalArgumentException("File: "+fileName+" doesn't exists (URL is null)");
 		}
-		
+		Reader reader = null;
 		try{
 			File f = new File(u.getFile());
-			Reader reader = new BufferedReader(new FileReader(f));
+			reader = new BufferedReader(new FileReader(f));
 			StringBuilder ret = new StringBuilder();
 			int c ; 
 			while((c=reader.read())!=-1)
@@ -83,6 +83,11 @@ public class FileLoader implements SourceLoader{
 		}catch(IOException e){
 			log.error("getSourceContent("+key+")", e);
 			throw new RuntimeException("can't read source: "+key, e);
+		}finally{
+			try{
+				if (reader!=null)
+					reader.close();
+			}catch(IOException ignored){}
 		}
 	}
 //*/
