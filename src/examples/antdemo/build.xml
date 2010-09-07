@@ -7,6 +7,7 @@
 		<antcall target="compile"/>
 		<echo> Running now, you should see the output containing yoohei!</echo>
 		<antcall target="run"/>
+		<antcall target="clean"/>
 	</target>
 	
 	<property name="output" value="antdemooutput"/>
