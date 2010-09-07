@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+
+<project name="antdemo" default="demo" basedir="../../../">
+	<target name="demo">
+		<echo> Demo how to run configuration from ant script </echo>
+		<antcall target="clean"/>
+		<antcall target="compile"/>
+		<echo> Running now, you should see the output containing yoohei!</echo>
+		<antcall target="run"/>
+	</target>
+	
+	<property name="output" value="antdemooutput"/>
+	
+	<property name="lib" value="lib"/>
+	<property name="classes.dir" value="${output}/classes"/>
+	
+	<target name="clean">
+		<delete dir="${output}"/>
+	</target>
+	<target name="prepare">
+		<mkdir dir="${output}"/>
+		<mkdir dir="${classes.dir}"/>
+	</target>
+	<target name="compile" depends="prepare">
+		<javac destdir="${classes.dir}" debug="on" deprecation="off" optimize="on" encoding="UTF-8">
+			<classpath>
+				<fileset dir="${lib}">
+					<include name="**/*.jar"/>
+				</fileset>
+			</classpath>
+			<src path="src/java"/>
+			<src path="src/examples"/>
+		</javac>
+	</target>
+	<target name="run">
+		<java classname="antdemo.RunFromAnt">
+			<classpath>
+				<fileset dir="${lib}">
+					<include name="**/*.jar"/>
+				</fileset>
+				<pathelement path="${classes.dir}"/>
+				<pathelement path="src/examples"/>
+			</classpath>
+		</java>
+	</target>
+
+	
+
+</project>
