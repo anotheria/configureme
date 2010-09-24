@@ -1,0 +1,38 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <parent>
+	<groupId>net.anotheria</groupId>
+	<artifactId>parent</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>net.anotheria</groupId>
+  <artifactId>configureme</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <name>ano-utils</name>
+
+  <dependencies>
+	<dependency>
+		<groupId>net.anotheria</groupId>
+		<artifactId>ano-util</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</dependency>
+	<dependency>
+		<groupId>org.json</groupId>
+		<artifactId>json</artifactId>
+		<version>1.0</version>
+	</dependency>
+  </dependencies>
+
+  <build>
+      <sourceDirectory>${project.basedir}/src/java</sourceDirectory>
+  </build>
+
+	<scm>
+		<url>https://configureme.dev.java.net/svn/configureme/trunk</url>
+		<connection>scm:https://configureme.dev.java.net/svn/configureme/trunk</connection>
+		<developerConnection>scm:https://configureme.dev.java.net/svn/configureme/trunk</developerConnection>
+	</scm>
+
+</project>
