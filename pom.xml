@@ -30,9 +30,9 @@
   </build>
 
 	<scm>
-		<url>https://configureme.dev.java.net/svn/configureme/trunk</url>
-		<connection>scm:https://configureme.dev.java.net/svn/configureme/trunk</connection>
-		<developerConnection>scm:https://configureme.dev.java.net/svn/configureme/trunk</developerConnection>
+		<url>svn:https://configureme.dev.java.net/svn/configureme/trunk</url>
+		<connection>scm:svn:https://configureme.dev.java.net/svn/configureme/trunk</connection>
+		<developerConnection>scm:svn:https://configureme.dev.java.net/svn/configureme/trunk</developerConnection>
 	</scm>
 
 </project>
