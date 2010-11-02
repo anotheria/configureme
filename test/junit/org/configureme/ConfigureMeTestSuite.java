@@ -1,6 +1,7 @@
 package org.configureme;
 
 import org.configureme.annotations.SetIfTest;
+import org.configureme.cascading.CascadingTest;
 import org.configureme.environments.ApplicationEnvironmentTest;
 import org.configureme.environments.DynamicEnvironmentTest;
 import org.configureme.environments.GlobalEnvironmentTest;
@@ -22,6 +23,6 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses(value={DynamicEnvironmentTest.class, ApplicationEnvironmentTest.class, LocaleBasedEnvironmentTest.class, GlobalEnvironmentTest.class,
 		ConfigurationSourceRegistryAddTest.class, ConfigurationSourceRegistryTest.class, ConfigurationSourceKeyTest.class, FileLoaderTest.class,
 		AttributeValueTest.class, ConfigurationRepositoryTest.class, ArtefactTest.class, ConfigurableWrapperTest.class, ParsedConfigurationTest.class,
-		AutoConfigTest.class, TestForErrors.class, ReadConfigurationViaManager.class, AutoReConfig.class, ConfigurationSourceTest.class, SetIfTest.class})
+		AutoConfigTest.class, TestForErrors.class, ReadConfigurationViaManager.class, AutoReConfig.class, ConfigurationSourceTest.class, SetIfTest.class, CascadingTest.class})
 public class ConfigureMeTestSuite { 
 }
