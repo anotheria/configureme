@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.configureme.environments.DynamicEnvironment;
 import org.configureme.sources.ConfigurationSourceRegistryTest;
+import org.configureme.sources.ConfigurationSourceKey.Format;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -69,6 +70,27 @@ public class AutoConfigTest {
 		ConfigurationManager.INSTANCE.setDefaultEnvironment(old);
 	}
 
+	@Test public void configureAsInA(){
+		Environment old = ConfigurationManager.INSTANCE.getDefaultEnvironment();
+		ConfigurationManager.INSTANCE.setDefaultEnvironment(new DynamicEnvironment("a"));
+		TestConfigurableAs configurable = new TestConfigurableAs();
+		ConfigurationManager.INSTANCE.configureAs(configurable, "fixture");
+		
+		assertEquals(100, configurable.getShortValue());
+		assertEquals(1234567890123L, configurable.getLongValue());
+		assertEquals(2000, configurable.getIntValue());
+		assertEquals(true, configurable.getBooleanValue());
+		assertEquals("aaaaa", configurable.getStringValue());
+		assertEquals(-125, configurable.getByteValue());
+		assertEquals(12.5f, configurable.getFloatValue(),0);
+		assertEquals(1234.11, configurable.getDoubleValue(),0);
+		assertEquals(1000, configurable.getOnlyInA());
+		assertEquals(0, configurable.getOnlyInB());
+		assertArrayEquals(new String[]{"str1","str2","str3"}, configurable.getStringArrayValue());
+		
+		ConfigurationManager.INSTANCE.setDefaultEnvironment(old);
+	}
+
 	@Test public void configureInB(){
 		DynamicEnvironment env = new DynamicEnvironment("a", "b");
 		TestConfigurable configurable = new TestConfigurable();
@@ -85,6 +107,14 @@ public class AutoConfigTest {
 		assertArrayEquals(new String[]{"str1","str2","str3"}, configurable.getStringArrayValue());
 		assertEquals(1000, configurable.getOnlyInA());
 		assertEquals(1000, configurable.getOnlyInB());
+	}
+	
+	@Test public void configureInBWithFormat(){//helper method to check if internal routing with format works.
+		DynamicEnvironment env = new DynamicEnvironment("a", "b");
+		TestConfigurable configurable = new TestConfigurable();
+		ConfigurationManager.INSTANCE.configure(configurable, env, Format.JSON);
+		
+		assertEquals(100, configurable.getShortValue());
 	}
 	
 	@Test public void configurePublicFieldsInGlobalEnvironment(){

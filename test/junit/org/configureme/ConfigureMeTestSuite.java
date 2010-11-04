@@ -15,10 +15,12 @@ import org.configureme.sources.ConfigurationSourceRegistryAddTest;
 import org.configureme.sources.ConfigurationSourceRegistryTest;
 import org.configureme.sources.ConfigurationSourceTest;
 import org.configureme.sources.FileLoaderTest;
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+@Ignore
 @RunWith(value=Suite.class)
 @SuiteClasses(value={DynamicEnvironmentTest.class, ApplicationEnvironmentTest.class, LocaleBasedEnvironmentTest.class, GlobalEnvironmentTest.class,
 		ConfigurationSourceRegistryAddTest.class, ConfigurationSourceRegistryTest.class, ConfigurationSourceKeyTest.class, FileLoaderTest.class,
@@ -26,3 +28,4 @@ import org.junit.runners.Suite.SuiteClasses;
 		AutoConfigTest.class, TestForErrors.class, ReadConfigurationViaManager.class, AutoReConfig.class, ConfigurationSourceTest.class, SetIfTest.class, CascadingTest.class})
 public class ConfigureMeTestSuite { 
 }
+ 

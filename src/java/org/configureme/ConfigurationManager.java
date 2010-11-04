@@ -158,6 +158,56 @@ public enum ConfigurationManager {
 	public void configureAs(Object o, String name){
 		configureAs(o, defaultEnvironment, name, defaultConfigurationSourceFormat);
 	}
+	
+	public void configureBeanAs(Object o, String name){
+		configurePojoAs(o, name);
+	}
+	
+	public void configureBeanAsIn(Object o, String name, final Environment in){
+		configurePojoAsIn(o, name, in);
+	}
+
+	public void configurePojoAs(final Object o, final String name){
+		Environment in = defaultEnvironment;
+		configurePojoAsIn(o, name, in);
+	}
+	
+	public void configurePojoAsIn(final Object o, final String name, final Environment in){
+		ConfigureMe ann = new ConfigureMe() {
+			
+			@Override
+			public Class<? extends Annotation> annotationType() {
+				return ConfigureMe.class;
+			}
+			
+			@Override
+			public boolean watch() {
+				return false;
+			}
+			
+			@Override
+			public Type type() {
+				return Type.FILE;
+			}
+			
+			@Override
+			public String name() {
+				return name;
+			}
+			
+			@Override
+			public boolean allfields() {
+				return true;
+			}
+		};
+		
+		ConfigurationSourceKey configSourceKey = new ConfigurationSourceKey();
+		configSourceKey.setFormat(Format.JSON);
+		configSourceKey.setType(ann.type());
+		configSourceKey.setName(name);
+
+		configureInitially(configSourceKey, o, in, ann);
+	}
 
 	/**
 	 * Configures a configurable component in the given environment. The object must be annotated with ConfigureMe and the configuration must be present.
@@ -177,7 +227,7 @@ public enum ConfigurationManager {
 		configSourceKey.setType(ann.type());
 		configSourceKey.setName(configurationName);
 
-		configureInitially(configSourceKey, o, in, ann);
+		configureAs(o, in, configSourceKey);
 	}
 	
 	/**
@@ -230,7 +280,7 @@ public enum ConfigurationManager {
 	 */
 	private void configureInitially(ConfigurationSourceKey key, Object o, Environment in, ConfigureMe ann){
 		
-		configure(key, o, in, CALL_BEFORE_INITIAL_CONFIGURATION, CALL_AFTER_INITIAL_CONFIGURATION);
+		configure(key, o, in, CALL_BEFORE_INITIAL_CONFIGURATION, CALL_AFTER_INITIAL_CONFIGURATION, ann);
 		
 		if (ann.watch()){
 			ConfigurableWrapper wrapper = new ConfigurableWrapper(key, o, in);
@@ -277,14 +327,15 @@ public enum ConfigurationManager {
 	 * @param callBefore annotations, methods annotated with those will be called prior to the configuration
 	 * @param callAfter annotations, methods annotated with those will be called after the configuration
 	 */
-	private void configure(ConfigurationSourceKey key, Object o, Environment in, Class<? extends Annotation> callBefore[],  Class<? extends Annotation> callAfter[] ){
+	private void configure(ConfigurationSourceKey key, Object o, Environment in, Class<? extends Annotation> callBefore[],  Class<? extends Annotation> callAfter[], ConfigureMe ann){
 		//System.out.println("CALLED configure("+key+", "+o+","+in+")");
 		Configuration config = getConfiguration(key, in);
 		
 		Class<?> clazz = o.getClass();
-		ConfigureMe ann = clazz.getAnnotation(ConfigureMe.class);
 		if (ann==null)
-			throw new AssertionError("An unannotated class shouldn't make it sofar");
+			ann = clazz.getAnnotation(ConfigureMe.class);
+		if (ann==null)
+			throw new AssertionError("An unannotated class shouldn't make it sofar, obj: "+o+" class "+o.getClass());
 		
 		Method[] methods = clazz.getDeclaredMethods();
 		callAnnotations(o, methods, callBefore);
@@ -378,7 +429,7 @@ public enum ConfigurationManager {
 	 * @param in
 	 */
 	void reconfigure(ConfigurationSourceKey key, Object o, Environment in){
-		configure(key, o, in, CALL_BEFORE_RE_CONFIGURATION, CALL_AFTER_RE_CONFIGURATION);
+		configure(key, o, in, CALL_BEFORE_RE_CONFIGURATION, CALL_AFTER_RE_CONFIGURATION, null);
 	}
 	
 

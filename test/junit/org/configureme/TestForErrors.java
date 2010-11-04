@@ -1,5 +1,11 @@
 package org.configureme;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertSame;
+import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.fail;
+
 import org.configureme.annotations.BeforeConfiguration;
 import org.configureme.annotations.Configure;
 import org.configureme.annotations.ConfigureMe;
@@ -7,9 +13,8 @@ import org.configureme.annotations.Set;
 import org.configureme.annotations.SetAll;
 import org.configureme.annotations.SetIf;
 import org.configureme.annotations.SetIf.SetIfCondition;
+import org.configureme.sources.ConfigurationSourceKey.Format;
 import org.junit.Test;
-
-import static junit.framework.Assert.*;
 
 public class TestForErrors {
 	
@@ -19,6 +24,19 @@ public class TestForErrors {
 		ConfigurationManager.INSTANCE.configure(foo);
 		fail("exception should been thrown");
 	}
+	
+	@Test(expected=IllegalArgumentException.class) public void configureNotConfigurableAsWithKey(){
+		Object foo = new Object();
+		ConfigurationManager.INSTANCE.configureAs(foo, GlobalEnvironment.INSTANCE, null);
+		fail("exception should been thrown");
+	}
+
+	@Test(expected=IllegalArgumentException.class) public void configureNotConfigurableAsWithNameAndFormat(){
+		Object foo = new Object();
+		ConfigurationManager.INSTANCE.configureAs(foo, GlobalEnvironment.INSTANCE, "foo", Format.JSON);
+		fail("exception should been thrown");
+	}
+	
 	
 	@Test(expected=IllegalArgumentException.class) public void configureForNotExistantConfiguration(){
 		ConfigurationManager.INSTANCE.configure(new FooConfig());
