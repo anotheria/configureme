@@ -7,6 +7,11 @@ package org.configureme.parser;
 public class ConfigurationParserException extends Exception {
 
 	/**
+	 * Unneeded value.
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * Creates a new ConfigurationParserException with the given message.
 	 * @param message
 	 */

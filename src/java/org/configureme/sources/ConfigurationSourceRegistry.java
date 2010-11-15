@@ -72,10 +72,10 @@ public enum ConfigurationSourceRegistry {
 	 * @param listener
 	 */
 	public void addListener(ConfigurationSourceKey key, ConfigurationSourceListener listener){
-		ConfigurationSource source = (ConfigurationSource) watchedSources.get(key);
+		ConfigurationSource source = watchedSources.get(key);
 		if (source==null){
 			synchronized(watchedSources){
-				source = (ConfigurationSource) watchedSources.get(key);
+				source = watchedSources.get(key);
 				if (source==null){
 					source = new ConfigurationSource(key);
 					watchedSources.put(key, source);
@@ -93,7 +93,7 @@ public enum ConfigurationSourceRegistry {
 	 * @param listener
 	 */
 	public void removeListener(ConfigurationSourceKey key, ConfigurationSourceListener listener){
-		ConfigurationSource source = (ConfigurationSource) watchedSources.get(key);
+		ConfigurationSource source = watchedSources.get(key);
 		if (source==null){
 			return;
 		}
