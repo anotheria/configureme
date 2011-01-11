@@ -34,5 +34,19 @@
 		<connection>scm:svn:https://configureme.dev.java.net/svn/configureme/trunk</connection>
 		<developerConnection>scm:svn:https://configureme.dev.java.net/svn/configureme/trunk</developerConnection>
 	</scm>
+    <repositories>
+             <repository>
+                     <id>provided</id>
+                     <url>http://nexus.anotheria.net/nexus/content/groups/public</url>
+                     <releases>
+                             <enabled>true</enabled>
+                     </releases>
+                     <snapshots>
+                             <enabled>true</enabled>
+                     </snapshots>
+             </repository>
+     </repositories>
+
+  </repositories>
 
 </project>
