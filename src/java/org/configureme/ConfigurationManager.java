@@ -60,11 +60,6 @@ public enum ConfigurationManager {
 	private Environment defaultEnvironment = null;
 	
 	/**
-	 * Logger.
-	 */
-	private static final Logger log = Logger.getLogger(ConfigurationManager.class);
-	
-	/**
 	 * Default configuration source type (file is default, but fixture is also supported for junit tests and configserver may be supported in the near future). 
 	 */
 	private ConfigurationSourceKey.Type defaultConfigurationSourceType = Type.FILE;
@@ -111,6 +106,12 @@ public enum ConfigurationManager {
 	 */
 	public static final String PROP_NAME_DEFAULT_ENVIRONMENT = "configureme.defaultEnvironment";
 	
+	
+	/**
+	 * Logger.
+	 */
+	private static final Logger log = Logger.getLogger(ConfigurationManager.class);
+
 	/**
 	 * Initializes the one and only instance of the ConfigurationManager.
 	 */
