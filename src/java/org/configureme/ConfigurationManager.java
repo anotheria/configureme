@@ -418,7 +418,7 @@ public enum ConfigurationManager {
 
 		callAnnotations(o, methods, callAfter);
 
-		if (log.isDebugEnabled()){
+		if (log!=null && log.isDebugEnabled()){
 			log.debug("Finished configuration of "+o+" as "+key);
 		}
 	}
