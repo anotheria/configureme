@@ -3,7 +3,7 @@
   <parent>
 	<groupId>net.anotheria</groupId>
 	<artifactId>parent</artifactId>
-	<version>1.2</version>
+	<version>1.8</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -35,16 +35,15 @@
 		<developerConnection>scm:svn:https://configureme.dev.java.net/svn/configureme/trunk</developerConnection>
 	</scm>
     <repositories>
-             <repository>
-                     <id>provided</id>
-                     <url>http://nexus.anotheria.net/nexus/content/groups/public</url>
-                     <releases>
-                             <enabled>true</enabled>
-                     </releases>
-                     <snapshots>
-                             <enabled>true</enabled>
-                     </snapshots>
-             </repository>
+          <repository>
+              <id>provided</id>
+              <url>http://nexus.anotheria.net/nexus/content/groups/public</url>
+              <releases>
+                      <enabled>true</enabled>
+              </releases>
+              <snapshots>
+                      <enabled>true</enabled>
+              </snapshots>
+          </repository>
      </repositories>
-
 </project>
