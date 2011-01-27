@@ -38,8 +38,13 @@ public enum ConfigurationSourceRegistry {
 	 * This constructor also adds the FileLoader.
 	 */
 	private ConfigurationSourceRegistry(){
-		loaders.put(Type.FILE, new FileLoader());
+		initLoaders();
 		new WatcherThread().start();
+	}
+	
+	private void initLoaders(){
+		loaders.clear();
+		loaders.put(Type.FILE, new FileLoader());
 	}
 	
 	/**
@@ -166,4 +171,7 @@ public enum ConfigurationSourceRegistry {
 		loaders.put(type, loader);
 	}
  	
+	/* test  */ void reset(){
+		initLoaders();
+	}
 }

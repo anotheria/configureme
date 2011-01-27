@@ -7,6 +7,7 @@ import org.apache.log4j.BasicConfigurator;
 import org.configureme.sources.ConfigurationSourceRegistryTest;
 import org.configureme.sources.FixtureLoader;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -21,7 +22,7 @@ public class AutoReConfig {
 		ConfigurationSourceRegistryTest.setupRegistry();
 	}
 	
-	@Test public void configureAndWaitForReconfigure(){
+	@Ignore @Test public void configureAndWaitForReconfigure(){
 		TestReConfigurable configurable = new TestReConfigurable();
 		ConfigurationManager.INSTANCE.configure(configurable);
 		

@@ -8,6 +8,8 @@ import static org.junit.Assert.assertTrue;
 import org.configureme.environments.DynamicEnvironment;
 import org.configureme.sources.ConfigurationSourceRegistryTest;
 import org.configureme.sources.ConfigurationSourceKey.Format;
+import org.configureme.sources.FixtureLoader;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -16,6 +18,10 @@ public class AutoConfigTest {
 	@BeforeClass public static void setupRegistry(){
 		//use the other test which can access protected methods
 		ConfigurationSourceRegistryTest.setupRegistry();
+	}
+	
+	@Before public void resetFixture(){
+		FixtureLoader.reset();
 	}
 	
 	@Test public void testLifecycleAnnotations(){
@@ -38,6 +44,8 @@ public class AutoConfigTest {
 		
 		assertEquals(100, configurable.getShortValue());
 		assertEquals(1234567890123L, configurable.getLongValue());
+		System.out.println("C VALUE: "+configurable.getIntValue());
+		System.out.println("FIXTURE: "+FixtureLoader.getContent());
 		assertEquals(1000, configurable.getIntValue());
 		assertEquals(true, configurable.getBooleanValue());
 		assertEquals("foo", configurable.getStringValue());
