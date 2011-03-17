@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
 import java.net.URL;
 
@@ -74,6 +75,9 @@ public class FileLoader implements SourceLoader{
 		Reader reader = null;
 		try{
 			File f = new File(u.getFile());
+			if (!f.exists()){
+				return getContentFromJar(fileName);
+			}
 			reader = new BufferedReader(new FileReader(f));
 			StringBuilder ret = new StringBuilder();
 			int c ; 
@@ -90,5 +94,14 @@ public class FileLoader implements SourceLoader{
 			}catch(IOException ignored){}
 		}
 	}
+	
+	private String getContentFromJar(String fileName) throws IOException{
+		ClassLoader myLoader = getClass().getClassLoader();
+		InputStream input = myLoader.getResourceAsStream(fileName);
+		byte[] data = new byte[input.available()];
+		input.read(data);
+		return new String(data);
+	}
+	
 //*/
 }
