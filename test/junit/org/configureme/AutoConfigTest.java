@@ -5,9 +5,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
+
 import org.configureme.environments.DynamicEnvironment;
-import org.configureme.sources.ConfigurationSourceRegistryTest;
 import org.configureme.sources.ConfigurationSourceKey.Format;
+import org.configureme.sources.ConfigurationSourceRegistryTest;
 import org.configureme.sources.FixtureLoader;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -52,9 +54,15 @@ public class AutoConfigTest {
 		assertEquals(-125, configurable.getByteValue());
 		assertEquals(12.5f, configurable.getFloatValue(),0);
 		assertEquals(1234.11, configurable.getDoubleValue(),0);
-		assertArrayEquals(new String[]{"str1","str2","str3"}, configurable.getStringArrayValue());
 		assertEquals(0, configurable.getOnlyInA());
 		assertEquals(0, configurable.getOnlyInB());
+		assertArrayEquals("Arrays should be equals", new String[]{"str1","str2","str3"}, configurable.getStringArrayValue());
+		assertArrayEquals("Arrays should be equals", new String[]{"sa1.1 " , "sa2.1,sa2.2" , "sa3"}, configurable.getStringArray());
+		assertTrue("Arrays should be equals", Arrays.equals(new float[] {1.2F, 2.3F, 3}, configurable.getFloatArrayValue()));	
+		assertTrue("Arrays should be equals", Arrays.equals(new float[] {2.3F, 3}, configurable.getFloatArray()));	
+		assertArrayEquals("Arrays should be equals", new int[] {2, 3, 5}, configurable.getIntArray());	
+		assertTrue("Arrays should be equals", Arrays.equals(new boolean[] {true, false, true}, configurable.getBooleanArray()));	
+		assertArrayEquals("Arrays should be equals", new int[] {}, configurable.getEmptyIntArray());	
 	}
 
 	@Test public void configureInA(){

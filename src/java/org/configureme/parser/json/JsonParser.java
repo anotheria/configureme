@@ -9,8 +9,10 @@ import org.configureme.Environment;
 import org.configureme.environments.DynamicEnvironment;
 import org.configureme.parser.ConfigurationParser;
 import org.configureme.parser.ConfigurationParserException;
-import org.configureme.parser.ParsedConfiguration;
 import org.configureme.parser.ParsedAttribute;
+import org.configureme.parser.ParsedConfiguration;
+import org.configureme.parser.StringArrayParser;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -66,6 +68,20 @@ public class JsonParser implements ConfigurationParser {
 						ret.addAll(subAttributes);
 				}
 			environment.reduceThis();
+		}else if(value instanceof JSONArray){
+			// Put json array with any type values string representation
+			JSONArray arr = (JSONArray) value;
+			List<String> list = new ArrayList<String>();
+			for (int i = 0; i < arr.length(); i++) {
+				list.add(arr.getString(i));
+			}
+			
+			// Create attribute
+			ParsedAttribute at = new ParsedAttribute();
+			at.setName(key);
+			at.setValue(StringArrayParser.toStringArray(list.toArray()));
+			at.setEnvironment((Environment)environment.clone());
+			ret.add(at);
 		}else{
 			ParsedAttribute at = new ParsedAttribute();
 			at.setName(key);

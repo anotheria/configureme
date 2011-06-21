@@ -10,6 +10,12 @@
 	doubleValue  : 1234.11,
 	
 	stringArrayValue	: "str1,str2,str3",
+	stringArray	: ["sa1.1 " , "sa2.1,sa2.2" , "sa3"],
+	floatArrayValue	: "1.2,2.3, 3",
+	floatArray	: [2.3, 3],
+	intArray	: [2, 3, 5],
+	booleanArray	: [true, false, true],
+	emptyIntArray	: [],
 	
 	a: {
 		intValue : 2000,

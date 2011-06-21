@@ -1,6 +1,6 @@
 package org.configureme;
 
-import net.anotheria.util.StringUtils;
+import java.util.Arrays;
 
 import org.configureme.annotations.AfterConfiguration;
 import org.configureme.annotations.AfterInitialConfiguration;
@@ -23,28 +23,26 @@ public class TestConfigurable {
 	@Configure private byte byteValue;
 	@Configure private float floatValue;
 	@Configure private double doubleValue ;
-	@Configure private String[] stringArrayValue;
 	@Configure private int onlyInA;
 	@Configure private int onlyInB;
+	@Configure private String[] stringArrayValue;
+	@Configure private String[] stringArray;
+	@Configure private float[] floatArrayValue;
+	@Configure private float[] floatArray;
+	@Configure private int[] intArray;
+	@Configure private boolean[] booleanArray;
+	@Configure private int[] emptyIntArray;
 	
 	private boolean beforeConfigCalled, afterConfigCalled, beforeInitialConfigCalled, afterInitialConfigCalled, beforeReConfigCalled, afterReConfigCalled;
-	
-	@Override public String toString(){
-		String ret = "";
-		ret += "short: "+shortValue;
-		ret += " long: "+longValue;
-		ret += " int: "+intValue;
-		ret += " boolean: "+booleanValue;
-		ret += " string: "+stringValue;
-		ret += " byte: "+byteValue;
-		ret += " float: "+floatValue;
-		ret += " double: "+doubleValue;
-		ret += " stringArray: " + StringUtils.concatenateTokens(",",stringArrayValue);
-		ret += " onlyInA: "+onlyInA;
-		ret += " onlyInB: "+onlyInB;
-		return ret;
+		
+	@Override
+	public String toString() {
+		return "TestConfigurable [shortValue=" + shortValue + ", longValue=" + longValue + ", intValue=" + intValue + ", booleanValue=" + booleanValue + ", stringValue=" + stringValue
+				+ ", byteValue=" + byteValue + ", floatValue=" + floatValue + ", doubleValue=" + doubleValue + ", onlyInA=" + onlyInA + ", onlyInB=" + onlyInB + ", stringArrayValue="
+				+ Arrays.toString(stringArrayValue) + ", stringArray=" + Arrays.toString(stringArray) + ", floatArrayValue=" + Arrays.toString(floatArrayValue) + ", floatArray="
+				+ Arrays.toString(floatArray) + ", intArray=" + Arrays.toString(intArray) + ", booleanArray=" + Arrays.toString(booleanArray) + ", emptyIntArray="
+				+ Arrays.toString(emptyIntArray) + "]";
 	}
-	
 	public short getShortValue() {
 		return shortValue;
 	}
@@ -100,6 +98,54 @@ public class TestConfigurable {
 	public void setStringArrayValue(String[] stringArrayValue) {
 		this.stringArrayValue = stringArrayValue;
 	}
+	public String[] getStringArray() {
+		return stringArray;
+	}
+
+	public void setStringArray(String[] stringArray) {
+		this.stringArray = stringArray;
+	}
+
+	public float[] getFloatArrayValue() {
+		return floatArrayValue;
+	}
+
+	public void setFloatArrayValue(float[] floatArrayValue) {
+		this.floatArrayValue = floatArrayValue;
+	}
+
+	public float[] getFloatArray() {
+		return floatArray;
+	}
+
+	public void setFloatArray(float[] floatArray) {
+		this.floatArray = floatArray;
+	}
+
+	public int[] getIntArray() {
+		return intArray;
+	}
+
+	public void setIntArray(int[] intArray) {
+		this.intArray = intArray;
+	}
+
+	public boolean[] getBooleanArray() {
+		return booleanArray;
+	}
+
+	public void setBooleanArray(boolean[] booleanArray) {
+		this.booleanArray = booleanArray;
+	}
+
+	public int[] getEmptyIntArray() {
+		return emptyIntArray;
+	}
+
+	public void setEmptyIntArray(int[] emptyIntArray) {
+		this.emptyIntArray = emptyIntArray;
+	}
+
 	public int getOnlyInA() {
 		return onlyInA;
 	}
@@ -148,6 +194,4 @@ public class TestConfigurable {
 	@SetAll public void debugOutConfig(String name, String property){
 		System.out.println("Config property "+name+" = "+property);
 	}
-
-
 }

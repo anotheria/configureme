@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-import net.anotheria.util.StringUtils;
-
 import org.apache.log4j.Logger;
 import org.configureme.annotations.AfterConfiguration;
 import org.configureme.annotations.AfterInitialConfiguration;
@@ -31,14 +29,15 @@ import org.configureme.parser.ConfigurationParser;
 import org.configureme.parser.ConfigurationParserException;
 import org.configureme.parser.ParsedAttribute;
 import org.configureme.parser.ParsedConfiguration;
+import org.configureme.parser.StringArrayParser;
 import org.configureme.parser.json.JsonParser;
 import org.configureme.parser.properties.PropertiesParser;
 import org.configureme.repository.Artefact;
 import org.configureme.repository.ConfigurationRepository;
 import org.configureme.sources.ConfigurationSourceKey;
-import org.configureme.sources.ConfigurationSourceRegistry;
 import org.configureme.sources.ConfigurationSourceKey.Format;
 import org.configureme.sources.ConfigurationSourceKey.Type;
+import org.configureme.sources.ConfigurationSourceRegistry;
 
 /**
  * Configuration manager (this is the one YOU must use) is a utility class for retrieval of configurations and automatical configurations of components.
@@ -548,9 +547,23 @@ public enum ConfigurationManager {
 		if (type.equals(Double.class) || type.equals(double.class))
 			return Double.valueOf(value);
 		
-		//Resolves value as string array where elements are separated by comma. E.g: val1,val2,val3
+		//Arrays value
 		if (type.equals(String[].class))
-			return StringUtils.tokenize(value, ',');
+			return StringArrayParser.parseStringArray(value);
+		if (type.equals(boolean[].class))
+			return StringArrayParser.parseBooleanArray(value);
+		if (type.equals(short[].class))
+			return StringArrayParser.parseShortArray(value);
+		if (type.equals(int[].class))
+			return StringArrayParser.parseIntArray(value);
+		if (type.equals(long[].class))
+			return StringArrayParser.parseLongArray(value);
+		if (type.equals(byte[].class))
+			return StringArrayParser.parseByteArray(value);
+		if (type.equals(float[].class))
+			return StringArrayParser.parseFloatArray(value);
+		if (type.equals(double[].class))
+			return StringArrayParser.parseDoubleArray(value);
 		
 		throw new IllegalArgumentException("Can't resolve type: "+type+", value: "+value);
 	} 

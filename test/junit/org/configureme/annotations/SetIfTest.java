@@ -22,9 +22,9 @@ public class SetIfTest {
 		Configurable c = new Configurable();
 		ConfigurationManager.INSTANCE.configure(c);
 		//test results
-		assertEquals(9, c.counts.get("containsvalue").intValue());
-		assertEquals(1, c.counts.get("containsint").intValue());
-		assertEquals(1, c.counts.get("startsfloat").intValue());
+		assertEquals(10, c.counts.get("containsvalue").intValue());
+		assertEquals(2, c.counts.get("containsint").intValue());
+		assertEquals(3, c.counts.get("startsfloat").intValue());
 		assertEquals(null, c.counts.get("startsvalue"));
 		assertEquals(1, c.counts.get("matchesintvalue").intValue());
 	}
