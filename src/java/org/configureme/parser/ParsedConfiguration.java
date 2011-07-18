@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class ParsedConfiguration {
 	/**
-	 * The list of contained attributes
+	 * The list of contained attributes.
 	 */
 	private List<ParsedAttribute> attributes;
 
@@ -24,7 +24,7 @@ public class ParsedConfiguration {
 	private String name;
 	
 	/**
-	 * Creates a new parsed configuration object
+	 * Creates a new parsed configuration object.
 	 * @param aName the name of the configuration to which the parsed version belongs.
 	 */
 	public ParsedConfiguration(String aName){
@@ -43,15 +43,15 @@ public class ParsedConfiguration {
 
 	/**
 	 * Returns the internal list of attributes.
-	 * @return
+	 * @return the internal list of attributes
 	 */
 	public List<ParsedAttribute> getAttributes() {
 		return attributes;
 	}
 
 	/**
-	 * Sets the attributes
-	 * @param attributes
+	 * Sets the attributes.
+	 * @param attributes attributes to set
 	 */
 	public void setAttributes(List<ParsedAttribute> attributes) {
 		this.attributes = attributes;
@@ -59,15 +59,15 @@ public class ParsedConfiguration {
 
 	/**
 	 * Returns the timestamp of the parse process.
-	 * @return
+	 * @return the timestamp of the parse process
 	 */
 	public long getParseTimestamp() {
 		return parseTimestamp;
 	}
 
 	/**
-	 * Returns the name of the configuration
-	 * @return
+	 * Returns the name of the configuration.
+	 * @return the name of the configuration
 	 */
 	public String getName() {
 		return name;

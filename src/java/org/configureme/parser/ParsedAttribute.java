@@ -9,59 +9,61 @@ import org.configureme.Environment;
  */
 public class ParsedAttribute {
 	/**
-	 * Name of the attribute
+	 * Name of the attribute.
 	 */
 	private String name;
 	/**
-	 * Value of the attribute in this environment
+	 * Value of the attribute in this environment.
 	 */
 	private String value;
 	/**
-	 * Environment of the attribute
+	 * Environment of the attribute.
 	 */
 	private Environment environment;
 	
 	/**
-	 * Returns the name of the attribute
-	 * @return
+	 * Returns the name of the attribute.
+	 * @return the name of the attribute
 	 */
 	public String getName() {
 		return name;
 	}
 	
 	/**
-	 * Sets the name of the attribute
-	 * @param name
+	 * Sets the name of the attribute.
+	 * @param name attribute name to set
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 	
 	/**
-	 * Returns the value of the attribute
-	 * @return
+	 * Returns the value of the attribute.
+	 * @return the value of the attribute
 	 */
 	public String getValue() {
 		return value;
 	}
+	
 	/**
-	 * Sets the value 
-	 * @param value
+	 * Sets the value.
+	 * @param value value to set
 	 */
 	public void setValue(String value) {
 		this.value = value;
 	}
+	
 	/**
-	 * Returns the environemnt of this attribute value
-	 * @return
+	 * Returns the environemnt of this attribute value.
+	 * @return the environemnt of this attribute value
 	 */
 	public Environment getEnvironment() {
 		return environment;
 	}
 	
 	/**
-	 * Sets the environment for this attribute value
-	 * @param environment
+	 * Sets the environment for this attribute value.
+	 * @param environment environment to set
 	 */
 	public void setEnvironment(Environment environment) {
 		this.environment = environment;
@@ -72,4 +74,5 @@ public class ParsedAttribute {
 		return name+" = "+value+" in "+environment;
 	}
 }
+
  

@@ -12,7 +12,7 @@ import net.anotheria.util.StringUtils;
  * 
  * @author vkazhdan
  */
-public class StringArrayParser {
+public final class StringArrayParser {
 
 	/**
 	 * Delimiter for the arrays string representation.
@@ -23,6 +23,12 @@ public class StringArrayParser {
 	 * The encoded version of the delimiter for the arrays string representation.
 	 */
 	public static final String STRING_ARRAY_DELIM_CODE = "{COMMA}";
+	
+	/**
+	 * Hidden constructor.
+	 */
+	private StringArrayParser() {
+	}
 	
 	/**
 	 * Create string array from the array of objects.
