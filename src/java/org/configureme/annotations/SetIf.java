@@ -25,8 +25,14 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface SetIf {
 
+	/**
+	 * Value for the condition.
+	 */
 	String value();
 
+	/**
+	 * The condition type.
+	 */
 	SetIfCondition condition() default SetIfCondition.matches;
 
 	/**
@@ -36,17 +42,17 @@ public @interface SetIf {
 	 */
 	public enum SetIfCondition {
 		/**
-		 * does the key start with given annotation value,
+		 * Does the key start with given annotation value.
 		 */
 		startsWith, 
 		/**
-		 * does the key contain given annotation value,
+		 * Does the key contain given annotation value.
 		 */
 		contains, 
 		/**
-		 * does the key match given annotation value,
+		 * Does the key match given annotation value.
 		 */
-		matches
+		matches;
 	}
 
 	/**
@@ -58,7 +64,14 @@ public @interface SetIf {
 		private ConditionChecker() {
 		}
 
-		public static final boolean satisfyCondition(SetIf annotation, String attributeName) {
+		/**
+		 * Attribute name check for matching the condition.
+		 * 
+		 * @param annotation annotation
+		 * @param attributeName attribute name to check
+		 * @return true if attributeName matches condition, declared in the annotation, false - otherwise.
+		 */
+		public static boolean satisfyCondition(SetIf annotation, String attributeName) {
 			switch (annotation.condition()) {
 			case startsWith:
 				return attributeName.startsWith(annotation.value());

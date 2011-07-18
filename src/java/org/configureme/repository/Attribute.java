@@ -15,18 +15,18 @@ public class Attribute {
 	 */
 	private static Logger log = Logger.getLogger(Attribute.class);
 	/**
-	 * The name of the attribute
+	 * The name of the attribute.
 	 */
 	private String name;
 	
 	/**
-	 * The container for attribute values
+	 * The container for attribute values.
 	 */
 	private AttributeValue attributeValue;
 	
 	/**
-	 * Creates a new attribute
-	 * @param aName
+	 * Creates a new attribute.
+	 * @param aName attribute name
 	 */
 	public Attribute(String aName){
 		name = aName;
@@ -34,8 +34,8 @@ public class Attribute {
 	}
 	
 	/**
-	 * Return the value of the attribute in the global environment
-	 * @return
+	 * Return the value of the attribute in the global environment.
+	 * @return the value of the attribute in the global environment
 	 */
 	public String getValue(){
 		return getValue(GlobalEnvironment.INSTANCE);
@@ -44,7 +44,7 @@ public class Attribute {
 	/**
 	 * Returns the value of the attribute in the given environment.
 	 * @param in the environment to look up
-	 * @return
+	 * @return the value of the attribute in the given environment
 	 */
 	public String getValue(Environment in){
 		log.debug("looking up value for "+name+" in "+in);
@@ -52,15 +52,15 @@ public class Attribute {
 	}
 	
 	/**
-	 * Returns the name of the AttributeValue
-	 * @return
+	 * Returns the name of the AttributeValue.
+	 * @return the name of the AttributeValue
 	 */
 	public String getName(){
 		return name;
 	}
 	
 	/**
-	 * Adds a value for a given environment
+	 * Adds a value for a given environment.
 	 * @param value the value to add
 	 * @param in the environment in which the value applies
 	 */

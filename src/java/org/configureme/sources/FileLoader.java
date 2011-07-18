@@ -25,8 +25,8 @@ public class FileLoader implements SourceLoader{
 	
 	/**
 	 * Returns the file name for the given source key.
-	 * @param source
-	 * @return
+	 * @param source configuration source key
+	 * @return the file name for the given source key
 	 */
 	public static final String getFileName(ConfigurationSourceKey source){
 		if (source.getType()!=ConfigurationSourceKey.Type.FILE)

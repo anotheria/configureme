@@ -11,7 +11,7 @@ import java.util.Map.Entry;
 public interface Configuration {
 	/**
 	 * The name of the configuration. Will be the same stated in getConfiguration() call to ConfigurationManager.
-	 * @return
+	 * @return the name of the configuration.
 	 */
 	String getName();
 	
@@ -30,7 +30,7 @@ public interface Configuration {
 
 	/**
 	 * Returns the set of entries of the underlying map. Used by @SetAll annotation.
-	 * @return
+	 * @return the set of entries of the underlying map
 	 */
 	Set<Entry<String,String>> getEntries();
 }

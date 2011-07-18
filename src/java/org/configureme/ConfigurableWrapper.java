@@ -38,7 +38,7 @@ public class ConfigurableWrapper implements ConfigurationSourceListener{
 
 	/**
 	 * Returns the configurable object.
-	 * @return
+	 * @return the configurable object
 	 */
 	public Object getConfigurable() {
 		return configurable;
@@ -46,7 +46,7 @@ public class ConfigurableWrapper implements ConfigurationSourceListener{
 
 	/**
 	 * Returns the configuration key.
-	 * @return
+	 * @return the configuration key
 	 */
 	public ConfigurationSourceKey getKey() {
 		return key;
@@ -54,7 +54,7 @@ public class ConfigurableWrapper implements ConfigurationSourceListener{
 
 	/**
 	 * Returns the environment.
-	 * @return
+	 * @return the environment
 	 */
 	public Environment getEnvironment() {
 		return environment;

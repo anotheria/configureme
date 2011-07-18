@@ -6,23 +6,23 @@ package org.configureme.sources;
  */
 public interface SourceLoader {
 	/**
-	 * Returns true if the is a configuration available for the 
+	 * Returns true if the is a configuration available for the given source key.
 	 * @param key the key of the configuration source which defines type, format and name
-	 * @return
+	 * @return true if the is a configuration available for the
 	 */
 	boolean isAvailable(ConfigurationSourceKey key);
 	
 	/**
 	 * Returns the last change timestamp for given key, for reconfiguration triggering.
-	 * @param key
-	 * @return
+	 * @param key the key of the configuration source
+	 * @return the last change timestamp for the given source key.
 	 */
 	long getLastChangeTimestamp(ConfigurationSourceKey key);
 	
 	/**
 	 * Returns the content of this configuration source (i.e. content of the file).
-	 * @param key
-	 * @return
+	 * @param key the key of the configuration source
+	 * @return the content of the given source key
 	 */
 	String getContent(ConfigurationSourceKey key);
 }

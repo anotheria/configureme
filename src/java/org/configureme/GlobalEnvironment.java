@@ -7,7 +7,7 @@ package org.configureme;
  */
 public enum GlobalEnvironment implements Environment{
 	/**
-	 * The one and only instance
+	 * The one and only instance.
 	 */
 	INSTANCE;
 

@@ -12,5 +12,8 @@ import java.lang.annotation.Target;
 @Retention (RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Set {
+	/**
+	 * The value of the property.
+	 */
 	String value();
 }

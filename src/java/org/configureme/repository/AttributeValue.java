@@ -22,7 +22,7 @@ public class AttributeValue {
 	private Map<String, String> values;
 	
 	/**
-	 * Creates a new attribute values container
+	 * Creates a new attribute values container.
 	 */
 	public AttributeValue(){
 		values = new ConcurrentHashMap<String, String>();
@@ -31,8 +31,8 @@ public class AttributeValue {
 	/**
 	 * Returns the value in the given environment. If no value is found for a specific environment the code will fallback to a less complex environment (reduced form of the environment)
 	 * unless a value is found or the environment is not further reduceable.
-	 * @param in
-	 * @return
+	 * @param in environment
+	 * @return the value in the given environment
 	 */
 	public String get(Environment in){
 		if (log.isDebugEnabled())

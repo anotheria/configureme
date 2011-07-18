@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Mark a field configurable
+ * Mark a field configurable.
  */
 @Retention (RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)

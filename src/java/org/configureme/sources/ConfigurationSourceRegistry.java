@@ -48,7 +48,8 @@ public enum ConfigurationSourceRegistry {
 	}
 	
 	/**
-	 * Returns true if the key is translateable in an configuration source and the source exists. 
+	 * Returns true if the key is translateable in an configuration source and the source exists.
+	 * @return true if the key is translateable in an configuration source and the source exists
 	 */
 	public boolean isConfigurationAvailable(ConfigurationSourceKey key){
 		if (watchedSources.containsKey(key))
@@ -60,9 +61,9 @@ public enum ConfigurationSourceRegistry {
 	}
 	
 	/**
-	 * Returns the content of the configation source defined by the key.
-	 * @param key
-	 * @return
+	 * Returns the content of the configuration source defined by the key.
+	 * @param key configuration source key
+	 * @return the content of the configuration source defined by the key
 	 */
 	public String readConfigurationSource(ConfigurationSourceKey key){
 		SourceLoader loader = loaders.get(key.getType());
@@ -72,9 +73,9 @@ public enum ConfigurationSourceRegistry {
 	}
 	
 	/**
-	 * Adds a listener for the defined source
-	 * @param key
-	 * @param listener
+	 * Adds a listener for the defined source.
+	 * @param key configuration source key
+	 * @param listener listener to add
 	 */
 	public void addListener(ConfigurationSourceKey key, ConfigurationSourceListener listener){
 		ConfigurationSource source = watchedSources.get(key);
@@ -93,9 +94,9 @@ public enum ConfigurationSourceRegistry {
 	}
 	
 	/**
-	 * Removes a listener
-	 * @param key
-	 * @param listener
+	 * Removes a listener.
+	 * @param key configuration source key
+	 * @param listener listener to remove
 	 */
 	public void removeListener(ConfigurationSourceKey key, ConfigurationSourceListener listener){
 		ConfigurationSource source = watchedSources.get(key);
@@ -159,7 +160,7 @@ public enum ConfigurationSourceRegistry {
 						
 					}
 				}
-			}catch(InterruptedException e){}
+			}catch(InterruptedException ignored){}
 		}
 	}
 	/**

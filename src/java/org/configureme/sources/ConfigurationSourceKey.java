@@ -6,7 +6,7 @@ package org.configureme.sources;
  */
 public class ConfigurationSourceKey {
 	/**
-	 * The type of the source
+	 * The type of the source.
 	 */
 	public enum Type {
 		/**
@@ -25,21 +25,21 @@ public class ConfigurationSourceKey {
 	 */
 	public enum Format{
 		/**
-		 * JSON format
+		 * JSON format.
 		 */
 		JSON,
 		/**
-		 * Properties format
+		 * Properties format.
 		 */
 		PROPERTIES,
 		/**
-		 * XML format
+		 * XML format.
 		 */
 		XML;
 		
 		/**
 		 * Returns the extension under which file would be stored. 
-		 * @return
+		 * @return the extension under which file would be stored
 		 */
 		public String getExtension(){
 			return toString().toLowerCase();
@@ -47,15 +47,15 @@ public class ConfigurationSourceKey {
 	}
 	
 	/**
-	 * The type of the source
+	 * The type of the source.
 	 */
 	private Type type;
 	/**
-	 * The format of the source
+	 * The format of the source.
 	 */
 	private Format format;
 	/**
-	 * The name of the source
+	 * The name of the source.
 	 */
 	private String name;
 	
@@ -67,7 +67,7 @@ public class ConfigurationSourceKey {
 	}
 	
 	/**
-	 * Creates a new key preset to given parameters
+	 * Creates a new key preset to given parameters.
 	 * @param aType the type of the source
 	 * @param aFormat the format of the source
 	 * @param aName the name of the source
@@ -120,7 +120,7 @@ public class ConfigurationSourceKey {
 	/**
 	 * Creates a new configuration source key for property files.
 	 * @param name name of the property file.
-	 * @return
+	 * @return a new configuration source key instance for property files
 	 */
 	public static final ConfigurationSourceKey propertyFile(String name){
 		return new ConfigurationSourceKey(Type.FILE, Format.PROPERTIES, name);
@@ -129,7 +129,7 @@ public class ConfigurationSourceKey {
 	/**
 	 * Creates a new configuration source key for xml files.
 	 * @param name name of the xml file.
-	 * @return
+	 * @return a new configuration source key instance for xml files
 	 */
 	public static final ConfigurationSourceKey xmlFile(String name){
 		return new ConfigurationSourceKey(Type.FILE, Format.XML, name);
@@ -138,7 +138,7 @@ public class ConfigurationSourceKey {
 	/**
 	 * Creates a new configuration source key for json files.
 	 * @param name name of the json file.
-	 * @return
+	 * @return a new configuration source key instance for json files
 	 */
 	public static final ConfigurationSourceKey jsonFile(String name){
 		return new ConfigurationSourceKey(Type.FILE, Format.JSON, name);

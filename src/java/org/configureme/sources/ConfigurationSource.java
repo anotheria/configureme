@@ -15,15 +15,15 @@ import net.anotheria.util.NumberUtils;
  */
 public class ConfigurationSource {
 	/**
-	 * The key for the underlying source
+	 * The key for the underlying source.
 	 */
 	private ConfigurationSourceKey key;
 	/**
-	 * A list of listeners
+	 * A list of listeners.
 	 */
 	private List<ConfigurationSourceListener> listeners;
 	/**
-	 * Last detected change timestamp
+	 * Last detected change timestamp.
 	 */
 	private long lastChangeTimestamp;
 	
@@ -33,8 +33,8 @@ public class ConfigurationSource {
 	private static Logger log = Logger.getLogger(ConfigurationSource.class);
 	
 	/**
-	 * Creates a new configuration source
-	 * @param aKey
+	 * Creates a new configuration source.
+	 * @param aKey a configuration source key the as unique identification of a configuration source
 	 */
 	public ConfigurationSource(ConfigurationSourceKey aKey){
 		key = aKey;
@@ -53,8 +53,8 @@ public class ConfigurationSource {
 		}
 	}
 	/**
-	 * Removes the listener from this source
-	 * @param listener
+	 * Removes the listener from this source.
+	 * @param listener a listener to remove
 	 */
 	public void removeListener(ConfigurationSourceListener listener){
 		synchronized(listeners){
@@ -67,8 +67,8 @@ public class ConfigurationSource {
 	}
 
 	/**
-	 * Return the last change timestamp of this source in millis
-	 * @return
+	 * Return the last change timestamp of this source in millis.
+	 * @return the last change timestamp of this source in millis
 	 */
 	public long getLastChangeTimestamp() {
 		return lastChangeTimestamp;
@@ -76,17 +76,17 @@ public class ConfigurationSource {
 	}
 
 	/**
-	 * Returns the config key of this source
-	 * @return
+	 * Returns the config key of this source.
+	 * @return the configuration key of this source
 	 */
 	public ConfigurationSourceKey getKey(){
 		return key;
 	}
 	
 	/**
-	 * Returns true if this source's change timestamp is older as the given timestamp
-	 * @param sourceChangeTimestamp
-	 * @return
+	 * Returns true if this source's change timestamp is older as the given timestamp.
+	 * @param sourceChangeTimestamp timestamp
+	 * @return true if this source's change timestamp is older as the given timestamp
 	 */
 	public boolean isOlderAs(long sourceChangeTimestamp){
 		return lastChangeTimestamp < sourceChangeTimestamp;

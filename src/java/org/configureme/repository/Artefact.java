@@ -18,12 +18,12 @@ public class Artefact {
 	 */
 	private String name;
 	/**
-	 * The attribute map
+	 * The attribute map.
 	 */
 	private Map<String, Attribute> attributes;
 	
 	/**
-	 * Creates a new Artefact with the given name
+	 * Creates a new Artefact with the given name.
 	 * @param aName the name of the artefact
 	 */
 	Artefact(String aName){
@@ -34,7 +34,7 @@ public class Artefact {
 	/**
 	 * Returns the attribute with the given name. Throws an IllegalArgumentException if there is no such attribute.
 	 * @param attributeName
-	 * @return
+	 * @return the attribute with the given name
 	 */
 	public Attribute getAttribute(String attributeName){
 		Attribute a = attributes.get(attributeName);
@@ -65,16 +65,16 @@ public class Artefact {
 	}
 	
 	/**
-	 * Returns the name of the artefact
-	 * @return
+	 * Returns the name of the artefact.
+	 * @return the name of the artefact
 	 */
 	public String getName(){
 		return name;
 	}
 	
 	/**
-	 * Returns names of the contained attributes
-	 * @return
+	 * Returns names of the contained attributes.
+	 * @return names of the contained attributes
 	 */
 	public List<String> getAttributeNames(){
 		ArrayList<String> names = new ArrayList<String>();

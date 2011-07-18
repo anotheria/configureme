@@ -14,16 +14,16 @@ import org.configureme.Configuration;
  */
 public class ConfigurationImpl implements Configuration{
 	/**
-	 * The name of the configuration
+	 * The name of the configuration.
 	 */
 	private String name;
 	/**
-	 * The attributes 
+	 * The attributes .
 	 */
 	private Map<String,String> attributes;
 	
 	/**
-	 * Creates a new ConfigurationImpl
+	 * Creates a new ConfigurationImpl.
 	 * @param aName
 	 */
 	public ConfigurationImpl(String aName){

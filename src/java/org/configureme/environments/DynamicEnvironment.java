@@ -17,7 +17,7 @@ import org.configureme.GlobalEnvironment;
 public class DynamicEnvironment implements Environment, Cloneable{
 
 	/**
-	 * Stores parts of the environment
+	 * Stores parts of the environment.
 	 */
 	private ArrayList<String> elements;
 	
@@ -73,7 +73,7 @@ public class DynamicEnvironment implements Environment, Cloneable{
 	/**
 	 * Creates a new DynamicEnvironment by adding an element to the current environment. Creates a new object, hence threadsafe.
 	 * @param anElement element to add to the environment
-	 * @return
+	 * @return new DynamicEnvironment by adding an element to the current environment
 	 */
 	public DynamicEnvironment add(String anElement){
 		elements.add(anElement);
@@ -124,8 +124,8 @@ public class DynamicEnvironment implements Environment, Cloneable{
 	
 	/**
 	 * Parses a string and creates a new Environment which corresponds the string. 
-	 * @param s
-	 * @return
+	 * @param s string to parse
+	 * @return new Environment which corresponds the string
 	 */
 	public static Environment parse(String s){
 		if (s==null || s.length()==0 || s.trim().length()==0)

@@ -123,31 +123,39 @@ public class ApplicationEnvironment implements Environment{
 		 * Creates new builder.
 		 */
 		public Builder(){
-			system = app = service = host = "";
+			system = "";
+			app = "";
+			service = "";
+			host = "";
 		}
 		
 		/**
-		 * Sets the property system. Returns itself for chaining.
+		 * Sets the property system. 
+		 * @return self for chaining
 		 */
 		public Builder system(String value){ system=value; return this; }
 		
 		/**
-		 * Sets the property app. Returns itself for chaining.
+		 * Sets the property app.
+		 * @return self for chaining
 		 */
 		public Builder app(String value){ app=value; return this; }
 		
 		/**
-		 * Sets the property service. Returns itself for chaining.
+		 * Sets the property service.
+		 * @return self for chaining
 		 */
 		public Builder service(String value){ service=value; return this; }
 
 		/**
-		 * Sets the property host. Returns itself for chaining.
+		 * Sets the property host.
+		 * @return self for chaining
 		 */
 		public Builder host(String value){ host=value; return this; }
 		
 		/**
 		 * Creates a new ApplicationEnvironment from this builder.
+		 * @return ApplicationEnvironment instance
 		 */
 		public ApplicationEnvironment build(){
 			return new ApplicationEnvironment(this);
@@ -155,7 +163,7 @@ public class ApplicationEnvironment implements Environment{
 	}
 
 	/**
-	 * Returns the value of the system property
+	 * Returns the value of the system property.
 	 * @return value of the system property
 	 */
 	public String getSystem() {
@@ -163,7 +171,7 @@ public class ApplicationEnvironment implements Environment{
 	}
 
 	/**
-	 * Returns the value of the app property
+	 * Returns the value of the app property.
 	 * @return value of the app property.
 	 */
 	public String getApp() {
@@ -179,7 +187,7 @@ public class ApplicationEnvironment implements Environment{
 	}
 
 	/**
-	 * Returns the value of the host property
+	 * Returns the value of the host property.
 	 * @return value for the host property
 	 */
 	public String getHost() {

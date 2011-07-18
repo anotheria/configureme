@@ -12,7 +12,7 @@ import org.configureme.GlobalEnvironment;
 public class LocaleBasedEnvironment implements Environment{
 	
 	/**
-	 * The internal locale
+	 * The internal locale.
 	 */
 	private Locale locale;
 	
@@ -39,11 +39,11 @@ public class LocaleBasedEnvironment implements Environment{
 	 */
 	public static class Builder{
 		/**
-		 * The language part of the locale
+		 * The language part of the locale.
 		 */
 		private String language;
 		/**
-		 * The country part of the locale
+		 * The country part of the locale.
 		 */
 		private String country;
 		/**
@@ -72,27 +72,30 @@ public class LocaleBasedEnvironment implements Environment{
 		
 		/**
 		 * Creates a new LocaleBasedEnvironment from this build.
-		 * @return
+		 * @return LocaleBasedEnvironment instance
 		 */
 		public LocaleBasedEnvironment build(){
 			return new LocaleBasedEnvironment(this);
 		}
 		
 		/**
-		 * Sets the country. Returns self for chaining.
+		 * Sets the country.
+		 * @return self for chaining
 		 */
 		public Builder country(String value){
 			country = value.trim(); return this;
 		}
 		/**
-		 * Sets the language. Returns self for chaining.
+		 * Sets the language.
+		 * @return self for chaining
 		 */
 		public Builder language(String value){
 			language = value.trim(); return this;
 		}
 		
 		/**
-		 * Sets the variant. Returns self for chaining.
+		 * Sets the variant.
+		 * @return self for chaining
 		 */
 		public Builder variant(String value){
 			variant = value.trim(); return this;
@@ -132,9 +135,9 @@ public class LocaleBasedEnvironment implements Environment{
 	}
 	
 	/**
-	 * This function is used internally to reduce the variant -> a_b_c -> a_b
+	 * This function is used internally to reduce the variant -> a_b_c -> a_b.
 	 * @param variant the variant to reduce
-	 * @return
+	 * @return reduced variant
 	 */
 	private static String reduceVariant(String variant){
 		if (isEmpty(variant))
@@ -157,6 +160,7 @@ public class LocaleBasedEnvironment implements Environment{
 	
 	/**
 	 * Two LocaleBasedEnvironments are equal to each other if the underlying locales are equal.
+	 * @return true if equals.
 	 */
 	@Override
 	public boolean equals(Object o){

@@ -18,7 +18,7 @@ import org.configureme.sources.ConfigurationSourceListener;
  */
 public enum ConfigurationRepository implements ConfigurationSourceListener{
 	/**
-	 * The one and only instance of the ConfigurationRepository
+	 * The one and only instance of the ConfigurationRepository.
 	 */
 	INSTANCE;
 	
@@ -30,7 +30,7 @@ public enum ConfigurationRepository implements ConfigurationSourceListener{
 	/**
 	 * Creates a new internal artefact for the given name.
 	 * @param name the name of the artefact
-	 * @return
+	 * @return a new internal Artefact instance for the given name
 	 */
 	public Artefact createArtefact(String name){
 		Artefact old = artefacts.get(name);
@@ -44,8 +44,8 @@ public enum ConfigurationRepository implements ConfigurationSourceListener{
 	
 	/**
 	 * Returns the artefact from the internal storage.
-	 * @param name
-	 * @return
+	 * @param name the artefact name
+	 * @return the Artefact from the internal storage
 	 */
 	public Artefact getArtefact(String name){
 		return artefacts.get(name);
@@ -54,7 +54,7 @@ public enum ConfigurationRepository implements ConfigurationSourceListener{
 	/**
 	 * Returns true if the configuration for the given configuration name is available.
 	 * @param name the name of the configuration
-	 * @return 
+	 * @return true if the configuration for the given configuration name is available, false - otherwise
 	 */
 	public boolean hasConfiguration(String name){
 		return getArtefact(name) != null;
@@ -64,7 +64,7 @@ public enum ConfigurationRepository implements ConfigurationSourceListener{
 	 * Returns a snapshot of the configuration with the given name in the given environment.
 	 * @param name the name of the configuration
 	 * @param environment the environment of the configuration
-	 * @return
+	 * @return a snapshot of the configuration with the given name in the given environment
 	 */
 	public Configuration getConfiguration(String name, Environment environment){
 		if (environment==null)

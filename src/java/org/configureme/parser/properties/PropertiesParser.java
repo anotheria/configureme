@@ -22,7 +22,7 @@ public class PropertiesParser implements ConfigurationParser {
 		
 		content = StringUtils.removeBashComments(content);
 		
-		String lines[] = StringUtils.tokenize(content, '\n');
+		String[] lines = StringUtils.tokenize(content, '\n');
 		
 		ParsedConfiguration configuration = new ParsedConfiguration(name);
 		
