@@ -132,8 +132,9 @@ public class DynamicEnvironment implements Environment, Cloneable{
 			return GlobalEnvironment.INSTANCE;
 		String[] tokens = StringUtils.tokenize(s, '_');
 		DynamicEnvironment env = new DynamicEnvironment();
-		for (String t : tokens)
-			env.add(t);
+		for (String t : tokens) {
+            env.add(t);
+        }
 		return env;
 	}
 	
