@@ -1,10 +1,10 @@
 package org.configureme.parser;
 
+import net.anotheria.util.StringUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
-
-import net.anotheria.util.StringUtils;
 
 /**
  * This is a parser for the string representation of the arrays.
@@ -43,7 +43,7 @@ public final class StringArrayParser {
 		}
 		
 		StringBuilder builder = new StringBuilder("");
-		if(array != null && array.length > 0) {
+		if(array.length > 0) {
 			// Add first element value with delimiter encoding
 			builder.append(array[0].toString().replace(STRING_ARRAY_DELIM, STRING_ARRAY_DELIM_CODE));
 			// Add all other elements with delimiter encoding

@@ -14,6 +14,7 @@ public class TestPojo {
 	private String[] stringArrayValue;
 	private int onlyInA;
 	private int onlyInB;
+    private InnerTestPojo innerValue;
 	
 	@Override public String toString(){
 		String ret = "";
@@ -28,6 +29,7 @@ public class TestPojo {
 		ret += " stringArray: " + (stringArrayValue == null ? "null" : StringUtils.concatenateTokens(",",stringArrayValue));
 		ret += " onlyInA: "+onlyInA;
 		ret += " onlyInB: "+onlyInB;
+		ret += " innerValue: "+innerValue;
 		return ret;
 	}
 	
@@ -98,4 +100,12 @@ public class TestPojo {
 	public void setOnlyInB(int onlyInB) {
 		this.onlyInB = onlyInB;
 	}
+
+    public InnerTestPojo getInnerValue() {
+        return innerValue;
+    }
+
+    public void setInnerValue(InnerTestPojo innerValue) {
+        this.innerValue = innerValue;
+    }
 }

@@ -26,6 +26,10 @@
 			intValue : 3000,
 			stringValue: "bbbbb",
 			onlyInB: 1000,
+            "@innerValue" : {
+                stringValue: "foo",
+                booleanValue: true,
+            }
 		},
 	},
 	
