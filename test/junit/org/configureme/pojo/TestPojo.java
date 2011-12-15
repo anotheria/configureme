@@ -1,5 +1,7 @@
 package org.configureme.pojo;
 
+import java.util.Arrays;
+
 import net.anotheria.util.StringUtils;
 
 public class TestPojo {
@@ -15,7 +17,8 @@ public class TestPojo {
 	private int onlyInA;
 	private int onlyInB;
     private InnerTestPojo innerValue;
-	
+    private InnerTestPojo[] innerValueArray;
+
 	@Override public String toString(){
 		String ret = "";
 		ret += "short: "+shortValue;
@@ -30,9 +33,10 @@ public class TestPojo {
 		ret += " onlyInA: "+onlyInA;
 		ret += " onlyInB: "+onlyInB;
 		ret += " innerValue: "+innerValue;
+		ret += " innerValueArray: "+Arrays.toString(innerValueArray);
 		return ret;
 	}
-	
+
 	public short getShortValue() {
 		return shortValue;
 	}
@@ -84,7 +88,7 @@ public class TestPojo {
 	public String[] getStringArrayValue() {
 		return stringArrayValue;
 	}
-	
+
 	public void setStringArrayValue(String[] stringArrayValue) {
 		this.stringArrayValue = stringArrayValue;
 	}
@@ -107,5 +111,13 @@ public class TestPojo {
 
     public void setInnerValue(InnerTestPojo innerValue) {
         this.innerValue = innerValue;
+    }
+
+    public InnerTestPojo[] getInnerValueArray() {
+        return innerValueArray;
+    }
+
+    public void setInnerValueArray(InnerTestPojo[] innerValueArray) {
+        this.innerValueArray = innerValueArray;
     }
 }

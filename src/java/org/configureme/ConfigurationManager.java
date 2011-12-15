@@ -1,5 +1,18 @@
 package org.configureme;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.apache.log4j.Logger;
 import org.configureme.annotations.AfterConfiguration;
 import org.configureme.annotations.AfterInitialConfiguration;
@@ -21,23 +34,16 @@ import org.configureme.parser.ParsedConfiguration;
 import org.configureme.parser.StringArrayParser;
 import org.configureme.parser.json.JsonParser;
 import org.configureme.parser.properties.PropertiesParser;
+import org.configureme.repository.ArrayValue;
 import org.configureme.repository.Artefact;
+import org.configureme.repository.CompositeValue;
 import org.configureme.repository.ConfigurationRepository;
+import org.configureme.repository.PlainValue;
+import org.configureme.repository.Value;
 import org.configureme.sources.ConfigurationSourceKey;
 import org.configureme.sources.ConfigurationSourceKey.Format;
 import org.configureme.sources.ConfigurationSourceKey.Type;
 import org.configureme.sources.ConfigurationSourceRegistry;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Configuration manager (this is the one YOU must use) is a utility class for retrieval of configurations and automatical configurations of components.
@@ -52,6 +58,22 @@ public enum ConfigurationManager {
 	 * The configurationmanager is a singleton.
 	 */
 	INSTANCE;
+
+	/**
+	 * Set of classes specifying plain attribute types.
+	 * Allows quickly check whether an attribute is plain or not.
+	 */
+	@SuppressWarnings("unchecked")
+	private final static java.util.Set<Class<?>> PLAIN_TYPES = new HashSet<Class<?>>(
+		Arrays.asList(
+			String.class, Object.class,
+			Boolean.class, boolean.class,
+			Short.class, short.class,
+			Integer.class, int.class,
+			Long.class, long.class,
+			Byte.class, byte.class,
+			Float.class, float.class,
+			Double.class, double.class));
 
 	/**
 	 * The default environment for configuration.
@@ -357,30 +379,47 @@ public enum ConfigurationManager {
 	 */
 	private void configure(ConfigurationSourceKey key, Object o, Environment in, Class<? extends Annotation>[] callBefore,  Class<? extends Annotation>[] callAfter, ConfigureMe ann){
 		//System.out.println("CALLED configure("+key+", "+o+","+in+")");
-		Configuration config = getConfiguration(key, in);
-
 		Class<?> clazz = o.getClass();
+
 		if (ann==null)
 			ann = clazz.getAnnotation(ConfigureMe.class);
 		if (ann==null)
 			throw new AssertionError("An unannotated class shouldn't make it sofar, obj: "+o+" class "+o.getClass());
 
+		boolean configureAllFields = ann.allfields();
+
+		configure(getConfiguration(key, in), o, callBefore, callAfter, configureAllFields);
+
+		if (log!=null && log.isDebugEnabled()){
+			log.debug("Finished configuration of "+o+" as "+key);
+		}
+	}
+
+	/**
+	 * Applies specified configuration to specified object.
+	 *
+	 * @param config the configuration to be applied
+	 * @param o the object to be configured
+	 * @param callBefore annotations, methods annotated with those will be called prior to the configuration
+	 * @param callAfter annotations, methods annotated with those will be called after the configuration
+	 * @param configureAllFields specifies whether to set all fields regardless if they are marked configured or not
+	 */
+	private void configure(Configuration config, Object o, Class<? extends Annotation>[] callBefore,  Class<? extends Annotation>[] callAfter, boolean configureAllFields) {
+		Class<?> clazz = o.getClass();
 		Method[] methods = clazz.getDeclaredMethods();
 		callAnnotations(o, methods, callBefore);
-
-		boolean configureAllFields = ann.allfields();
 
 		//first set fields
 		Field[] fields = clazz.getDeclaredFields();
 		for (Field f : fields){
 			if (f.isAnnotationPresent(Configure.class) || (configureAllFields && !f.isAnnotationPresent(DontConfigure.class))){
 				String attributeName = f.getName();
-				String attributeValue = config.getAttribute(attributeName);
+				Value attributeValue = config.getAttribute(attributeName);
 				if (attributeValue==null)
 					continue;
 				if (Modifier.isPublic(f.getModifiers()) ){
 					try{
-						f.set(o, resolveValue(f.getType(), attributeValue));
+						f.set(o, resolveValue(f.getType(), attributeValue, callBefore, callAfter));
 					}catch(Exception e){
 						log.warn(f+".set("+o+", "+attributeValue+")", e);
 					}
@@ -388,7 +427,7 @@ public enum ConfigurationManager {
 					String methodName = "set"+f.getName().toUpperCase().charAt(0)+f.getName().substring(1);
 					try{
 						Method toSet = clazz.getMethod(methodName, f.getType());
-						toSet.invoke(o, resolveValue(f.getType(), attributeValue));
+						toSet.invoke(o, resolveValue(f.getType(), attributeValue, callBefore, callAfter));
 					}catch(NoSuchMethodException e){
 						log.error("can't find method "+methodName+" ("+f.getType()+")");
 					}catch(Exception e){
@@ -401,24 +440,24 @@ public enum ConfigurationManager {
 
 		for (Method method : methods){
 			if (method.isAnnotationPresent(SetAll.class)){
-				Collection<Entry<String,String>> entries = config.getEntries();
+				Collection<Entry<String,Value>> entries = config.getEntries();
 				log.debug("Calling method "+method+" with "+entries);
-				for (Entry<String,String> entry : entries){
+				for (Entry<String,Value> entry : entries){
 					try{
-						method.invoke(o, entry.getKey(), entry.getValue());
+						method.invoke(o, entry.getKey(), resolveValue(method.getParameterTypes()[1], entry.getValue(), callBefore, callAfter));
 					}catch(Exception e){
 						log.warn(method.getName()+"invoke("+o+", "+entry.getKey()+", "+entry.getValue()+")", e);
 					}
 				}
 			}
 			if (method.isAnnotationPresent(SetIf.class)){
-				Collection<Entry<String,String>> entries = config.getEntries();
+				Collection<Entry<String,Value>> entries = config.getEntries();
 				SetIf setIfAnnotation = method.getAnnotation(SetIf.class);
-				for (Entry<String,String> entry : entries){
+				for (Entry<String,Value> entry : entries){
 					if (SetIf.ConditionChecker.satisfyCondition(setIfAnnotation, entry.getKey())){
 						log.debug("Calling method "+method+" with parameters : \""+entry.getKey()+"\", \""+entry.getValue()+"\"");
 						try{
-							method.invoke(o, entry.getKey(), entry.getValue());
+							method.invoke(o, entry.getKey(), resolveValue(method.getParameterTypes()[1], entry.getValue(), callBefore, callAfter));
 						}catch(Exception e){
 							log.warn(method.getName()+"invoke("+o+", "+entry.getKey()+", "+entry.getValue()+")", e);
 						}
@@ -429,11 +468,11 @@ public enum ConfigurationManager {
 				log.debug("method "+method+" is annotated");
 				Set setAnnotation = method.getAnnotation(Set.class);
 				String attributeName = setAnnotation.value();
-				String attributeValue = config.getAttribute(attributeName);
+				Value attributeValue = config.getAttribute(attributeName);
 				if (attributeValue!=null){
 					log.debug("setting "+method.getName()+" to "+attributeValue+" configured by "+attributeName);
 					try{
-						method.invoke(o, resolveValue(method.getParameterTypes()[0], attributeValue));
+						method.invoke(o, resolveValue(method.getParameterTypes()[0], attributeValue, callBefore, callAfter));
 					}catch(Exception e){
 						log.warn(method.getName()+"invoke("+o+", "+attributeValue+")", e);
 					}
@@ -442,12 +481,7 @@ public enum ConfigurationManager {
 			}
 		}
 
-
 		callAnnotations(o, methods, callAfter);
-
-		if (log!=null && log.isDebugEnabled()){
-			log.debug("Finished configuration of "+o+" as "+key);
-		}
 	}
 
 	/**
@@ -513,12 +547,12 @@ public enum ConfigurationManager {
 				pa = parser.parseConfiguration(configurationName, content);
 			}catch(ConfigurationParserException e){
 				log.error("getConfiguration("+configurationName+", "+in+")", e );
-				throw new IllegalArgumentException(configSourceKey+" is not parseable: "+e.getMessage());
+				throw new IllegalArgumentException(configSourceKey+" is not parseable: "+e.getMessage(), e);
 			}
 			//System.out.println("Parsed "+pa);
-			List<ParsedAttribute> attributes = pa.getAttributes();
+			List<? extends ParsedAttribute<?>> attributes = pa.getAttributes();
 			Artefact art = ConfigurationRepository.INSTANCE.createArtefact(configurationName);
-			for (ParsedAttribute a : attributes){
+			for (ParsedAttribute<?> a : attributes){
 				art.addAttributeValue(a.getName(), a.getValue(), a.getEnvironment());
 			}
 
@@ -555,46 +589,106 @@ public enum ConfigurationManager {
 		return targetClazz.getName().substring(targetClazz.getName().lastIndexOf('.')+1).toLowerCase();
 	}
 
-	private static Object resolveValue(Class<?> type, String value){
+	/**
+	 * Resolves attribute value to an instance of specified value class.
+	 * @param valueClass class of the resulting value instance
+	 * @param attributeValue array attribute value specifying the configuration of the resulting instance
+	 * @param callBefore annotations, methods annotated with those will be called prior to the configuration
+	 * @param callAfter annotations, methods annotated with those will be called after the configuration
+	 * @return an instance of the specified value class which is configured according to the specified attribute value.
+	 */
+	private Object resolveValue(Class<?> valueClass, Value attributeValue, Class<? extends Annotation>[] callBefore,  Class<? extends Annotation>[] callAfter) throws InstantiationException, IllegalAccessException {
+		boolean isValueClassPlain = isPlain(valueClass);
+		if (attributeValue instanceof PlainValue && isValueClassPlain) {
+			return resolvePlainValue(valueClass, (PlainValue) attributeValue);
+		} else if (attributeValue instanceof CompositeValue && !isValueClassPlain && !valueClass.isArray()) {
+			return resolveCompositeValue(valueClass, (CompositeValue) attributeValue, callBefore, callAfter);
+		} else if (attributeValue instanceof ArrayValue && valueClass.isArray()) {
+			return resolveArrayValue(valueClass, (ArrayValue) attributeValue, callBefore, callAfter);
+		} else {
+			throw new IllegalArgumentException("Can't resolve attribute value " + attributeValue + " to type: " + valueClass.getCanonicalName());
+		}
+	}
+
+	/**
+	 * Checks whether the class specifies a plain type or array (with arbitrary number of dimensions) of plain types.
+	 * @param type the type to be checked
+	 * @return true if the type is plain, false otherwise
+	 */
+	private static boolean isPlain(Class<?> type) {
+		return (type.isArray())
+				? isPlain(type.getComponentType())
+				: PLAIN_TYPES.contains(type);
+	}
+
+	private static Object resolvePlainValue(Class<?> type, PlainValue value){
 		if (type==null)
 			throw new IllegalArgumentException("Checkstyle forced me to do this, apparently type is null which can't happen in resolveValue(null, "+value+")");
-		if (type.equals(String.class))
-			return value;
+		if (type.equals(String.class) || type.equals(Object.class))
+			return value.get();
 		if (type.equals(Boolean.class) || type.equals(boolean.class))
-			return Boolean.valueOf(value);
+			return Boolean.valueOf(value.get());
 		if (type.equals(Short.class) || type.equals(short.class))
-			return Short.valueOf(value);
+			return Short.valueOf(value.get());
 		if (type.equals(Integer.class) || type.equals(int.class))
-			return Integer.valueOf(value);
+			return Integer.valueOf(value.get());
 		if (type.equals(Long.class) || type.equals(long.class))
-			return Long.valueOf(value);
+			return Long.valueOf(value.get());
 		if (type.equals(Byte.class) || type.equals(byte.class))
-			return Byte.valueOf(value);
+			return Byte.valueOf(value.get());
 		if (type.equals(Float.class) || type.equals(float.class))
-			return Float.valueOf(value);
+			return Float.valueOf(value.get());
 		if (type.equals(Double.class) || type.equals(double.class))
-			return Double.valueOf(value);
+			return Double.valueOf(value.get());
 
 		//Arrays value
 		if (type.equals(String[].class))
-			return StringArrayParser.parseStringArray(value);
+			return StringArrayParser.parseStringArray(value.get());
 		if (type.equals(boolean[].class))
-			return StringArrayParser.parseBooleanArray(value);
+			return StringArrayParser.parseBooleanArray(value.get());
 		if (type.equals(short[].class))
-			return StringArrayParser.parseShortArray(value);
+			return StringArrayParser.parseShortArray(value.get());
 		if (type.equals(int[].class))
-			return StringArrayParser.parseIntArray(value);
+			return StringArrayParser.parseIntArray(value.get());
 		if (type.equals(long[].class))
-			return StringArrayParser.parseLongArray(value);
+			return StringArrayParser.parseLongArray(value.get());
 		if (type.equals(byte[].class))
-			return StringArrayParser.parseByteArray(value);
+			return StringArrayParser.parseByteArray(value.get());
 		if (type.equals(float[].class))
-			return StringArrayParser.parseFloatArray(value);
+			return StringArrayParser.parseFloatArray(value.get());
 		if (type.equals(double[].class))
-			return StringArrayParser.parseDoubleArray(value);
+			return StringArrayParser.parseDoubleArray(value.get());
 
 		throw new IllegalArgumentException("Can't resolve type: "+type+", value: "+value);
 	}
 
+	/**
+	 * Resolves array attribute value to an instance of specified array value class.
+	 * @param valueClass class of the resulting value instance
+	 * @param attributeValue array attribute value specifying the configuration of the resulting instance
+	 * @param callBefore annotations, methods annotated with those will be called prior to the configuration
+	 * @param callAfter annotations, methods annotated with those will be called after the configuration
+	 * @return an array instance of the specified value class which is configured according to the specified array attribute value.
+	 */
+	private Object[] resolveArrayValue(Class<?> valueClass, ArrayValue attributeValue, Class<? extends Annotation>[] callBefore,  Class<? extends Annotation>[] callAfter) throws InstantiationException, IllegalAccessException {
+		Object[] resolvedValue = (Object[]) Array.newInstance(valueClass.getComponentType(), attributeValue.get().size());
+		for (int i = 0; i < resolvedValue.length; ++i)
+			resolvedValue[i] = resolveValue(valueClass.getComponentType(), attributeValue.get().get(i), callBefore, callAfter);
 
+		return resolvedValue;
+	}
+
+	/**
+	 * Resolves composite attribute value to an instance of specified value class.
+	 * @param valueClass class of the resulting value instance
+	 * @param attributeValue composite attribute value specifying the configuration of the resulting instance
+	 * @param callBefore annotations, methods annotated with those will be called prior to the configuration
+	 * @param callAfter annotations, methods annotated with those will be called after the configuration
+	 * @return an instance of the specified value class which is configured according to the specified composite attribute value.
+	 */
+	private Object resolveCompositeValue(Class<?> valueClass, CompositeValue attributeValue, Class<? extends Annotation>[] callBefore,  Class<? extends Annotation>[] callAfter) throws InstantiationException, IllegalAccessException {
+		Object resolvedValue = valueClass.newInstance();
+		configure(attributeValue.get(), resolvedValue, callBefore, callAfter, false);
+		return resolvedValue;
+	}
 }

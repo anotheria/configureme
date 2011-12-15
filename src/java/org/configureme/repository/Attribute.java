@@ -9,7 +9,6 @@ import org.configureme.GlobalEnvironment;
  * @author lrosenberg
  */
 public class Attribute {
-	
 	/**
 	 * The logger.
 	 */
@@ -18,12 +17,12 @@ public class Attribute {
 	 * The name of the attribute.
 	 */
 	private String name;
-	
+
 	/**
 	 * The container for attribute values.
 	 */
 	private AttributeValue attributeValue;
-	
+
 	/**
 	 * Creates a new attribute.
 	 * @param aName attribute name
@@ -32,12 +31,12 @@ public class Attribute {
 		name = aName;
 		attributeValue = new AttributeValue();
 	}
-	
+
 	/**
 	 * Return the value of the attribute in the global environment.
 	 * @return the value of the attribute in the global environment
 	 */
-	public String getValue(){
+	public Value getValue(){
 		return getValue(GlobalEnvironment.INSTANCE);
 	}
 
@@ -46,11 +45,11 @@ public class Attribute {
 	 * @param in the environment to look up
 	 * @return the value of the attribute in the given environment
 	 */
-	public String getValue(Environment in){
+	public Value getValue(Environment in){
 		log.debug("looking up value for "+name+" in "+in);
 		return attributeValue.get(in);
 	}
-	
+
 	/**
 	 * Returns the name of the AttributeValue.
 	 * @return the name of the AttributeValue
@@ -58,16 +57,16 @@ public class Attribute {
 	public String getName(){
 		return name;
 	}
-	
+
 	/**
 	 * Adds a value for a given environment.
 	 * @param value the value to add
 	 * @param in the environment in which the value applies
 	 */
-	public void addValue(String value, Environment in){
+	public void addValue(Value value, Environment in){
 		attributeValue.set(value, in);
 	}
-	
+
 	@Override public String toString(){
 		return getName()+"="+attributeValue;
 	}

@@ -4,25 +4,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The parsed configuration is flattened content of a configuration file which contains all contained attribute name,value,environment combinations. 
+ * The parsed configuration is flattened content of a configuration file which contains all contained attribute name,value,environment combinations.
  * @author lrosenberg
  */
 public class ParsedConfiguration {
 	/**
 	 * The list of contained attributes.
 	 */
-	private List<ParsedAttribute> attributes;
+	private List<ParsedAttribute<?>> attributes;
 
 	/**
 	 * Timestamp of the parse process.
 	 */
 	private long parseTimestamp;
-	
+
 	/**
 	 * The name of the configuration.
 	 */
 	private String name;
-	
+
 	/**
 	 * Creates a new parsed configuration object.
 	 * @param aName the name of the configuration to which the parsed version belongs.
@@ -30,14 +30,14 @@ public class ParsedConfiguration {
 	public ParsedConfiguration(String aName){
 		name = aName;
 		parseTimestamp = System.currentTimeMillis();
-		attributes = new ArrayList<ParsedAttribute>();
+		attributes = new ArrayList<ParsedAttribute<?>>();
 	}
-	
+
 	/**
 	 * Adds an attribute to the internal attribute list.
 	 * @param anAttribute the attribute to add
 	 */
-	public void addAttribute(ParsedAttribute anAttribute){
+	public void addAttribute(ParsedAttribute<?> anAttribute){
 		attributes.add(anAttribute);
 	}
 
@@ -45,7 +45,7 @@ public class ParsedConfiguration {
 	 * Returns the internal list of attributes.
 	 * @return the internal list of attributes
 	 */
-	public List<ParsedAttribute> getAttributes() {
+	public List<ParsedAttribute<?>> getAttributes() {
 		return attributes;
 	}
 
@@ -53,7 +53,7 @@ public class ParsedConfiguration {
 	 * Sets the attributes.
 	 * @param attributes attributes to set
 	 */
-	public void setAttributes(List<ParsedAttribute> attributes) {
+	public void setAttributes(List<ParsedAttribute<?>> attributes) {
 		this.attributes = attributes;
 	}
 
@@ -72,10 +72,8 @@ public class ParsedConfiguration {
 	public String getName() {
 		return name;
 	}
-	
+
 	@Override public String toString(){
 		return getName()+": "+getAttributes();
 	}
-	
-	
 }

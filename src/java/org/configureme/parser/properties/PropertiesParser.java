@@ -7,6 +7,7 @@ import org.configureme.parser.ConfigurationParser;
 import org.configureme.parser.ConfigurationParserException;
 import org.configureme.parser.ParsedAttribute;
 import org.configureme.parser.ParsedConfiguration;
+import org.configureme.parser.PlainParsedAttribute;
 
 /**
  * COnfigurationparser implementation for Property files.
@@ -18,14 +19,13 @@ public class PropertiesParser implements ConfigurationParser {
 	@Override
 	public ParsedConfiguration parseConfiguration(String name, String content)
 			throws ConfigurationParserException {
-		
-		
+
 		content = StringUtils.removeBashComments(content);
-		
+
 		String[] lines = StringUtils.tokenize(content, '\n');
-		
+
 		ParsedConfiguration configuration = new ParsedConfiguration(name);
-		
+
 		for (String line : lines){
 			if (line==null || line.trim().length()==0)
 				continue;
@@ -43,15 +43,11 @@ public class PropertiesParser implements ConfigurationParser {
 			String propertyValue = tokensQL[1];
 			for (int i=0; i<tokensDot.length-1; i++)
 				env.add(tokensDot[i]);
-			
-			ParsedAttribute pa = new ParsedAttribute();
-			pa.setEnvironment(env);
-			pa.setName(propertyName);
-			pa.setValue(propertyValue);
+
+			ParsedAttribute<?> pa = new PlainParsedAttribute(propertyName, env, propertyValue);
 			configuration.addAttribute(pa);
-			
 		}
-		
+
 		return configuration;
 	}
 

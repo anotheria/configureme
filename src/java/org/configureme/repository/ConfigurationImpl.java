@@ -20,29 +20,29 @@ public class ConfigurationImpl implements Configuration{
 	/**
 	 * The attributes .
 	 */
-	private Map<String,String> attributes;
-	
+	private Map<String, Value> attributes;
+
 	/**
 	 * Creates a new ConfigurationImpl.
 	 * @param aName
 	 */
 	public ConfigurationImpl(String aName){
 		name = aName;
-		attributes = new ConcurrentHashMap<String, String>();
+		attributes = new ConcurrentHashMap<String, Value>();
 	}
-	
+
 	@Override
-	public String getAttribute(String attributeName) {
+	public Value getAttribute(String attributeName) {
 		return attributes.get(attributeName);
 	}
-	
+
 	@Override
 	public Collection<String> getAttributeNames(){
 		return attributes.keySet();
 	}
-	
+
 	@Override
-	public Set<Entry<String,String>> getEntries(){
+	public Set<Entry<String, Value>> getEntries(){
 		return attributes.entrySet();
 	}
 
@@ -50,26 +50,26 @@ public class ConfigurationImpl implements Configuration{
 	public String getName() {
 		return name;
 	}
-	
+
 	/**
 	 * Sets the value of the attribute (in the selected environment).
 	 * @param attributeName
 	 * @param attributeValue
 	 */
-	public void setAttribute(String attributeName, String attributeValue){
+	public void setAttribute(String attributeName, Value attributeValue){
 		attributes.put(attributeName, attributeValue);
 	}
-	
+
 	@Override public String toString(){
 		return getName()+": "+attributes;
 	}
 
 	@Override public boolean equals(Object o){
 		return o instanceof ConfigurationImpl &&
-		 name.equals(((ConfigurationImpl)o).name) && 
+		 name.equals(((ConfigurationImpl)o).name) &&
 		 attributes.equals(((ConfigurationImpl)o).attributes);
 	}
-	
+
 	@Override public int hashCode(){
 		return name == null ? 0 : name.hashCode();
 	}
