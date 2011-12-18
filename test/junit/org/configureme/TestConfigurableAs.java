@@ -1,7 +1,5 @@
 package org.configureme;
 
-import net.anotheria.util.StringUtils;
-
 import org.configureme.annotations.AfterConfiguration;
 import org.configureme.annotations.AfterInitialConfiguration;
 import org.configureme.annotations.AfterReConfiguration;
@@ -23,12 +21,11 @@ public class TestConfigurableAs {
 	@Configure private byte byteValue;
 	@Configure private float floatValue;
 	@Configure private double doubleValue ;
-	@Configure private String[] stringArrayValue;
 	@Configure private int onlyInA;
 	@Configure private int onlyInB;
-	
+
 	private boolean beforeConfigCalled, afterConfigCalled, beforeInitialConfigCalled, afterInitialConfigCalled, beforeReConfigCalled, afterReConfigCalled;
-	
+
 	@Override public String toString(){
 		String ret = "";
 		ret += "short: "+shortValue;
@@ -39,12 +36,11 @@ public class TestConfigurableAs {
 		ret += " byte: "+byteValue;
 		ret += " float: "+floatValue;
 		ret += " double: "+doubleValue;
-		ret += " stringArray: " + StringUtils.concatenateTokens(",",stringArrayValue);
 		ret += " onlyInA: "+onlyInA;
 		ret += " onlyInB: "+onlyInB;
 		return ret;
 	}
-	
+
 	public short getShortValue() {
 		return shortValue;
 	}
@@ -93,13 +89,6 @@ public class TestConfigurableAs {
 	public void setDoubleValue(double doubleValue) {
 		this.doubleValue = doubleValue;
 	}
-	public String[] getStringArrayValue() {
-		return stringArrayValue;
-	}
-	
-	public void setStringArrayValue(String[] stringArrayValue) {
-		this.stringArrayValue = stringArrayValue;
-	}
 	public int getOnlyInA() {
 		return onlyInA;
 	}
@@ -136,15 +125,15 @@ public class TestConfigurableAs {
 	public boolean isAfterReConfigCalled() {
 		return afterReConfigCalled;
 	}
-	
+
 	@BeforeConfiguration public void before(){ beforeConfigCalled = true; }
 	@BeforeInitialConfiguration public void beforeInitial(){ beforeInitialConfigCalled = true; }
 	@BeforeReConfiguration public void beforeRe(){ beforeReConfigCalled = true; }
-	
+
 	@AfterConfiguration public void after(){ afterConfigCalled = true; }
 	@AfterInitialConfiguration public void afterInitial(){ afterInitialConfigCalled = true; }
 	@AfterReConfiguration public void afterRe(){ afterReConfigCalled = true; }
-	
+
 	@SetAll public void debugOutConfig(String name, String property){
 		System.out.println("Config property "+name+" = "+property);
 	}

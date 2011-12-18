@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -31,7 +32,6 @@ import org.configureme.parser.ConfigurationParser;
 import org.configureme.parser.ConfigurationParserException;
 import org.configureme.parser.ParsedAttribute;
 import org.configureme.parser.ParsedConfiguration;
-import org.configureme.parser.StringArrayParser;
 import org.configureme.parser.json.JsonParser;
 import org.configureme.parser.properties.PropertiesParser;
 import org.configureme.repository.ArrayValue;
@@ -44,6 +44,8 @@ import org.configureme.sources.ConfigurationSourceKey;
 import org.configureme.sources.ConfigurationSourceKey.Format;
 import org.configureme.sources.ConfigurationSourceKey.Type;
 import org.configureme.sources.ConfigurationSourceRegistry;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  * Configuration manager (this is the one YOU must use) is a utility class for retrieval of configurations and automatical configurations of components.
@@ -66,7 +68,7 @@ public enum ConfigurationManager {
 	@SuppressWarnings("unchecked")
 	private final static java.util.Set<Class<?>> PLAIN_TYPES = new HashSet<Class<?>>(
 		Arrays.asList(
-			String.class, Object.class,
+			String.class,
 			Boolean.class, boolean.class,
 			Short.class, short.class,
 			Integer.class, int.class,
@@ -599,11 +601,13 @@ public enum ConfigurationManager {
 	 */
 	private Object resolveValue(Class<?> valueClass, Value attributeValue, Class<? extends Annotation>[] callBefore,  Class<? extends Annotation>[] callAfter) throws InstantiationException, IllegalAccessException {
 		boolean isValueClassPlain = isPlain(valueClass);
-		if (attributeValue instanceof PlainValue && isValueClassPlain) {
+		boolean isValueClassDummy = valueClass.equals(Object.class) || valueClass.equals(String.class);
+
+		if (attributeValue instanceof PlainValue && !valueClass.isArray() && (isValueClassPlain || isValueClassDummy)) {
 			return resolvePlainValue(valueClass, (PlainValue) attributeValue);
-		} else if (attributeValue instanceof CompositeValue && !isValueClassPlain && !valueClass.isArray()) {
+		} else if (attributeValue instanceof CompositeValue && !valueClass.isArray() && (!isValueClassPlain || isValueClassDummy)) {
 			return resolveCompositeValue(valueClass, (CompositeValue) attributeValue, callBefore, callAfter);
-		} else if (attributeValue instanceof ArrayValue && valueClass.isArray()) {
+		} else if (attributeValue instanceof ArrayValue && (valueClass.isArray() || isValueClassDummy)) {
 			return resolveArrayValue(valueClass, (ArrayValue) attributeValue, callBefore, callAfter);
 		} else {
 			throw new IllegalArgumentException("Can't resolve attribute value " + attributeValue + " to type: " + valueClass.getCanonicalName());
@@ -641,24 +645,6 @@ public enum ConfigurationManager {
 		if (type.equals(Double.class) || type.equals(double.class))
 			return Double.valueOf(value.get());
 
-		//Arrays value
-		if (type.equals(String[].class))
-			return StringArrayParser.parseStringArray(value.get());
-		if (type.equals(boolean[].class))
-			return StringArrayParser.parseBooleanArray(value.get());
-		if (type.equals(short[].class))
-			return StringArrayParser.parseShortArray(value.get());
-		if (type.equals(int[].class))
-			return StringArrayParser.parseIntArray(value.get());
-		if (type.equals(long[].class))
-			return StringArrayParser.parseLongArray(value.get());
-		if (type.equals(byte[].class))
-			return StringArrayParser.parseByteArray(value.get());
-		if (type.equals(float[].class))
-			return StringArrayParser.parseFloatArray(value.get());
-		if (type.equals(double[].class))
-			return StringArrayParser.parseDoubleArray(value.get());
-
 		throw new IllegalArgumentException("Can't resolve type: "+type+", value: "+value);
 	}
 
@@ -670,10 +656,15 @@ public enum ConfigurationManager {
 	 * @param callAfter annotations, methods annotated with those will be called after the configuration
 	 * @return an array instance of the specified value class which is configured according to the specified array attribute value.
 	 */
-	private Object[] resolveArrayValue(Class<?> valueClass, ArrayValue attributeValue, Class<? extends Annotation>[] callBefore,  Class<? extends Annotation>[] callAfter) throws InstantiationException, IllegalAccessException {
-		Object[] resolvedValue = (Object[]) Array.newInstance(valueClass.getComponentType(), attributeValue.get().size());
-		for (int i = 0; i < resolvedValue.length; ++i)
-			resolvedValue[i] = resolveValue(valueClass.getComponentType(), attributeValue.get().get(i), callBefore, callAfter);
+	private Object resolveArrayValue(Class<?> valueClass, ArrayValue attributeValue, Class<? extends Annotation>[] callBefore,  Class<? extends Annotation>[] callAfter) throws InstantiationException, IllegalAccessException {
+		if (valueClass.equals(Object.class))
+			return attributeValue.getRaw();
+		if (valueClass.equals(String.class))
+			return new JSONArray((Collection<?>) attributeValue.getRaw()).toString();
+
+		Object resolvedValue = Array.newInstance(valueClass.getComponentType(), attributeValue.get().size());
+		for (int i = 0; i < attributeValue.get().size(); ++i)
+			Array.set(resolvedValue, i, resolveValue(valueClass.getComponentType(), attributeValue.get().get(i), callBefore, callAfter));
 
 		return resolvedValue;
 	}
@@ -687,6 +678,11 @@ public enum ConfigurationManager {
 	 * @return an instance of the specified value class which is configured according to the specified composite attribute value.
 	 */
 	private Object resolveCompositeValue(Class<?> valueClass, CompositeValue attributeValue, Class<? extends Annotation>[] callBefore,  Class<? extends Annotation>[] callAfter) throws InstantiationException, IllegalAccessException {
+		if (valueClass.equals(Object.class))
+			return attributeValue.getRaw();
+		if (valueClass.equals(String.class))
+			return new JSONObject((Map<?, ?>) attributeValue.getRaw()).toString();
+
 		Object resolvedValue = valueClass.newInstance();
 		configure(attributeValue.get(), resolvedValue, callBefore, callAfter, false);
 		return resolvedValue;

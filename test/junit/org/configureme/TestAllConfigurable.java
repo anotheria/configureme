@@ -1,7 +1,5 @@
 package org.configureme;
 
-import net.anotheria.util.StringUtils;
-
 import org.configureme.annotations.ConfigureMe;
 import org.configureme.sources.ConfigurationSourceKey;
 
@@ -15,8 +13,8 @@ public class TestAllConfigurable {
 	private byte byteValue;
 	private float floatValue;
 	private double doubleValue ;
-	private String[] stringArrayValue;
-	
+
+	@Override
 	public String toString(){
 		String ret = "";
 		ret += "short: "+shortValue;
@@ -27,10 +25,9 @@ public class TestAllConfigurable {
 		ret += " byte: "+byteValue;
 		ret += " float: "+floatValue;
 		ret += " double: "+doubleValue;
-		ret += " stringArray: " + StringUtils.concatenateTokens(",",stringArrayValue);
 		return ret;
 	}
-	
+
 	public short getShortValue() {
 		return shortValue;
 	}
@@ -78,13 +75,5 @@ public class TestAllConfigurable {
 	}
 	public void setDoubleValue(double doubleValue) {
 		this.doubleValue = doubleValue;
-	}
-
-	public String[] getStringArrayValue() {
-		return stringArrayValue;
-	}
-
-	public void setStringArrayValue(String[] stringArrayValue) {
-		this.stringArrayValue = stringArrayValue;
 	}
 }

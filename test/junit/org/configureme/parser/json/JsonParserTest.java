@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,8 +15,9 @@ import net.anotheria.util.StringUtils;
 import org.configureme.parser.ConfigurationParserException;
 import org.configureme.parser.ParsedAttribute;
 import org.configureme.parser.ParsedConfiguration;
-import org.configureme.parser.StringArrayParser;
+import org.configureme.repository.ArrayValue;
 import org.configureme.repository.PlainValue;
+import org.configureme.repository.Value;
 import org.junit.Test;
 
 
@@ -89,37 +92,33 @@ public class JsonParserTest {
 		// String array v1
 		bla = parser.parseConfiguration("foobar", "{foo: [\"s1\", \" s2\"]}");
 		attrsMap = createAttributesMap(bla.getAttributes());
-		assertEquals(new PlainValue("s1, s2"), attrsMap.get("foo").getValue());
+		assertEquals(new ArrayValue(Arrays.<Value>asList(new PlainValue("s1"), new PlainValue(" s2"))), attrsMap.get("foo").getValue());
 		// String array v2
 		bla = parser.parseConfiguration("foobar", "{foo: [s1, s2]}");
 		attrsMap = createAttributesMap(bla.getAttributes());
-		assertEquals(new PlainValue("s1,s2"), attrsMap.get("foo").getValue());
-		// String array incl comma
-		bla = parser.parseConfiguration("foobar", "{foo: [\"s1.1 , s1.2\", \" s2\"]}");
-		attrsMap = createAttributesMap(bla.getAttributes());
-		assertEquals(new PlainValue("s1.1 " + StringArrayParser.STRING_ARRAY_DELIM_CODE + " s1.2, s2"), attrsMap.get("foo").getValue());
+		assertEquals(new ArrayValue(Arrays.<Value>asList(new PlainValue("s1"), new PlainValue("s2"))), attrsMap.get("foo").getValue());
 		// Int array
 		bla = parser.parseConfiguration("foobar", "{foo: [19, 50]}");
 		attrsMap = createAttributesMap(bla.getAttributes());
-		assertEquals(new PlainValue("19,50"), attrsMap.get("foo").getValue());
+		assertEquals(new ArrayValue(Arrays.<Value>asList(new PlainValue("19"), new PlainValue("50"))), attrsMap.get("foo").getValue());
 		// Float array
 		bla = parser.parseConfiguration("foobar", "{foo: [19.5, 50.02]}");
 		attrsMap = createAttributesMap(bla.getAttributes());
-		assertEquals(new PlainValue("19.5,50.02"), attrsMap.get("foo").getValue());
+		assertEquals(new ArrayValue(Arrays.<Value>asList(new PlainValue("19.5"), new PlainValue("50.02"))), attrsMap.get("foo").getValue());
 		// Boolean array
 		bla = parser.parseConfiguration("foobar", "{foo: [true,  false]}");
 		attrsMap = createAttributesMap(bla.getAttributes());
-		assertEquals(new PlainValue("true,false"), attrsMap.get("foo").getValue());
+		assertEquals(new ArrayValue(Arrays.<Value>asList(new PlainValue("true"), new PlainValue("false"))), attrsMap.get("foo").getValue());
 		// Test Empty array
 		bla = parser.parseConfiguration("foobar", "{foo: []}");
 		attrsMap = createAttributesMap(bla.getAttributes());
-		assertEquals(new PlainValue(""), attrsMap.get("foo").getValue());
+		assertEquals(new ArrayValue(Collections.<Value>emptyList()), attrsMap.get("foo").getValue());
 		// Test Array with environment
 		bla = parser.parseConfiguration("foobar", "{dev:{dev_foo: [d1, d2]}, test:{test_foo: [t1, t2]}}");
 		attrsMap = createAttributesMap(bla.getAttributes());
-		assertEquals(new PlainValue("d1,d2"), attrsMap.get("dev_foo").getValue());
+		assertEquals(new ArrayValue(Arrays.<Value>asList(new PlainValue("d1"), new PlainValue("d2"))), attrsMap.get("dev_foo").getValue());
 		assertEquals("dev", attrsMap.get("dev_foo").getEnvironment().expandedStringForm());
-		assertEquals(new PlainValue("t1,t2"), attrsMap.get("test_foo").getValue());
+		assertEquals(new ArrayValue(Arrays.<Value>asList(new PlainValue("t1"), new PlainValue("t2"))), attrsMap.get("test_foo").getValue());
 		assertEquals("test", attrsMap.get("test_foo").getEnvironment().expandedStringForm());
 	}
 

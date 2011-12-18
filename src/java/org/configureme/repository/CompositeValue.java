@@ -1,5 +1,6 @@
 package org.configureme.repository;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.configureme.Configuration;
@@ -31,6 +32,15 @@ public class CompositeValue implements Value {
 	 */
 	public Configuration get() {
 		return config;
+	}
+
+	@Override
+	public Object getRaw() {
+		Map<String, Object> raw = new HashMap<String, Object>(config.getEntries().size());
+		for (Map.Entry<String, Value> entry : config.getEntries())
+			raw.put(entry.getKey(), entry.getValue().getRaw());
+
+		return raw;
 	}
 
 	@Override

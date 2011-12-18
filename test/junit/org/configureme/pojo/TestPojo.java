@@ -2,8 +2,6 @@ package org.configureme.pojo;
 
 import java.util.Arrays;
 
-import net.anotheria.util.StringUtils;
-
 public class TestPojo {
 	private short shortValue;
 	private long longValue;
@@ -13,7 +11,6 @@ public class TestPojo {
 	private byte byteValue;
 	private float floatValue;
 	private double doubleValue ;
-	private String[] stringArrayValue;
 	private int onlyInA;
 	private int onlyInB;
     private InnerTestPojo innerValue;
@@ -29,7 +26,6 @@ public class TestPojo {
 		ret += " byte: "+byteValue;
 		ret += " float: "+floatValue;
 		ret += " double: "+doubleValue;
-		ret += " stringArray: " + (stringArrayValue == null ? "null" : StringUtils.concatenateTokens(",",stringArrayValue));
 		ret += " onlyInA: "+onlyInA;
 		ret += " onlyInB: "+onlyInB;
 		ret += " innerValue: "+innerValue;
@@ -84,13 +80,6 @@ public class TestPojo {
 	}
 	public void setDoubleValue(double doubleValue) {
 		this.doubleValue = doubleValue;
-	}
-	public String[] getStringArrayValue() {
-		return stringArrayValue;
-	}
-
-	public void setStringArrayValue(String[] stringArrayValue) {
-		this.stringArrayValue = stringArrayValue;
 	}
 	public int getOnlyInA() {
 		return onlyInA;

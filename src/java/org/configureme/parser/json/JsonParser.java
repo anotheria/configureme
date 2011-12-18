@@ -16,7 +16,6 @@ import org.configureme.parser.ConfigurationParserException;
 import org.configureme.parser.ParsedAttribute;
 import org.configureme.parser.ParsedConfiguration;
 import org.configureme.parser.PlainParsedAttribute;
-import org.configureme.parser.StringArrayParser;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,7 +42,7 @@ public class JsonParser implements ConfigurationParser {
 			String[] names = JSONObject.getNames(j);
 			if(names != null)
 				for (String key : names) {
-					List<? extends ParsedAttribute<?>> attList = parse(key, j, env);
+					List<? extends ParsedAttribute<?>> attList = parse(key, j.get(key), env);
 					for (ParsedAttribute<?> att : attList)
 						pa.addAttribute(att);
 				}
@@ -55,19 +54,18 @@ public class JsonParser implements ConfigurationParser {
 		}
 	}
 
-	private static List<? extends ParsedAttribute<?>> parse(String key, JSONObject root, DynamicEnvironment environment) throws JSONException{
-		Object value = root.get(key);
+	private static List<? extends ParsedAttribute<?>> parse(String key, Object value, DynamicEnvironment environment) throws JSONException{
 		// an object value means a change in environment, let's see what it is
 		if (value instanceof JSONObject && key.startsWith(COMPOSITE_ATTR_PREFIX))
-			return asList(parseComposite(key.substring(COMPOSITE_ATTR_PREFIX.length()), (JSONObject) value, environment));
+			return asList(parseComposite(key, (JSONObject) value, environment));
         else if (value instanceof JSONArray && key.startsWith(COMPOSITE_ATTR_PREFIX))
-        	return asList(parseCompositeArray(key.substring(COMPOSITE_ATTR_PREFIX.length()), (JSONArray) value, environment));
+        	return asList(parseArray(key, (JSONArray) value, environment));
         else if (value instanceof JSONObject)
-        	return parsePlain(key, (JSONObject) value, environment);
+        	return parseObject(key, (JSONObject) value, environment);
 		else if (value instanceof JSONArray)
-			return Arrays.asList(parsePlainArray(key, (JSONArray) value, environment));
+			return Arrays.asList(parseArray(key, (JSONArray) value, environment));
 		else
-			return Arrays.asList(new PlainParsedAttribute(key, (Environment)environment.clone(), root.getString(key)));
+			return Arrays.asList(new PlainParsedAttribute(key, (Environment)environment.clone(), value.toString()));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -75,7 +73,7 @@ public class JsonParser implements ConfigurationParser {
 		return (item != null) ? Arrays.<T>asList(item) : Collections.<T>emptyList();
 	}
 
-	private static List<ParsedAttribute<?>> parsePlain(String key, JSONObject value, DynamicEnvironment environment) throws JSONException {
+	private static List<ParsedAttribute<?>> parseObject(String key, JSONObject value, DynamicEnvironment environment) throws JSONException {
 		List<ParsedAttribute<?>> parsed = new ArrayList<ParsedAttribute<?>>();
 
 		environment.extendThis(key);
@@ -83,20 +81,12 @@ public class JsonParser implements ConfigurationParser {
 			String[] names = JSONObject.getNames(value);
 			if(names != null)
 				for (String subKey : names)
-					parsed.addAll(parse(subKey, value, environment));
+					parsed.addAll(parse(subKey, value.get(subKey), environment));
 		} finally {
 			environment.reduceThis();
 		}
 
 		return parsed;
-	}
-
-	private static PlainParsedAttribute parsePlainArray(String key, JSONArray value, DynamicEnvironment environment) throws JSONException {
-		List<String> list = new ArrayList<String>(value.length());
-		for (int i = 0; i < value.length(); i++)
-			list.add(value.getString(i));
-
-		return new PlainParsedAttribute(key, (Environment) environment.clone(), StringArrayParser.toStringArray(list.toArray()));
 	}
 
 	private static CompositeParsedAttribute parseComposite(String key, JSONObject value, DynamicEnvironment environment) throws JSONException {
@@ -106,16 +96,22 @@ public class JsonParser implements ConfigurationParser {
 
         List<ParsedAttribute<?>> leafAttr = new ArrayList<ParsedAttribute<?>>();
         for (String subKey : names)
-            leafAttr.addAll(parse(subKey, value, environment));
+            leafAttr.addAll(parse(subKey, value.get(subKey), environment));
 
-        return new CompositeParsedAttribute(key, (Environment) environment.clone(), leafAttr);
+        return new CompositeParsedAttribute(stripKey(key), (Environment) environment.clone(), leafAttr);
 	}
 
-	private static ArrayParsedAttribute parseCompositeArray(String key, JSONArray value, DynamicEnvironment environment) throws JSONException {
-		List<CompositeParsedAttribute> parsed = new ArrayList<CompositeParsedAttribute>(value.length());
-		for (int i = 0; i < value.length(); i++)
-			parsed.add(parseComposite(key, value.getJSONObject(i), environment));
+	private static ArrayParsedAttribute parseArray(String key, JSONArray value, DynamicEnvironment environment) throws JSONException {
+		List<ParsedAttribute<?>> parsed = new ArrayList<ParsedAttribute<?>>(value.length());
+		for (int index = 0; index < value.length(); index++)
+			parsed.addAll(parse(key, value.get(index), environment));
 
-		return new ArrayParsedAttribute(key, (Environment) environment.clone(), parsed);
+		return new ArrayParsedAttribute(stripKey(key), (Environment) environment.clone(), parsed);
+	}
+
+	private static String stripKey(String key) {
+		return key.startsWith(COMPOSITE_ATTR_PREFIX)
+				? key.substring(COMPOSITE_ATTR_PREFIX.length())
+				: key;
 	}
 }

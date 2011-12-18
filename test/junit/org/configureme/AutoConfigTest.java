@@ -16,34 +16,34 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class AutoConfigTest {
-	
+
 	@BeforeClass public static void setupRegistry(){
 		//use the other test which can access protected methods
 		ConfigurationSourceRegistryTest.setupRegistry();
 	}
-	
+
 	@Before public void resetFixture(){
 		FixtureLoader.reset();
 	}
-	
+
 	@Test public void testLifecycleAnnotations(){
 		TestConfigurable configurable = new TestConfigurable();
 		ConfigurationManager.INSTANCE.configure(configurable);
 
 		assertTrue(configurable.isBeforeConfigCalled());
 		assertTrue(configurable.isAfterConfigCalled());
-		
+
 		assertTrue(configurable.isBeforeInitialConfigCalled());
 		assertTrue(configurable.isAfterInitialConfigCalled());
-		
+
 		assertFalse(configurable.isBeforeReConfigCalled());
 		assertFalse(configurable.isAfterReConfigCalled());
 	}
-	
+
 	@Test public void configureInGlobalEnvironment(){
 		TestConfigurable configurable = new TestConfigurable();
 		ConfigurationManager.INSTANCE.configure(configurable);
-		
+
 		assertEquals(100, configurable.getShortValue());
 		assertEquals(1234567890123L, configurable.getLongValue());
 		System.out.println("C VALUE: "+configurable.getIntValue());
@@ -56,13 +56,11 @@ public class AutoConfigTest {
 		assertEquals(1234.11, configurable.getDoubleValue(),0);
 		assertEquals(0, configurable.getOnlyInA());
 		assertEquals(0, configurable.getOnlyInB());
-		assertArrayEquals("Arrays should be equals", new String[]{"str1","str2","str3"}, configurable.getStringArrayValue());
 		assertArrayEquals("Arrays should be equals", new String[]{"sa1.1 " , "sa2.1,sa2.2" , "sa3"}, configurable.getStringArray());
-		assertTrue("Arrays should be equals", Arrays.equals(new float[] {1.2F, 2.3F, 3}, configurable.getFloatArrayValue()));	
-		assertTrue("Arrays should be equals", Arrays.equals(new float[] {2.3F, 3}, configurable.getFloatArray()));	
-		assertArrayEquals("Arrays should be equals", new int[] {2, 3, 5}, configurable.getIntArray());	
-		assertTrue("Arrays should be equals", Arrays.equals(new boolean[] {true, false, true}, configurable.getBooleanArray()));	
-		assertArrayEquals("Arrays should be equals", new int[] {}, configurable.getEmptyIntArray());	
+		assertTrue("Arrays should be equals", Arrays.equals(new float[] {2.3F, 3}, configurable.getFloatArray()));
+		assertArrayEquals("Arrays should be equals", new int[] {2, 3, 5}, configurable.getIntArray());
+		assertTrue("Arrays should be equals", Arrays.equals(new boolean[] {true, false, true}, configurable.getBooleanArray()));
+		assertArrayEquals("Arrays should be equals", new int[] {}, configurable.getEmptyIntArray());
 	}
 
 	@Test public void configureInA(){
@@ -70,7 +68,7 @@ public class AutoConfigTest {
 		ConfigurationManager.INSTANCE.setDefaultEnvironment(new DynamicEnvironment("a"));
 		TestConfigurable configurable = new TestConfigurable();
 		ConfigurationManager.INSTANCE.configure(configurable);
-		
+
 		assertEquals(100, configurable.getShortValue());
 		assertEquals(1234567890123L, configurable.getLongValue());
 		assertEquals(2000, configurable.getIntValue());
@@ -81,8 +79,7 @@ public class AutoConfigTest {
 		assertEquals(1234.11, configurable.getDoubleValue(),0);
 		assertEquals(1000, configurable.getOnlyInA());
 		assertEquals(0, configurable.getOnlyInB());
-		assertArrayEquals(new String[]{"str1","str2","str3"}, configurable.getStringArrayValue());
-		
+
 		ConfigurationManager.INSTANCE.setDefaultEnvironment(old);
 	}
 
@@ -91,7 +88,7 @@ public class AutoConfigTest {
 		ConfigurationManager.INSTANCE.setDefaultEnvironment(new DynamicEnvironment("a"));
 		TestConfigurableAs configurable = new TestConfigurableAs();
 		ConfigurationManager.INSTANCE.configureAs(configurable, "fixture");
-		
+
 		assertEquals(100, configurable.getShortValue());
 		assertEquals(1234567890123L, configurable.getLongValue());
 		assertEquals(2000, configurable.getIntValue());
@@ -102,8 +99,7 @@ public class AutoConfigTest {
 		assertEquals(1234.11, configurable.getDoubleValue(),0);
 		assertEquals(1000, configurable.getOnlyInA());
 		assertEquals(0, configurable.getOnlyInB());
-		assertArrayEquals(new String[]{"str1","str2","str3"}, configurable.getStringArrayValue());
-		
+
 		ConfigurationManager.INSTANCE.setDefaultEnvironment(old);
 	}
 
@@ -111,7 +107,7 @@ public class AutoConfigTest {
 		DynamicEnvironment env = new DynamicEnvironment("a", "b");
 		TestConfigurable configurable = new TestConfigurable();
 		ConfigurationManager.INSTANCE.configure(configurable, env);
-		
+
 		assertEquals(100, configurable.getShortValue());
 		assertEquals(1234567890123L, configurable.getLongValue());
 		assertEquals(3000, configurable.getIntValue());
@@ -120,23 +116,22 @@ public class AutoConfigTest {
 		assertEquals(-125, configurable.getByteValue());
 		assertEquals(12.5f, configurable.getFloatValue(),0);
 		assertEquals(1234.11, configurable.getDoubleValue(),0);
-		assertArrayEquals(new String[]{"str1","str2","str3"}, configurable.getStringArrayValue());
 		assertEquals(1000, configurable.getOnlyInA());
 		assertEquals(1000, configurable.getOnlyInB());
 	}
-	
+
 	@Test public void configureInBWithFormat(){//helper method to check if internal routing with format works.
 		DynamicEnvironment env = new DynamicEnvironment("a", "b");
 		TestConfigurable configurable = new TestConfigurable();
 		ConfigurationManager.INSTANCE.configure(configurable, env, Format.JSON);
-		
+
 		assertEquals(100, configurable.getShortValue());
 	}
-	
+
 	@Test public void configurePublicFieldsInGlobalEnvironment(){
 		ConfigurableWithPublicFields configurable = new ConfigurableWithPublicFields();
 		ConfigurationManager.INSTANCE.configure(configurable);
-		
+
 		assertEquals(100, configurable.shortValue);
 		assertEquals(1234567890123L, configurable.longValue);
 		assertEquals(1000, configurable.intValue);
@@ -145,7 +140,6 @@ public class AutoConfigTest {
 		assertEquals(-125, configurable.byteValue);
 		assertEquals(12.5f, configurable.floatValue,0);
 		assertEquals(1234.11, configurable.doubleValue,0);
-		assertArrayEquals(new String[]{"str1","str2","str3"}, configurable.stringArrayValue);
 		assertEquals(0, configurable.onlyInA);
 		assertEquals(0, configurable.onlyInB);
 	}
@@ -155,7 +149,7 @@ public class AutoConfigTest {
 		ConfigurationManager.INSTANCE.setDefaultEnvironment(new DynamicEnvironment("a"));
 		ConfigurableWithPublicFields configurable = new ConfigurableWithPublicFields();
 		ConfigurationManager.INSTANCE.configure(configurable);
-		
+
 		assertEquals(100, configurable.shortValue);
 		assertEquals(1234567890123L, configurable.longValue);
 		assertEquals(2000, configurable.intValue);
@@ -164,10 +158,9 @@ public class AutoConfigTest {
 		assertEquals(-125, configurable.byteValue);
 		assertEquals(12.5f, configurable.floatValue,0);
 		assertEquals(1234.11, configurable.doubleValue,0);
-		assertArrayEquals(new String[]{"str1","str2","str3"}, configurable.stringArrayValue);
 		assertEquals(1000, configurable.onlyInA);
 		assertEquals(0, configurable.onlyInB);
-		
+
 		ConfigurationManager.INSTANCE.setDefaultEnvironment(old);
 	}
 
@@ -175,7 +168,7 @@ public class AutoConfigTest {
 		DynamicEnvironment env = new DynamicEnvironment("a", "b");
 		ConfigurableWithPublicFields configurable = new ConfigurableWithPublicFields();
 		ConfigurationManager.INSTANCE.configure(configurable, env);
-		
+
 		assertEquals(100, configurable.shortValue);
 		assertEquals(1234567890123L, configurable.longValue);
 		assertEquals(3000, configurable.intValue);
@@ -184,15 +177,14 @@ public class AutoConfigTest {
 		assertEquals(-125, configurable.byteValue);
 		assertEquals(12.5f, configurable.floatValue,0);
 		assertEquals(1234.11, configurable.doubleValue,0);
-		assertArrayEquals(new String[]{"str1","str2","str3"}, configurable.stringArrayValue);
 		assertEquals(1000, configurable.onlyInA);
 		assertEquals(1000, configurable.onlyInB);
 	}
-	
+
 	@Test public void configureAll(){
 		TestAllConfigurable configurable = new TestAllConfigurable();
 		ConfigurationManager.INSTANCE.configure(configurable);
-		
+
 		assertEquals(100, configurable.getShortValue());
 		assertEquals(1234567890123L, configurable.getLongValue());
 		assertEquals(1000, configurable.getIntValue());
@@ -201,13 +193,12 @@ public class AutoConfigTest {
 		assertEquals(-125, configurable.getByteValue());
 		assertEquals(12.5f, configurable.getFloatValue(),0);
 		assertEquals(1234.11, configurable.getDoubleValue(),0);
-		assertArrayEquals(new String[]{"str1","str2","str3"}, configurable.getStringArrayValue());
 	}
 
 	@Test public void configureAllWithExclusion(){
 		TestNotConfigurable configurable = new TestNotConfigurable();
 		ConfigurationManager.INSTANCE.configure(configurable);
-		
+
 		assertEquals(100, configurable.getShortValue());
 		assertEquals(0L, configurable.getLongValue());
 		assertEquals(1000, configurable.getIntValue());

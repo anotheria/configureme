@@ -1,7 +1,5 @@
 package org.configureme;
 
-import net.anotheria.util.StringUtils;
-
 import org.configureme.annotations.AfterConfiguration;
 import org.configureme.annotations.AfterInitialConfiguration;
 import org.configureme.annotations.AfterReConfiguration;
@@ -22,12 +20,12 @@ public class ConfigurableWithPublicFields {
 	@Configure public byte byteValue;
 	@Configure public float floatValue;
 	@Configure public double doubleValue ;
-	@Configure public String[] stringArrayValue;
 	@Configure public int onlyInA;
 	@Configure public int onlyInB;
-	
+
 	private boolean beforeConfigCalled, afterConfigCalled, beforeInitialConfigCalled, afterInitialConfigCalled, beforeReConfigCalled, afterReConfigCalled;
-	
+
+	@Override
 	public String toString(){
 		String ret = "";
 		ret += "short: "+shortValue;
@@ -38,12 +36,11 @@ public class ConfigurableWithPublicFields {
 		ret += " byte: "+byteValue;
 		ret += " float: "+floatValue;
 		ret += " double: "+doubleValue;
-		ret += " stringArray: " + StringUtils.concatenateTokens(",",stringArrayValue);
 		ret += " onlyInA: "+onlyInA;
 		ret += " onlyInB: "+onlyInB;
 		return ret;
 	}
-	
+
 	public boolean isBeforeConfigCalled() {
 		return beforeConfigCalled;
 	}
@@ -67,11 +64,11 @@ public class ConfigurableWithPublicFields {
 	public boolean isAfterReConfigCalled() {
 		return afterReConfigCalled;
 	}
-	
+
 	@BeforeConfiguration public void before(){ beforeConfigCalled = true; }
 	@BeforeInitialConfiguration public void beforeInitial(){ beforeInitialConfigCalled = true; }
 	@BeforeReConfiguration public void beforeRe(){ beforeReConfigCalled = true; }
-	
+
 	@AfterConfiguration public void after(){ afterConfigCalled = true; }
 	@AfterInitialConfiguration public void afterInitial(){ afterInitialConfigCalled = true; }
 	@AfterReConfiguration public void afterRe(){ afterReConfigCalled = true; }

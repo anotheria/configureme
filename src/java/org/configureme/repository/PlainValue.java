@@ -27,6 +27,11 @@ public class PlainValue implements Value {
 	}
 
 	@Override
+	public Object getRaw() {
+		return str;
+	}
+
+	@Override
 	public String toString() {
 		return String.valueOf(str);
 	}

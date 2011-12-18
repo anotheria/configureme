@@ -1,6 +1,8 @@
 package org.configureme;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import net.anotheria.util.StringUtils;
 
 import org.apache.log4j.BasicConfigurator;
@@ -12,20 +14,20 @@ import org.junit.Test;
 
 
 public class AutoReConfig {
-	
+
 	static{
 		BasicConfigurator.configure();
 	}
-	
+
 	@BeforeClass public static void setupRegistry(){
 		//use the other test which can access protected methods
 		ConfigurationSourceRegistryTest.setupRegistry();
 	}
-	
+
 	@Ignore @Test public void configureAndWaitForReconfigure(){
 		TestReConfigurable configurable = new TestReConfigurable();
 		ConfigurationManager.INSTANCE.configure(configurable);
-		
+
 		assertEquals(100, configurable.getShortValue());
 		assertEquals(1234567890123L, configurable.getLongValue());
 		assertEquals(1000, configurable.getIntValue());
@@ -34,25 +36,24 @@ public class AutoReConfig {
 		assertEquals(-125, configurable.getByteValue());
 		assertEquals(12.5f, configurable.getFloatValue(),0);
 		assertEquals(1234.11, configurable.getDoubleValue(),0);
-		assertArrayEquals(new String[]{"str1","str2","str3"}, configurable.getStringArrayValue());
 		assertEquals(0, configurable.getOnlyInA());
 		assertEquals(0, configurable.getOnlyInB());
 		assertTrue(configurable.isBeforeConfigCalled());
 		assertTrue(configurable.isAfterConfigCalled());
-		
+
 		assertTrue(configurable.isBeforeInitialConfigCalled());
 		assertTrue(configurable.isAfterInitialConfigCalled());
-		
+
 		assertFalse(configurable.isBeforeReConfigCalled());
 		assertFalse(configurable.isAfterReConfigCalled());
-		
+
 		//mark for reconfigure
 		String content = FixtureLoader.getContent();
 		content = StringUtils.replaceOnce(content, "foo", "bar");
 		content = StringUtils.replaceOnce(content, "1000", "999");
 		FixtureLoader.setContent(content);
 		FixtureLoader.setLastUpdateTimestamp(System.currentTimeMillis()+1000);
-		//waiting for 
+		//waiting for
 		long timeToWait = System.currentTimeMillis()+1000L*30;
 		boolean finished = false;
 		while(System.currentTimeMillis()<timeToWait &&!finished){
@@ -71,5 +72,5 @@ public class AutoReConfig {
 		assertEquals(configurable.getStringValue(), "bar");
 	}
 
-	
+
 }
