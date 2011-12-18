@@ -6,6 +6,8 @@ import org.configureme.repository.Value;
 /**
  * The combination of the name and the value of an attribute in an environment. Usually an attribute diffenent values in different environments. The parses collects all values of an attribute and submits it
  * in a large list to the configuration repository, which in turn creates hierarchical structures of the attributes and their values.
+ *
+ * @param <T> type of the attribute value.
  * @author another
  */
 public abstract class ParsedAttribute<T extends Value> {
@@ -63,4 +65,3 @@ public abstract class ParsedAttribute<T extends Value> {
 		return name+" = "+value+" in "+environment;
 	}
 }
-

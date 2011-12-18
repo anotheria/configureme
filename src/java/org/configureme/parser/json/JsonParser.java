@@ -25,6 +25,10 @@ import org.json.JSONObject;
  * @author lrosenberg
  */
 public class JsonParser implements ConfigurationParser {
+	/**
+	 * The prefix string distinguishing names of environment JSON objects from composite JSON objects.
+	 * The names of last ones shall starts with this prefix.
+	 */
 	private static final String COMPOSITE_ATTR_PREFIX = "@";
 
 	@Override

@@ -66,7 +66,7 @@ public enum ConfigurationManager {
 	 * Allows quickly check whether an attribute is plain or not.
 	 */
 	@SuppressWarnings("unchecked")
-	private final static java.util.Set<Class<?>> PLAIN_TYPES = new HashSet<Class<?>>(
+	private static final java.util.Set<Class<?>> PLAIN_TYPES = new HashSet<Class<?>>(
 		Arrays.asList(
 			String.class,
 			Boolean.class, boolean.class,

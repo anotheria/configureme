@@ -1,7 +1,5 @@
 package org.configureme.repository;
 
-import org.apache.log4j.Logger;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,11 +9,6 @@ import java.util.List;
  * @author lrosenberg
  */
 public class CompositeAttribute {
-
-    /**
-     * The logger.
-     */
-    private static Logger log = Logger.getLogger(CompositeAttribute.class);
     /**
      * The name of the attribute.
      */

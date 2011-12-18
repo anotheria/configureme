@@ -37,4 +37,3 @@ public class CompositeParsedAttribute extends ParsedAttribute<CompositeValue> {
 		return new CompositeValue(name, map);
 	}
 }
-

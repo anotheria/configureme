@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class ArrayValue implements Value {
 	/**
-	 * List of child attribute values
+	 * List of child attribute values.
 	 */
 	private final List<Value> list;
 
@@ -22,7 +22,7 @@ public class ArrayValue implements Value {
 	}
 
 	/**
-	 * Gets list of child attribute values
+	 * Gets list of child attribute values.
 	 * @return list of child attribute values
 	 */
 	public List<Value> get() {

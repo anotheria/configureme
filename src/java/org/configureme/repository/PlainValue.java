@@ -19,7 +19,7 @@ public class PlainValue implements Value {
 	}
 
 	/**
-	 * Gets the value
+	 * Gets the value.
 	 * @return string representation of the value.
 	 */
 	public String get() {
