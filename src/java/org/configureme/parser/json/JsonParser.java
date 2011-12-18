@@ -61,20 +61,15 @@ public class JsonParser implements ConfigurationParser {
 	private static List<? extends ParsedAttribute<?>> parse(String key, Object value, DynamicEnvironment environment) throws JSONException{
 		// an object value means a change in environment, let's see what it is
 		if (value instanceof JSONObject && key.startsWith(COMPOSITE_ATTR_PREFIX))
-			return asList(parseComposite(key, (JSONObject) value, environment));
-        else if (value instanceof JSONArray && key.startsWith(COMPOSITE_ATTR_PREFIX))
-        	return asList(parseArray(key, (JSONArray) value, environment));
-        else if (value instanceof JSONObject)
-        	return parseObject(key, (JSONObject) value, environment);
+			return Arrays.asList(parseComposite(key, (JSONObject) value, environment));
+		else if (value instanceof JSONArray && key.startsWith(COMPOSITE_ATTR_PREFIX))
+			return Arrays.asList(parseArray(key, (JSONArray) value, environment));
+		else if (value instanceof JSONObject)
+			return parseObject(key, (JSONObject) value, environment);
 		else if (value instanceof JSONArray)
 			return Arrays.asList(parseArray(key, (JSONArray) value, environment));
 		else
-			return Arrays.asList(new PlainParsedAttribute(key, (Environment)environment.clone(), value.toString()));
-	}
-
-	@SuppressWarnings("unchecked")
-	private static <T> List<T> asList(T item) {
-		return (item != null) ? Arrays.<T>asList(item) : Collections.<T>emptyList();
+			return Arrays.asList(new PlainParsedAttribute(key, (Environment)environment.clone(), JSONObject.NULL.equals(value) ? null : value.toString()));
 	}
 
 	private static List<ParsedAttribute<?>> parseObject(String key, JSONObject value, DynamicEnvironment environment) throws JSONException {
@@ -94,15 +89,15 @@ public class JsonParser implements ConfigurationParser {
 	}
 
 	private static CompositeParsedAttribute parseComposite(String key, JSONObject value, DynamicEnvironment environment) throws JSONException {
-        String[] names = JSONObject.getNames(value);
-        if (names == null)
-        	return null;
+		String[] names = JSONObject.getNames(value);
+		if (names == null)
+			return new CompositeParsedAttribute(stripKey(key), (Environment) environment.clone(), Collections.<ParsedAttribute<?>>emptyList());
 
-        List<ParsedAttribute<?>> leafAttr = new ArrayList<ParsedAttribute<?>>();
-        for (String subKey : names)
-            leafAttr.addAll(parse(subKey, value.get(subKey), environment));
+		List<ParsedAttribute<?>> leafAttr = new ArrayList<ParsedAttribute<?>>();
+		for (String subKey : names)
+			leafAttr.addAll(parse(subKey, value.get(subKey), environment));
 
-        return new CompositeParsedAttribute(stripKey(key), (Environment) environment.clone(), leafAttr);
+		return new CompositeParsedAttribute(stripKey(key), (Environment) environment.clone(), leafAttr);
 	}
 
 	private static ArrayParsedAttribute parseArray(String key, JSONArray value, DynamicEnvironment environment) throws JSONException {
