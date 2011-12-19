@@ -421,7 +421,7 @@ public enum ConfigurationManager {
 					continue;
 				if (Modifier.isPublic(f.getModifiers()) ){
 					try{
-						f.set(o, resolveValue(f.getType(), attributeValue, callBefore, callAfter));
+						f.set(o, resolveValue(f.getType(), attributeValue, callBefore, callAfter, configureAllFields));
 					}catch(Exception e){
 						log.warn(f+".set("+o+", "+attributeValue+")", e);
 					}
@@ -429,7 +429,7 @@ public enum ConfigurationManager {
 					String methodName = "set"+f.getName().toUpperCase().charAt(0)+f.getName().substring(1);
 					try{
 						Method toSet = clazz.getMethod(methodName, f.getType());
-						toSet.invoke(o, resolveValue(f.getType(), attributeValue, callBefore, callAfter));
+						toSet.invoke(o, resolveValue(f.getType(), attributeValue, callBefore, callAfter, configureAllFields));
 					}catch(NoSuchMethodException e){
 						log.error("can't find method "+methodName+" ("+f.getType()+")");
 					}catch(Exception e){
@@ -446,7 +446,7 @@ public enum ConfigurationManager {
 				log.debug("Calling method "+method+" with "+entries);
 				for (Entry<String,Value> entry : entries){
 					try{
-						method.invoke(o, entry.getKey(), resolveValue(method.getParameterTypes()[1], entry.getValue(), callBefore, callAfter));
+						method.invoke(o, entry.getKey(), resolveValue(method.getParameterTypes()[1], entry.getValue(), callBefore, callAfter, configureAllFields));
 					}catch(Exception e){
 						log.warn(method.getName()+"invoke("+o+", "+entry.getKey()+", "+entry.getValue()+")", e);
 					}
@@ -459,7 +459,7 @@ public enum ConfigurationManager {
 					if (SetIf.ConditionChecker.satisfyCondition(setIfAnnotation, entry.getKey())){
 						log.debug("Calling method "+method+" with parameters : \""+entry.getKey()+"\", \""+entry.getValue()+"\"");
 						try{
-							method.invoke(o, entry.getKey(), resolveValue(method.getParameterTypes()[1], entry.getValue(), callBefore, callAfter));
+							method.invoke(o, entry.getKey(), resolveValue(method.getParameterTypes()[1], entry.getValue(), callBefore, callAfter, configureAllFields));
 						}catch(Exception e){
 							log.warn(method.getName()+"invoke("+o+", "+entry.getKey()+", "+entry.getValue()+")", e);
 						}
@@ -474,7 +474,7 @@ public enum ConfigurationManager {
 				if (attributeValue!=null){
 					log.debug("setting "+method.getName()+" to "+attributeValue+" configured by "+attributeName);
 					try{
-						method.invoke(o, resolveValue(method.getParameterTypes()[0], attributeValue, callBefore, callAfter));
+						method.invoke(o, resolveValue(method.getParameterTypes()[0], attributeValue, callBefore, callAfter, configureAllFields));
 					}catch(Exception e){
 						log.warn(method.getName()+"invoke("+o+", "+attributeValue+")", e);
 					}
@@ -557,7 +557,6 @@ public enum ConfigurationManager {
 			for (ParsedAttribute<?> a : attributes){
 				art.addAttributeValue(a.getName(), a.getValue(), a.getEnvironment());
 			}
-
 		}
 
 		Configuration config = null;
@@ -599,16 +598,16 @@ public enum ConfigurationManager {
 	 * @param callAfter annotations, methods annotated with those will be called after the configuration
 	 * @return an instance of the specified value class which is configured according to the specified attribute value.
 	 */
-	private Object resolveValue(Class<?> valueClass, Value attributeValue, Class<? extends Annotation>[] callBefore,  Class<? extends Annotation>[] callAfter) throws InstantiationException, IllegalAccessException {
+	private Object resolveValue(Class<?> valueClass, Value attributeValue, Class<? extends Annotation>[] callBefore,  Class<? extends Annotation>[] callAfter, boolean configureAllFields) throws InstantiationException, IllegalAccessException {
 		boolean isValueClassPlain = isPlain(valueClass);
 		boolean isValueClassDummy = valueClass.equals(Object.class) || valueClass.equals(String.class);
 
 		if (attributeValue instanceof PlainValue && !valueClass.isArray() && (isValueClassPlain || isValueClassDummy)) {
 			return resolvePlainValue(valueClass, (PlainValue) attributeValue);
 		} else if (attributeValue instanceof CompositeValue && !valueClass.isArray() && (!isValueClassPlain || isValueClassDummy)) {
-			return resolveCompositeValue(valueClass, (CompositeValue) attributeValue, callBefore, callAfter);
+			return resolveCompositeValue(valueClass, (CompositeValue) attributeValue, callBefore, callAfter, configureAllFields);
 		} else if (attributeValue instanceof ArrayValue && (valueClass.isArray() || isValueClassDummy)) {
-			return resolveArrayValue(valueClass, (ArrayValue) attributeValue, callBefore, callAfter);
+			return resolveArrayValue(valueClass, (ArrayValue) attributeValue, callBefore, callAfter, configureAllFields);
 		} else {
 			throw new IllegalArgumentException("Can't resolve attribute value " + attributeValue + " to type: " + valueClass.getCanonicalName());
 		}
@@ -656,7 +655,7 @@ public enum ConfigurationManager {
 	 * @param callAfter annotations, methods annotated with those will be called after the configuration
 	 * @return an array instance of the specified value class which is configured according to the specified array attribute value.
 	 */
-	private Object resolveArrayValue(Class<?> valueClass, ArrayValue attributeValue, Class<? extends Annotation>[] callBefore,  Class<? extends Annotation>[] callAfter) throws InstantiationException, IllegalAccessException {
+	private Object resolveArrayValue(Class<?> valueClass, ArrayValue attributeValue, Class<? extends Annotation>[] callBefore,  Class<? extends Annotation>[] callAfter, boolean configureAllFields) throws InstantiationException, IllegalAccessException {
 		if (valueClass.equals(Object.class))
 			return attributeValue.getRaw();
 		if (valueClass.equals(String.class))
@@ -664,7 +663,7 @@ public enum ConfigurationManager {
 
 		Object resolvedValue = Array.newInstance(valueClass.getComponentType(), attributeValue.get().size());
 		for (int i = 0; i < attributeValue.get().size(); ++i)
-			Array.set(resolvedValue, i, resolveValue(valueClass.getComponentType(), attributeValue.get().get(i), callBefore, callAfter));
+			Array.set(resolvedValue, i, resolveValue(valueClass.getComponentType(), attributeValue.get().get(i), callBefore, callAfter, configureAllFields));
 
 		return resolvedValue;
 	}
@@ -677,14 +676,14 @@ public enum ConfigurationManager {
 	 * @param callAfter annotations, methods annotated with those will be called after the configuration
 	 * @return an instance of the specified value class which is configured according to the specified composite attribute value.
 	 */
-	private Object resolveCompositeValue(Class<?> valueClass, CompositeValue attributeValue, Class<? extends Annotation>[] callBefore,  Class<? extends Annotation>[] callAfter) throws InstantiationException, IllegalAccessException {
+	private Object resolveCompositeValue(Class<?> valueClass, CompositeValue attributeValue, Class<? extends Annotation>[] callBefore,  Class<? extends Annotation>[] callAfter, boolean configureAllFields) throws InstantiationException, IllegalAccessException {
 		if (valueClass.equals(Object.class))
 			return attributeValue.getRaw();
 		if (valueClass.equals(String.class))
 			return new JSONObject((Map<?, ?>) attributeValue.getRaw()).toString();
 
 		Object resolvedValue = valueClass.newInstance();
-		configure(attributeValue.get(), resolvedValue, callBefore, callAfter, false);
+		configure(attributeValue.get(), resolvedValue, callBefore, callAfter, configureAllFields);
 		return resolvedValue;
 	}
 }
