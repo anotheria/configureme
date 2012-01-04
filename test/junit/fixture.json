@@ -45,6 +45,6 @@
 		},
 	},
 
-	//lets test whether we can remove c++ comments properly
+	// Lets test whether we can remove c++ comments properly
 	url: "http://www.google.com",
 }
