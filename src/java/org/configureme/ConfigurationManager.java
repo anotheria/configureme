@@ -602,15 +602,14 @@ public enum ConfigurationManager {
 		boolean isValueClassPlain = isPlain(valueClass);
 		boolean isValueClassDummy = valueClass.equals(Object.class) || valueClass.equals(String.class);
 
-		if (attributeValue instanceof PlainValue && !valueClass.isArray() && (isValueClassPlain || isValueClassDummy)) {
+		if (attributeValue instanceof PlainValue && !valueClass.isArray() && (isValueClassPlain || isValueClassDummy))
 			return resolvePlainValue(valueClass, (PlainValue) attributeValue);
-		} else if (attributeValue instanceof CompositeValue && !valueClass.isArray() && (!isValueClassPlain || isValueClassDummy)) {
+		if (attributeValue instanceof CompositeValue && !valueClass.isArray() && (!isValueClassPlain || isValueClassDummy))
 			return resolveCompositeValue(valueClass, (CompositeValue) attributeValue, callBefore, callAfter, configureAllFields);
-		} else if (attributeValue instanceof ArrayValue && (valueClass.isArray() || isValueClassDummy)) {
+		if (attributeValue instanceof ArrayValue && (valueClass.isArray() || isValueClassDummy))
 			return resolveArrayValue(valueClass, (ArrayValue) attributeValue, callBefore, callAfter, configureAllFields);
-		} else {
-			throw new IllegalArgumentException("Can't resolve attribute value " + attributeValue + " to type: " + valueClass.getCanonicalName());
-		}
+
+		throw new IllegalArgumentException("Can't resolve attribute value " + attributeValue + " to type: " + valueClass.getCanonicalName());
 	}
 
 	/**
@@ -621,7 +620,7 @@ public enum ConfigurationManager {
 	private static boolean isPlain(Class<?> type) {
 		return (type.isArray())
 				? isPlain(type.getComponentType())
-				: PLAIN_TYPES.contains(type);
+				: PLAIN_TYPES.contains(type) || Enum.class.isAssignableFrom(type);
 	}
 
 	private static Object resolvePlainValue(Class<?> type, PlainValue value){
@@ -644,7 +643,24 @@ public enum ConfigurationManager {
 		if (type.equals(Double.class) || type.equals(double.class))
 			return Double.valueOf(value.get());
 
-		throw new IllegalArgumentException("Can't resolve type: "+type+", value: "+value);
+		if (Enum.class.isAssignableFrom(type))
+			try {
+				return type.cast(type.getMethod("valueOf", String.class).invoke(null, value.get()));
+			} catch (SecurityException e) {
+				throw new IllegalArgumentException("Can not resolve '" + value + "' to " + type.getCanonicalName(), e);
+			} catch (IllegalAccessException e) {
+				throw new IllegalArgumentException("Can not resolve '" + value + "' to " + type.getCanonicalName(), e);
+			} catch (InvocationTargetException e) {
+				throw new IllegalArgumentException("Can not resolve '" + value + "' to " + type.getCanonicalName(), e);
+			} catch (NoSuchMethodException e) {
+				throw new IllegalArgumentException("Can not resolve '" + value + "' to " + type.getCanonicalName(), e);
+			} catch (ClassCastException e) {
+				throw new IllegalArgumentException("Can not resolve '" + value + "' to " + type.getCanonicalName(), e);
+			} catch (IllegalArgumentException e) {
+				throw new IllegalArgumentException("Can not resolve '" + value + "' to " + type.getCanonicalName(), e);
+			}
+
+		throw new IllegalArgumentException("Can not resolve '" + value + "' to " + type.getCanonicalName());
 	}
 
 	/**

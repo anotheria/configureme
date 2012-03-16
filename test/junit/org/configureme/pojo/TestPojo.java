@@ -3,6 +3,9 @@ package org.configureme.pojo;
 import java.util.Arrays;
 
 public class TestPojo {
+	public enum EnumType {
+		A, B, C
+	}
 	private short shortValue;
 	private long longValue;
 	private int intValue;
@@ -15,6 +18,7 @@ public class TestPojo {
 	private int onlyInB;
     private InnerTestPojo innerValue;
     private InnerTestPojo[] innerValueArray;
+    private EnumType enumValue;
 
 	@Override public String toString(){
 		String ret = "";
@@ -30,6 +34,7 @@ public class TestPojo {
 		ret += " onlyInB: "+onlyInB;
 		ret += " innerValue: "+innerValue;
 		ret += " innerValueArray: "+Arrays.toString(innerValueArray);
+		ret += " enumValue: "+enumValue;
 		return ret;
 	}
 
@@ -93,20 +98,22 @@ public class TestPojo {
 	public void setOnlyInB(int onlyInB) {
 		this.onlyInB = onlyInB;
 	}
-
     public InnerTestPojo getInnerValue() {
         return innerValue;
     }
-
     public void setInnerValue(InnerTestPojo innerValue) {
         this.innerValue = innerValue;
     }
-
     public InnerTestPojo[] getInnerValueArray() {
         return innerValueArray;
     }
-
     public void setInnerValueArray(InnerTestPojo[] innerValueArray) {
         this.innerValueArray = innerValueArray;
     }
+	public EnumType getEnumValue() {
+		return enumValue;
+	}
+	public void setEnumValue(EnumType enumValue) {
+		this.enumValue = enumValue;
+	}
 }

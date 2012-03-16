@@ -37,7 +37,6 @@ public class PojoTest {
         ConfigurationManager.INSTANCE.configureBeanAsIn(pojo, "fixture", env);
 
         assertEquals(3000, pojo.getIntValue());
-
     }
 
     @Test public void configureNestedBeanTest() {
@@ -58,6 +57,14 @@ public class PojoTest {
         		new InnerTestPojo("bar", false),
         		new InnerTestPojo("foobar", true)
         	}, pojo.getInnerValueArray());
+    }
+
+    @Test public void configureEnum(){
+        DynamicEnvironment env = new DynamicEnvironment("a", "b");
+        TestPojo pojo = new TestPojo();
+        ConfigurationManager.INSTANCE.configureBeanAsIn(pojo, "fixture", env);
+
+        assertEquals(TestPojo.EnumType.B, pojo.getEnumValue());
     }
 }
 
