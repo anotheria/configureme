@@ -36,6 +36,23 @@ public class JsonParser implements ConfigurationParser {
 
 		content = StringUtils.removeCComments(content);
 		content = StringUtils.removeCPPComments(content);
+		List<String> tags = StringUtils.extractTags(content, '$', '}');
+		//parse tags
+		for (String tag : tags){
+			//ensure wrong format is skipped
+			if (tag.charAt(1)!='{')
+				continue;
+			try{
+				String propertyName = tag.substring(2,tag.length()-1);
+				String propertyValue = System.getProperty(propertyName);
+				if (propertyValue==null){
+					continue;
+				}
+				content = StringUtils.replaceOnce(content, tag, propertyValue);
+			}catch(Exception ignored){}
+			
+		}
+		//System.out.println("content: \n"+content);
 
 		try {
 			JSONObject j = new JSONObject(content);

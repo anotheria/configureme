@@ -86,4 +86,8 @@ public enum ConfigurationRepository implements ConfigurationSourceListener{
 	public void configurationSourceUpdated(ConfigurationSource target) {
 		artefacts.remove(target.getKey().getName());
 	}
+	
+	public void resetForUnitTests(){
+		artefacts.clear();
+	}
 }
