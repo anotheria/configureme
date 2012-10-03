@@ -30,12 +30,20 @@ public class ParsedConfiguration {
 	 */
 	private Collection<String> externalConfigurations;
 
+	/**
+	 * Set External configuration
+	 * @param externalConfigurations external configuration
+	 */
 	public void setExternalConfigurations(Collection<String> externalConfigurations) {
 		if(externalConfigurations==null)
 			return;
 		this.externalConfigurations = externalConfigurations;
 	}
 
+	/**
+	 * Get external configuration
+	 * @return external configuration
+	 */
 	public Collection<String> getExternalConfigurations() {
 		return externalConfigurations;
 	}

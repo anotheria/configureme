@@ -1,6 +1,7 @@
 package org.configureme.parser.json;
 
 import net.anotheria.util.StringUtils;
+import org.apache.log4j.Logger;
 import org.configureme.Environment;
 import org.configureme.environments.DynamicEnvironment;
 import org.configureme.parser.ArrayParsedAttribute;
@@ -29,6 +30,7 @@ import java.util.Set;
 
 /**
  * ConfigurationParser implementation for JSON.
+ *
  * @author lrosenberg
  */
 public class JsonParser implements ConfigurationParser {
@@ -40,13 +42,18 @@ public class JsonParser implements ConfigurationParser {
 	private static final String INCLUDE_ATTR_PREFIX = "$<";
 	private static Map<String, Set<String>> includes = new HashMap<String, Set<String>>();
 
+	/**
+	 * Logger.
+	 */
+	private static final Logger log = Logger.getLogger(JsonParser.class);
+
 	@Override
 	public ParsedConfiguration parseConfiguration(String name, String content) throws ConfigurationParserException {
 
 		content = StringUtils.removeCComments(content);
 		content = StringUtils.removeCPPComments(content);
 		Set<String> include = includes.get(name);
-		if(include==null)
+		if (include == null)
 			include = new HashSet<String>();
 		include.clear();
 		include.add(name);
@@ -66,7 +73,8 @@ public class JsonParser implements ConfigurationParser {
 					continue;
 				}
 				content = StringUtils.replaceOnce(content, tag, propertyValue);
-			} catch (Exception ignored) {
+			} catch (Exception e) {
+				log.warn("parseConfiguration: tag=" + tag + " can't be parsed", e);
 			}
 
 		}
@@ -79,7 +87,7 @@ public class JsonParser implements ConfigurationParser {
 			DynamicEnvironment env = new DynamicEnvironment();
 
 			String[] names = JSONObject.getNames(j);
-			if(names != null)
+			if (names != null)
 				for (String key : names) {
 					List<? extends ParsedAttribute<?>> attList = parse(key, j.get(key), env);
 					for (ParsedAttribute<?> att : attList)
@@ -97,27 +105,29 @@ public class JsonParser implements ConfigurationParser {
 	}
 
 	private String includeExternalFiles(String content, final Collection<String> configurationNames) throws ConfigurationParserException {
-		List<String> includes =  StringUtils.extractTags(content, '$', '>');
-		for(String include: includes){
+		List<String> includes = StringUtils.extractTags(content, '$', '>');
+		for (String include : includes) {
 			//ensure wrong format is skipped
-			if (include.charAt(1)!='<')
+			if (include.charAt(1) != '<')
 				continue;
-			if (include.charAt(include.length()-1)!='>')
+			if (include.charAt(include.length() - 1) != '>')
 				continue;
 
 			// skip circles in includes
-			String includeName = include.substring(2,include.length()-1);
-			if( configurationNames.contains(includeName) )
+			String includeName = include.substring(2, include.length() - 1);
+			if (configurationNames.contains(includeName))
 				throw new ConfigurationParserException("Circle detected: configuration=" + includeName + " was already included");
 			// skip links to attributes
 			if (include.contains("."))
 				continue;
-			try{
+			try {
 				//reading config
 				configurationNames.add(includeName);
 				String includedContent = includeExternalFiles(readIncludedContent(includeName), configurationNames);
 				content = StringUtils.replaceOnce(content, include, includedContent);
-			}catch (Exception ignored){}
+			} catch (Exception e) {
+				log.warn("includeExternalFiles: include=" + include + " can't be parsed", e);
+			}
 		}
 		return content;
 	}
@@ -125,24 +135,24 @@ public class JsonParser implements ConfigurationParser {
 	private String readIncludedContent(String includeName) {
 		ConfigurationSourceKey configurationSourceKey = new ConfigurationSourceKey(ConfigurationSourceKey.Type.FILE, ConfigurationSourceKey.Format.JSON, includeName);
 		String result = ConfigurationSourceRegistry.INSTANCE.readConfigurationSource(configurationSourceKey);
-		result = StringUtils.strip(result,1,1);
+		result = StringUtils.strip(result, 1, 1);
 		return result;
 	}
 
-	private static List<? extends ParsedAttribute<?>> parse(String key, Object value, DynamicEnvironment environment) throws JSONException{
+	private static List<? extends ParsedAttribute<?>> parse(String key, Object value, DynamicEnvironment environment) throws JSONException {
 		// an object value means a change in environment, let's see what it is
 		if (value instanceof JSONObject && key.startsWith(COMPOSITE_ATTR_PREFIX))
 			return Arrays.asList(parseComposite(key, (JSONObject) value, environment));
 		else if (value instanceof JSONArray && key.startsWith(COMPOSITE_ATTR_PREFIX))
 			return Arrays.asList(parseArray(key, (JSONArray) value, environment));
-		else if (value instanceof String && ((String)value).startsWith(INCLUDE_ATTR_PREFIX))
-			return Arrays.asList(parseInclude(key, (String)value, environment));
+		else if (value instanceof String && ((String) value).startsWith(INCLUDE_ATTR_PREFIX))
+			return Arrays.asList(parseInclude(key, (String) value, environment));
 		else if (value instanceof JSONObject)
 			return parseObject(key, (JSONObject) value, environment);
 		else if (value instanceof JSONArray)
 			return Arrays.asList(parseArray(key, (JSONArray) value, environment));
 		else
-			return Arrays.asList(new PlainParsedAttribute(key, (Environment)environment.clone(), JSONObject.NULL.equals(value) ? null : value.toString()));
+			return Arrays.asList(new PlainParsedAttribute(key, (Environment) environment.clone(), JSONObject.NULL.equals(value) ? null : value.toString()));
 	}
 
 	private static IncludeParsedAttribute parseInclude(String key, String value, DynamicEnvironment environment) throws JSONException {
@@ -155,7 +165,7 @@ public class JsonParser implements ConfigurationParser {
 		environment.extendThis(key);
 		try {
 			String[] names = JSONObject.getNames(value);
-			if(names != null)
+			if (names != null)
 				for (String subKey : names)
 					parsed.addAll(parse(subKey, value.get(subKey), environment));
 		} finally {

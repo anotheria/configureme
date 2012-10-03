@@ -48,7 +48,6 @@ public class IncludeValue implements Value {
 	 * @param attributeName     namee of the attribute to get from loaded config
 	 */
 	public IncludeValue(Environment environment, String configurationName, String attributeName) {
-		//TODO: add listener for file
 		config = ConfigurationManager.INSTANCE.getConfiguration(configurationName, environment);
 		this.attributeName = attributeName;
 	}

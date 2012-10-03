@@ -99,6 +99,9 @@ public enum ConfigurationManager {
 	 */
 	private ConcurrentHashMap<ConfigurationSourceKey.Format, ConfigurationParser> parsers;
 
+	/**
+	 * Cache for object in oder to cover situation with loops in ConfigureAlso
+	 */
 	private ThreadLocal<Map<String, Object>> localCache = new ThreadLocal<Map<String, Object>>();
 	/**
 	 * Annotations to call before initial configuration.
@@ -431,7 +434,7 @@ public enum ConfigurationManager {
 		for (Field f : fields) {
 			if (f.isAnnotationPresent(ConfigureAlso.class)) {
 				Object externalConfig = null;
-				//TODO check if constructor exist
+				//TODO: check if constructor exist
 				try {
 					Class<?> externalConfigClass = f.getType();
 					externalConfig = externalConfigClass.newInstance();
