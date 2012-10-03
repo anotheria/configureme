@@ -1,12 +1,11 @@
 package org.configureme.sources;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import net.anotheria.util.NumberUtils;
 import org.apache.log4j.Logger;
 import org.configureme.repository.ConfigurationRepository;
 
-import net.anotheria.util.NumberUtils;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a loaded configuration source for example a file. Doesn't contain the content of the file, only metadata is included. The ConfigurationSource object is a surogate which is used to execute functions

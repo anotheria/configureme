@@ -1,14 +1,15 @@
 package org.configureme.repository;
 
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.configureme.Configuration;
 import org.configureme.Environment;
 import org.configureme.GlobalEnvironment;
 import org.configureme.sources.ConfigurationSource;
+import org.configureme.sources.ConfigurationSourceKey;
 import org.configureme.sources.ConfigurationSourceListener;
+
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The configurationrepository is the internal storage for configurations. It caches all configuration which are ever loaded by the ConfigurationManager.
@@ -74,6 +75,11 @@ public enum ConfigurationRepository implements ConfigurationSourceListener{
 			throw new IllegalArgumentException("No such artefact: "+name);
 		ConfigurationImpl configurationImpl = new ConfigurationImpl(a.getName());
 		List<String> attributeNames = a.getAttributeNames();
+
+		configurationImpl.clearExternalConfigurations();
+		for(ConfigurationSourceKey include: a.getExternalConfigurations())
+			configurationImpl.addExternalConfiguration(include);
+
 		for (String attributeName : attributeNames){
 			Value attributeValue = a.getAttribute(attributeName).getValue(environment);
 			if (attributeValue!=null)

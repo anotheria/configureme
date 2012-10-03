@@ -23,7 +23,7 @@ public class ConfigurableWrapper implements ConfigurationSourceListener{
 	 * The key of objects configuration.
 	 */
 	private ConfigurationSourceKey key;
-	
+
 	/**
 	 * Creates a new wrapper object.
 	 * @param aKey

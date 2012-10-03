@@ -1,18 +1,21 @@
 package org.configureme.repository;
 
+import org.configureme.Configuration;
+import org.configureme.sources.ConfigurationSourceKey;
+
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.configureme.Configuration;
-
 /**
  * An implementation of the Configuration. This is a de-facto configuration snapshot of a configuration in a defined environment.
+ *
  * @author lrosenberg
  */
-public class ConfigurationImpl implements Configuration{
+public class ConfigurationImpl implements Configuration {
 	/**
 	 * The name of the configuration.
 	 */
@@ -23,12 +26,37 @@ public class ConfigurationImpl implements Configuration{
 	private Map<String, Value> attributes;
 
 	/**
+	 * External configurations that was included in current configuration
+	 * this field use for reconfiguration of the current configuration
+	 */
+	private Set<ConfigurationSourceKey> externalConfigurations;
+
+	/**
 	 * Creates a new ConfigurationImpl.
+	 *
 	 * @param aName
 	 */
-	public ConfigurationImpl(String aName){
+	public ConfigurationImpl(String aName) {
 		name = aName;
 		attributes = new ConcurrentHashMap<String, Value>();
+		externalConfigurations = new HashSet<ConfigurationSourceKey>();
+	}
+
+	@Override
+	public Set<ConfigurationSourceKey> getExternalConfigurations() {
+		return externalConfigurations;
+	}
+
+	@Override
+	public void clearExternalConfigurations() {
+		externalConfigurations.clear();
+	}
+
+	@Override
+	public void addExternalConfiguration(ConfigurationSourceKey configurationSourceKey){
+		if(configurationSourceKey==null)
+			return;
+		externalConfigurations.add(configurationSourceKey);
 	}
 
 	@Override
@@ -37,12 +65,12 @@ public class ConfigurationImpl implements Configuration{
 	}
 
 	@Override
-	public Collection<String> getAttributeNames(){
+	public Collection<String> getAttributeNames() {
 		return attributes.keySet();
 	}
 
 	@Override
-	public Set<Entry<String, Value>> getEntries(){
+	public Set<Entry<String, Value>> getEntries() {
 		return attributes.entrySet();
 	}
 
@@ -53,24 +81,28 @@ public class ConfigurationImpl implements Configuration{
 
 	/**
 	 * Sets the value of the attribute (in the selected environment).
+	 *
 	 * @param attributeName
 	 * @param attributeValue
 	 */
-	public void setAttribute(String attributeName, Value attributeValue){
+	public void setAttribute(String attributeName, Value attributeValue) {
 		attributes.put(attributeName, attributeValue);
 	}
 
-	@Override public String toString(){
-		return getName()+": "+attributes;
+	@Override
+	public String toString() {
+		return getName() + ": " + attributes;
 	}
 
-	@Override public boolean equals(Object o){
+	@Override
+	public boolean equals(Object o) {
 		return o instanceof ConfigurationImpl &&
-		 name.equals(((ConfigurationImpl)o).name) &&
-		 attributes.equals(((ConfigurationImpl)o).attributes);
+				name.equals(((ConfigurationImpl) o).name) &&
+				attributes.equals(((ConfigurationImpl) o).attributes);
 	}
 
-	@Override public int hashCode(){
+	@Override
+	public int hashCode() {
 		return name == null ? 0 : name.hashCode();
 	}
 

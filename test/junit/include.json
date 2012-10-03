@@ -1,0 +1,5 @@
+{
+	normal: 1,
+    $<includeConfig>
+    linked:$<linkConfig.linked>
+}

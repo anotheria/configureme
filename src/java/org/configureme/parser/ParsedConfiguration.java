@@ -1,6 +1,7 @@
 package org.configureme.parser;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -24,6 +25,22 @@ public class ParsedConfiguration {
 	private String name;
 
 	/**
+	 * External configurations that was included in current configuration
+	 * this field use for reconfiguration of the current configuration
+	 */
+	private Collection<String> externalConfigurations;
+
+	public void setExternalConfigurations(Collection<String> externalConfigurations) {
+		if(externalConfigurations==null)
+			return;
+		this.externalConfigurations = externalConfigurations;
+	}
+
+	public Collection<String> getExternalConfigurations() {
+		return externalConfigurations;
+	}
+
+	/**
 	 * Creates a new parsed configuration object.
 	 * @param aName the name of the configuration to which the parsed version belongs.
 	 */
@@ -31,7 +48,10 @@ public class ParsedConfiguration {
 		name = aName;
 		parseTimestamp = System.currentTimeMillis();
 		attributes = new ArrayList<ParsedAttribute<?>>();
+		externalConfigurations = new ArrayList<String>();
 	}
+
+
 
 	/**
 	 * Adds an attribute to the internal attribute list.

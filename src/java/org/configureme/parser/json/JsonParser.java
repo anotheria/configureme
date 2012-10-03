@@ -1,24 +1,31 @@
 package org.configureme.parser.json;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import net.anotheria.util.StringUtils;
-
 import org.configureme.Environment;
 import org.configureme.environments.DynamicEnvironment;
 import org.configureme.parser.ArrayParsedAttribute;
 import org.configureme.parser.CompositeParsedAttribute;
 import org.configureme.parser.ConfigurationParser;
 import org.configureme.parser.ConfigurationParserException;
+import org.configureme.parser.IncludeParsedAttribute;
 import org.configureme.parser.ParsedAttribute;
 import org.configureme.parser.ParsedConfiguration;
 import org.configureme.parser.PlainParsedAttribute;
+import org.configureme.sources.ConfigurationSourceKey;
+import org.configureme.sources.ConfigurationSourceRegistry;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * ConfigurationParser implementation for JSON.
@@ -30,27 +37,38 @@ public class JsonParser implements ConfigurationParser {
 	 * The names of last ones shall starts with this prefix.
 	 */
 	private static final String COMPOSITE_ATTR_PREFIX = "@";
+	private static final String INCLUDE_ATTR_PREFIX = "$<";
+	private static Map<String, Set<String>> includes = new HashMap<String, Set<String>>();
 
 	@Override
 	public ParsedConfiguration parseConfiguration(String name, String content) throws ConfigurationParserException {
 
 		content = StringUtils.removeCComments(content);
 		content = StringUtils.removeCPPComments(content);
+		Set<String> include = includes.get(name);
+		if(include==null)
+			include = new HashSet<String>();
+		include.clear();
+		include.add(name);
+		//parse file includes, should be first than parsing tags
+		content = includeExternalFiles(content, include);
+
 		List<String> tags = StringUtils.extractTags(content, '$', '}');
 		//parse tags
-		for (String tag : tags){
+		for (String tag : tags) {
 			//ensure wrong format is skipped
-			if (tag.charAt(1)!='{')
+			if (tag.charAt(1) != '{')
 				continue;
-			try{
-				String propertyName = tag.substring(2,tag.length()-1);
+			try {
+				String propertyName = tag.substring(2, tag.length() - 1);
 				String propertyValue = System.getProperty(propertyName);
-				if (propertyValue==null){
+				if (propertyValue == null) {
 					continue;
 				}
 				content = StringUtils.replaceOnce(content, tag, propertyValue);
-			}catch(Exception ignored){}
-			
+			} catch (Exception ignored) {
+			}
+
 		}
 		//System.out.println("content: \n"+content);
 
@@ -67,12 +85,48 @@ public class JsonParser implements ConfigurationParser {
 					for (ParsedAttribute<?> att : attList)
 						pa.addAttribute(att);
 				}
-
+			//remove current configuration from the externals
+			include.remove(name);
+			pa.setExternalConfigurations(include);
+			includes.put(name, include);
 			return pa;
 
 		} catch (JSONException e) {
 			throw new ConfigurationParserException("JSON Error", e);
 		}
+	}
+
+	private String includeExternalFiles(String content, final Collection<String> configurationNames) throws ConfigurationParserException {
+		List<String> includes =  StringUtils.extractTags(content, '$', '>');
+		for(String include: includes){
+			//ensure wrong format is skipped
+			if (include.charAt(1)!='<')
+				continue;
+			if (include.charAt(include.length()-1)!='>')
+				continue;
+
+			// skip circles in includes
+			String includeName = include.substring(2,include.length()-1);
+			if( configurationNames.contains(includeName) )
+				throw new ConfigurationParserException("Circle detected: configuration=" + includeName + " was already included");
+			// skip links to attributes
+			if (include.contains("."))
+				continue;
+			try{
+				//reading config
+				configurationNames.add(includeName);
+				String includedContent = includeExternalFiles(readIncludedContent(includeName), configurationNames);
+				content = StringUtils.replaceOnce(content, include, includedContent);
+			}catch (Exception ignored){}
+		}
+		return content;
+	}
+
+	private String readIncludedContent(String includeName) {
+		ConfigurationSourceKey configurationSourceKey = new ConfigurationSourceKey(ConfigurationSourceKey.Type.FILE, ConfigurationSourceKey.Format.JSON, includeName);
+		String result = ConfigurationSourceRegistry.INSTANCE.readConfigurationSource(configurationSourceKey);
+		result = StringUtils.strip(result,1,1);
+		return result;
 	}
 
 	private static List<? extends ParsedAttribute<?>> parse(String key, Object value, DynamicEnvironment environment) throws JSONException{
@@ -81,12 +135,18 @@ public class JsonParser implements ConfigurationParser {
 			return Arrays.asList(parseComposite(key, (JSONObject) value, environment));
 		else if (value instanceof JSONArray && key.startsWith(COMPOSITE_ATTR_PREFIX))
 			return Arrays.asList(parseArray(key, (JSONArray) value, environment));
+		else if (value instanceof String && ((String)value).startsWith(INCLUDE_ATTR_PREFIX))
+			return Arrays.asList(parseInclude(key, (String)value, environment));
 		else if (value instanceof JSONObject)
 			return parseObject(key, (JSONObject) value, environment);
 		else if (value instanceof JSONArray)
 			return Arrays.asList(parseArray(key, (JSONArray) value, environment));
 		else
 			return Arrays.asList(new PlainParsedAttribute(key, (Environment)environment.clone(), JSONObject.NULL.equals(value) ? null : value.toString()));
+	}
+
+	private static IncludeParsedAttribute parseInclude(String key, String value, DynamicEnvironment environment) throws JSONException {
+		return new IncludeParsedAttribute(key, (Environment) environment.clone(), value);
 	}
 
 	private static List<ParsedAttribute<?>> parseObject(String key, JSONObject value, DynamicEnvironment environment) throws JSONException {

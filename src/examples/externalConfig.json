@@ -1,0 +1,10 @@
+{
+    externalAttribute: "external",
+    live:{
+        externalAttribute: "external live",
+    },
+    test: {
+        externalAttribute: "external test",
+    },
+
+}

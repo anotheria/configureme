@@ -1,0 +1,14 @@
+{
+    live:{
+        street: "Live included street",
+        numbers: [ 7, 6, 5],
+        @innerOne:{
+         innerString:"inner string Live",
+        },
+    },
+    test:{
+        street: "Test included street",
+        numbers: [ 1, 2, 3],
+
+    },
+}

@@ -1,19 +1,5 @@
 package org.configureme;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Array;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.apache.log4j.Logger;
 import org.configureme.annotations.AfterConfiguration;
 import org.configureme.annotations.AfterInitialConfiguration;
@@ -22,6 +8,7 @@ import org.configureme.annotations.BeforeConfiguration;
 import org.configureme.annotations.BeforeInitialConfiguration;
 import org.configureme.annotations.BeforeReConfiguration;
 import org.configureme.annotations.Configure;
+import org.configureme.annotations.ConfigureAlso;
 import org.configureme.annotations.ConfigureMe;
 import org.configureme.annotations.DontConfigure;
 import org.configureme.annotations.Set;
@@ -38,6 +25,7 @@ import org.configureme.repository.ArrayValue;
 import org.configureme.repository.Artefact;
 import org.configureme.repository.CompositeValue;
 import org.configureme.repository.ConfigurationRepository;
+import org.configureme.repository.IncludeValue;
 import org.configureme.repository.PlainValue;
 import org.configureme.repository.Value;
 import org.configureme.sources.ConfigurationSourceKey;
@@ -46,6 +34,21 @@ import org.configureme.sources.ConfigurationSourceKey.Type;
 import org.configureme.sources.ConfigurationSourceRegistry;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Configuration manager (this is the one YOU must use) is a utility class for retrieval of configurations and automatical configurations of components.
@@ -96,6 +99,7 @@ public enum ConfigurationManager {
 	 */
 	private ConcurrentHashMap<ConfigurationSourceKey.Format, ConfigurationParser> parsers;
 
+	private ThreadLocal<Map<String, Object>> localCache = new ThreadLocal<Map<String, Object>>();
 	/**
 	 * Annotations to call before initial configuration.
 	 */
@@ -380,7 +384,6 @@ public enum ConfigurationManager {
 	 * @param callAfter annotations, methods annotated with those will be called after the configuration
 	 */
 	private void configure(ConfigurationSourceKey key, Object o, Environment in, Class<? extends Annotation>[] callBefore,  Class<? extends Annotation>[] callAfter, ConfigureMe ann){
-		//System.out.println("CALLED configure("+key+", "+o+","+in+")");
 		Class<?> clazz = o.getClass();
 
 		if (ann==null)
@@ -390,7 +393,16 @@ public enum ConfigurationManager {
 
 		boolean configureAllFields = ann.allfields();
 
-		configure(getConfiguration(key, in), o, callBefore, callAfter, configureAllFields);
+		Configuration configuration = getConfiguration(key, in);
+		configure(configuration, o, callBefore, callAfter, configureAllFields, in);
+
+		// added all external configuration watchers
+		if(ann.watch()){
+			for(ConfigurationSourceKey sourceKey: configuration.getExternalConfigurations()){
+				ConfigurableWrapper wrapper = new ConfigurableWrapper(sourceKey, o, in);
+				ConfigurationSourceRegistry.INSTANCE.addWatchedConfigurable(wrapper);
+			}
+		}
 
 		if (log!=null && log.isDebugEnabled()){
 			log.debug("Finished configuration of "+o+" as "+key);
@@ -406,14 +418,56 @@ public enum ConfigurationManager {
 	 * @param callAfter annotations, methods annotated with those will be called after the configuration
 	 * @param configureAllFields specifies whether to set all fields regardless if they are marked configured or not
 	 */
-	private void configure(Configuration config, Object o, Class<? extends Annotation>[] callBefore,  Class<? extends Annotation>[] callAfter, boolean configureAllFields) {
+	private void configure(Configuration config, Object o, Class<? extends Annotation>[] callBefore,  Class<? extends Annotation>[] callAfter, boolean configureAllFields, Environment environment) {
+		if(localCache.get()==null)
+			localCache.set(new HashMap<String, Object>());
+		localCache.get().put(config.getName(), o);
 		Class<?> clazz = o.getClass();
 		Method[] methods = clazz.getDeclaredMethods();
 		callAnnotations(o, methods, callBefore);
 
 		//first set fields
 		Field[] fields = clazz.getDeclaredFields();
-		for (Field f : fields){
+		for (Field f : fields) {
+			if (f.isAnnotationPresent(ConfigureAlso.class)) {
+				Object externalConfig = null;
+				//TODO check if constructor exist
+				try {
+					Class<?> externalConfigClass = f.getType();
+					externalConfig = externalConfigClass.newInstance();
+					if(!externalConfigClass.isAnnotationPresent(ConfigureMe.class))
+						continue;
+					ConfigureMe ann = externalConfigClass.getAnnotation(ConfigureMe.class);
+					Object cachedObject = localCache.get().get(ann.name());
+					if(cachedObject==null){
+						ConfigurationManager.INSTANCE.configure(externalConfig, environment);
+						localCache.get().put(ann.name(), externalConfig);
+					}else{
+						externalConfig = cachedObject;
+					}
+				} catch (Exception e) {
+					log.error("Can't create external config task for class name=" + f.getType().getName());
+				}
+				if (Modifier.isPublic(f.getModifiers())) {
+					try {
+						f.set(o, externalConfig);
+					} catch (Exception e) {
+						log.warn(f + ".set(" + o + ", " + externalConfig.toString() + ")", e);
+					}
+				} else {
+					String methodName = "set" + f.getName().toUpperCase().charAt(0) + f.getName().substring(1);
+					try {
+						Method toSet = clazz.getMethod(methodName, f.getType());
+						toSet.invoke(o, externalConfig);
+					} catch (NoSuchMethodException e) {
+						log.error("can't find method " + methodName + " (" + f.getType() + ")");
+					} catch (Exception e) {
+						log.error("can't set " + f.getName() + " to " + externalConfig.toString() + ", because: ", e);
+					}
+				}
+				continue;
+			}
+
 			if (f.isAnnotationPresent(Configure.class) || (configureAllFields && !f.isAnnotationPresent(DontConfigure.class))){
 				String attributeName = f.getName();
 				Value attributeValue = config.getAttribute(attributeName);
@@ -554,6 +608,10 @@ public enum ConfigurationManager {
 			//System.out.println("Parsed "+pa);
 			List<? extends ParsedAttribute<?>> attributes = pa.getAttributes();
 			Artefact art = ConfigurationRepository.INSTANCE.createArtefact(configurationName);
+			// set external includes
+			for (String include : pa.getExternalConfigurations())
+				art.addExternalConfigurations(new ConfigurationSourceKey(defaultConfigurationSourceType, defaultConfigurationSourceFormat, include));
+
 			for (ParsedAttribute<?> a : attributes){
 				art.addAttributeValue(a.getName(), a.getValue(), a.getEnvironment());
 			}
@@ -608,6 +666,8 @@ public enum ConfigurationManager {
 			return resolveCompositeValue(valueClass, (CompositeValue) attributeValue, callBefore, callAfter, configureAllFields);
 		if (attributeValue instanceof ArrayValue && (valueClass.isArray() || isValueClassDummy))
 			return resolveArrayValue(valueClass, (ArrayValue) attributeValue, callBefore, callAfter, configureAllFields);
+		if (attributeValue instanceof IncludeValue && (!valueClass.isArray() || !isValueClassDummy))
+			return resolveValue(valueClass, (Value) attributeValue.getRaw(), callBefore, callAfter, configureAllFields);
 
 		throw new IllegalArgumentException("Can't resolve attribute value " + attributeValue + " to type: " + valueClass.getCanonicalName());
 	}
@@ -699,7 +759,7 @@ public enum ConfigurationManager {
 			return new JSONObject((Map<?, ?>) attributeValue.getRaw()).toString();
 
 		Object resolvedValue = valueClass.newInstance();
-		configure(attributeValue.get(), resolvedValue, callBefore, callAfter, configureAllFields);
+		configure(attributeValue.get(), resolvedValue, callBefore, callAfter, configureAllFields, defaultEnvironment);
 		return resolvedValue;
 	}
 }

@@ -1,0 +1,8 @@
+{
+    live:{
+        variable: "${testVariable}"
+    },
+    test:{
+        variable: "simple value"
+    },
+}

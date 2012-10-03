@@ -1,14 +1,13 @@
 package org.configureme.sources;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import net.anotheria.util.NumberUtils;
-
 import org.apache.log4j.Logger;
 import org.configureme.ConfigurableWrapper;
 import org.configureme.sources.ConfigurationSourceKey.Type;
+
+import java.util.Collection;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * ConfigurationSourceRegistry is the singleton object that controls and manages all known configuration sources. It also has an internal thread that checks the sources for update in defined time periods.
@@ -115,7 +114,7 @@ public enum ConfigurationSourceRegistry {
 		removeListener(wrapper.getKey(), wrapper);
 	}
 
-	/**
+	/**                                                                                                                          `
 	 * Adds a watched configurable.
 	 * @param wrapper
 	 */
@@ -144,14 +143,14 @@ public enum ConfigurationSourceRegistry {
 					Collection<ConfigurationSource> allSources = watchedSources.values();
 					for (ConfigurationSource source : allSources){
 						SourceLoader loader = loaders.get(source.getKey().getType());
-						//System.out.println("source: "+source);
+//						System.out.println("source: "+source);
 						
 						try{
 							long lastUpdate = loader.getLastChangeTimestamp(source.getKey());
 							log.debug("Checking source: "+source+", lastUpdateFromLoader= "+NumberUtils.makeISO8601TimestampString(lastUpdate)+", storedLastUpdate="+NumberUtils.makeISO8601TimestampString(source.getLastChangeTimestamp()));
 							if (source.isOlderAs(lastUpdate)){
 								log.debug("firing update event: "+ source);
-								//System.out.println("firing update on source: "+source);
+//								System.out.println("firing update on source: "+source);
 								source.fireUpdateEvent(lastUpdate);
 							}
 						}catch(IllegalArgumentException e){
