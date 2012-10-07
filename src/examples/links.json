@@ -1,0 +1,12 @@
+
+{
+    inner:$<linkedattributes.innerOne>,
+    live:{
+        street: $<linkedattributes.street>,
+        blockNumbers: $<linkedattributes.numbers>,
+    },
+    test:{
+        street: $<linkedattributes.street>,
+        blockNumbers: $<linkedattributes.numbers>,
+    },
+}

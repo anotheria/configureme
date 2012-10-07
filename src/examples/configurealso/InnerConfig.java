@@ -1,11 +1,11 @@
-package include;
+package configurealso;
 
 import org.configureme.annotations.Configure;
 import org.configureme.annotations.ConfigureMe;
 
 /**
  * Example of inner configurable class with help of includes
- * Example for ExternalConfiguration
+ * Example for @ConfigureAlso
  *
  * @author ivanbatura
  * @since: 26.09.12
@@ -30,9 +30,7 @@ public class InnerConfig {
 
 	@Override
 	public String toString() {
-		return "InnerConfig{" +
-				"externalAttribute='" + externalAttribute + '\'' +
-				'}';
+		return "InnerConfig: externalAttribute=" + externalAttribute;
 	}
 }
 

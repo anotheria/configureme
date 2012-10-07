@@ -39,5 +39,6 @@ public class IncludeTest {
 		ExternalConfig externalConfig = new ExternalConfig();
 		ConfigurationManager.INSTANCE.configure(externalConfig);
 		assertEquals("External config value not correct", externalConfig.getExternal(), includeConfig.getExternalConfig().getExternal());
+		assertEquals("Loop handled successfully", externalConfig.getExternal(), includeConfig.getCircleConfig().getExternalConfig().getExternal());
 	}
 }

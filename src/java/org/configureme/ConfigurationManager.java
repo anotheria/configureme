@@ -102,7 +102,7 @@ public enum ConfigurationManager {
 	/**
 	 * Cache for object in oder to cover situation with loops in ConfigureAlso
 	 */
-	private ThreadLocal<Map<String, Object>> localCache = new ThreadLocal<Map<String, Object>>();
+	private ThreadLocal<Map<String, Map<Environment, Object>>> localCache = new ThreadLocal<Map<String, Map<Environment, Object>>>();
 	/**
 	 * Annotations to call before initial configuration.
 	 */
@@ -412,6 +412,7 @@ public enum ConfigurationManager {
 		}
 	}
 
+
 	/**
 	 * Applies specified configuration to specified object.
 	 *
@@ -422,9 +423,7 @@ public enum ConfigurationManager {
 	 * @param configureAllFields specifies whether to set all fields regardless if they are marked configured or not
 	 */
 	private void configure(Configuration config, Object o, Class<? extends Annotation>[] callBefore,  Class<? extends Annotation>[] callAfter, boolean configureAllFields, Environment environment) {
-		if(localCache.get()==null)
-			localCache.set(new HashMap<String, Object>());
-		localCache.get().put(config.getName(), o);
+		setCachedObject(config.getName(), environment, o);
 		Class<?> clazz = o.getClass();
 		Method[] methods = clazz.getDeclaredMethods();
 		callAnnotations(o, methods, callBefore);
@@ -441,10 +440,10 @@ public enum ConfigurationManager {
 					if(!externalConfigClass.isAnnotationPresent(ConfigureMe.class))
 						continue;
 					ConfigureMe ann = externalConfigClass.getAnnotation(ConfigureMe.class);
-					Object cachedObject = localCache.get().get(ann.name());
+					Object cachedObject = getCachedObject(ann.name(), environment);
 					if(cachedObject==null){
 						ConfigurationManager.INSTANCE.configure(externalConfig, environment);
-						localCache.get().put(ann.name(), externalConfig);
+						setCachedObject(ann.name(), environment, externalConfig);
 					}else{
 						externalConfig = cachedObject;
 					}
@@ -764,5 +763,49 @@ public enum ConfigurationManager {
 		Object resolvedValue = valueClass.newInstance();
 		configure(attributeValue.get(), resolvedValue, callBefore, callAfter, configureAllFields, defaultEnvironment);
 		return resolvedValue;
+	}
+
+	/**
+	 * Get cached object in order to handle situation with loop
+	 *
+	 * @param name        name of the config
+	 * @param environment environment
+	 * @return instance of the already configures object
+	 */
+
+	private Object getCachedObject(String name, Environment environment) {
+		Map<String, Map<Environment, Object>> globalCache = localCache.get();
+		if (globalCache == null) {
+			globalCache = new HashMap<String, Map<Environment, Object>>();
+			localCache.set(globalCache);
+		}
+		Map<Environment, Object> environmentCache = globalCache.get(name);
+		if (environmentCache == null) {
+			environmentCache = new HashMap<Environment, Object>();
+			globalCache.put(name, environmentCache);
+		}
+
+		return environmentCache.get(environment);
+	}
+
+	/**
+	 * Put configured object to the cache
+	 *
+	 * @param name        name of the config
+	 * @param environment environment
+	 * @param o           object to cache
+	 */
+	private void setCachedObject(String name, Environment environment, Object o) {
+		Map<String, Map<Environment, Object>> globalCache = localCache.get();
+		if (globalCache == null) {
+			globalCache = new HashMap<String, Map<Environment, Object>>();
+			localCache.set(globalCache);
+		}
+		Map<Environment, Object> environmentCache = globalCache.get(name);
+		if (environmentCache == null) {
+			environmentCache = new HashMap<Environment, Object>();
+			globalCache.put(name, environmentCache);
+		}
+		environmentCache.put(environment, o);
 	}
 }

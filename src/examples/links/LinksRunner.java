@@ -1,4 +1,4 @@
-package include;
+package links;
 
 import org.configureme.ConfigurationManager;
 import org.configureme.Environment;
@@ -9,12 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This example shows how to work with includes in configured file from others configurable files
+ * This example shows how to work links to attributes that located in the other file
  *
  * @author ivanbatura
  * @since: 24.09.12
  */
-public class IncludeRunner {
+public class LinksRunner {
 	private static Environment TEST_ENVIRONMENTS[] = new Environment[]{
 			GlobalEnvironment.INSTANCE,
 			new ApplicationEnvironment("live", "", "", ""),
@@ -22,11 +22,11 @@ public class IncludeRunner {
 	};
 
 	public static void main(String a[]) throws InterruptedException {
-		System.out.println("%%% This example shows how to work includes of one json into other");
-		List<IncludeConfig> configs = new ArrayList<IncludeConfig>();
+		System.out.println("%%% This example shows how to work links to attributes that located in the other file");
+		List<LinksConfig> configs = new ArrayList<LinksConfig>();
 		for (Environment e : TEST_ENVIRONMENTS) {
 			System.out.println("%% creating copy for " + e + ".");
-			IncludeConfig config = new IncludeConfig(e);
+			LinksConfig config = new LinksConfig(e);
 			configs.add(config);
 			ConfigurationManager.INSTANCE.configure(config, e);
 		}
@@ -34,7 +34,7 @@ public class IncludeRunner {
 
 		long endTime = System.currentTimeMillis() + 1000 * 60 * 5;
 		while (System.currentTimeMillis() < endTime) {
-			System.out.println("Waiting further " + ((endTime - System.currentTimeMillis()) / 1000) + " seconds, edit 'include.json' or 'includefile.json' in classpath to force reconfiguration.");
+			System.out.println("Waiting further " + ((endTime - System.currentTimeMillis()) / 1000) + " seconds, edit 'linkedattributes' or 'links' in classpath to force reconfiguration.");
 			Thread.sleep(1000 * 15);
 		}
 		System.out.println("Exiting.");

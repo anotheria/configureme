@@ -1,0 +1,9 @@
+{
+    simple: "global simple",
+    live:{
+        simple: "live simple"
+    },
+    test:{
+        simple: "test simple"
+    },
+}

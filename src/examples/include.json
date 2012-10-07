@@ -1,14 +1,9 @@
 {
-    inner:$<includedattributes.innerOne>,
     live:{
         $<includedfile1>
-        street: $<includedattributes.street>,
-        blockNumbers: $<includedattributes.numbers>,
     },
     test:{
         country: "Ukraine",
         city: "Kyiv",
-        street: $<includedattributes.street>,
-        blockNumbers: $<includedattributes.numbers>,
     },
 }
