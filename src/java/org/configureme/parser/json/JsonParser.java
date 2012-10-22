@@ -78,7 +78,6 @@ public class JsonParser implements ConfigurationParser {
 			}
 
 		}
-		//System.out.println("content: \n"+content);
 
 		try {
 			JSONObject j = new JSONObject(content);
@@ -87,12 +86,13 @@ public class JsonParser implements ConfigurationParser {
 			DynamicEnvironment env = new DynamicEnvironment();
 
 			String[] names = JSONObject.getNames(j);
-			if (names != null)
+			if (names != null){
 				for (String key : names) {
 					List<? extends ParsedAttribute<?>> attList = parse(key, j.get(key), env);
 					for (ParsedAttribute<?> att : attList)
 						pa.addAttribute(att);
 				}
+			}
 			//remove current configuration from the externals
 			include.remove(name);
 			pa.setExternalConfigurations(include);
@@ -189,8 +189,9 @@ public class JsonParser implements ConfigurationParser {
 
 	private static ArrayParsedAttribute parseArray(String key, JSONArray value, DynamicEnvironment environment) throws JSONException {
 		List<ParsedAttribute<?>> parsed = new ArrayList<ParsedAttribute<?>>(value.length());
-		for (int index = 0; index < value.length(); index++)
+		for (int index = 0; index < value.length(); index++){
 			parsed.addAll(parse(key, value.get(index), environment));
+		}
 
 		return new ArrayParsedAttribute(stripKey(key), (Environment) environment.clone(), parsed);
 	}
