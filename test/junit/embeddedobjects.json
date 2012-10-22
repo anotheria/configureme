@@ -1,0 +1,29 @@
+{
+	"name": "outerName",
+	"@inner": {
+		"name": "innername"
+	},
+	"listofstrings":[
+		"A", "B", "C"
+	],
+	"@list": [
+		{
+			"name": "first",
+			"@item": {
+				"name": "first child",
+				"amount": 12
+			}
+		},
+		{
+			"name": "second",
+			"@item": {
+				"name": "second child",
+				"amount": 15
+			}
+		}
+	]
+
+
+
+}
+
