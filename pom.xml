@@ -51,8 +51,8 @@
 
       <repository>
         <id>sonatype</id>
-        <name>Sonatype OS Releases</name>
-        <url>https://oss.sonatype.org/content/repositories/releases/</url>
+        <name>Sonatype OS Staging</name>
+        <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
       </repository>
 
       <snapshotRepository>
