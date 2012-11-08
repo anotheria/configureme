@@ -9,7 +9,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.anotheria</groupId>
   <artifactId>configureme</artifactId>
-  <version>2.0.0</version>
+  <version>2.0.1-SNAPSHOT</version>
   <name>ConfigureMe</name>
 
   <dependencies>
@@ -30,9 +30,9 @@
   </build>
 
 	<scm>
-		<url>svn:svn://svn.anotheria.net/opensource/configureme/tags/configureme-2.0.0</url>
-		<connection>scm:svn:svn://svn.anotheria.net/opensource/configureme/tags/configureme-2.0.0</connection>
-		<developerConnection>scm:svn:svn://svn.anotheria.net/opensource/configureme/tags/configureme-2.0.0</developerConnection>
+		<url>svn:svn://svn.anotheria.net/opensource/configureme/trunk</url>
+		<connection>scm:svn:svn://svn.anotheria.net/opensource/configureme/trunk</connection>
+		<developerConnection>scm:svn:svn://svn.anotheria.net/opensource/configureme/trunk</developerConnection>
 	</scm>
     <repositories>
           <repository>
