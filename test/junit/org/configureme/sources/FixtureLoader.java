@@ -13,7 +13,6 @@ public class FixtureLoader implements SourceLoader{
 		try{
 			originalContent = IOUtils.readFileAtOnceAsString("test/junit/fixture.json"); 
 		}catch(Exception e){
-			e.printStackTrace();
 			throw new AssertionError("can't run tests without fixture file");
 		}
 		reset();

@@ -13,10 +13,14 @@ public class ConfigurationSourceRegistryAddTest {
 	}
 	
 	
-	@Test(expected=IllegalArgumentException.class) public void testUnsupportedTypeFailureAvailability(){
+	@Test public void testUnsupportedTypeFailureAvailability(){
 		ConfigurationSourceKey key = new ConfigurationSourceKey(Type.FIXTURE, Format.JSON, "fixture");
-		ConfigurationSourceRegistry.INSTANCE.isConfigurationAvailable(key);
-		fail("ConfigurationSourceRegistry should have thrown an exception");
+		try{
+			ConfigurationSourceRegistry.INSTANCE.isConfigurationAvailable(key);
+			fail("ConfigurationSourceRegistry should have thrown an exception");
+		}catch(IllegalArgumentException e){
+			//expected
+		}
 	}
 
 	@Test(expected=IllegalArgumentException.class) public void testUnsupportedTypeFailureLoading(){

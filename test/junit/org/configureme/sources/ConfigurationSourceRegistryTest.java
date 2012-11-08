@@ -1,11 +1,5 @@
 package org.configureme.sources;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.fail;
-
 import org.configureme.ConfigurableWrapper;
 import org.configureme.GlobalEnvironment;
 import org.configureme.sources.ConfigurationSourceKey.Format;
@@ -14,8 +8,15 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.fail;
+
 public class ConfigurationSourceRegistryTest {
 	@BeforeClass public static void setupRegistry(){
+		ConfigurationSourceRegistry.INSTANCE.reset();
 		ConfigurationSourceRegistry.INSTANCE.addLoader(Type.FIXTURE, new FixtureLoader());
 	}
 	
@@ -26,11 +27,11 @@ public class ConfigurationSourceRegistryTest {
 	@Test public void testAvailability(){
 		ConfigurationSourceKey presentKey = new ConfigurationSourceKey(Type.FIXTURE, Format.JSON, "fixture");
 		ConfigurationSourceKey notPresentKey = new ConfigurationSourceKey(Type.FIXTURE, Format.JSON, "foobar");
-		assertTrue(ConfigurationSourceRegistry.INSTANCE.isConfigurationAvailable(presentKey));
-		assertFalse(ConfigurationSourceRegistry.INSTANCE.isConfigurationAvailable(notPresentKey));
+		assertTrue("expected "+presentKey+" to be there", ConfigurationSourceRegistry.INSTANCE.isConfigurationAvailable(presentKey));
+		assertFalse("expected "+notPresentKey+" not to be there", ConfigurationSourceRegistry.INSTANCE.isConfigurationAvailable(notPresentKey));
 		
 		FixtureLoader.setContent(null);
-		assertFalse(ConfigurationSourceRegistry.INSTANCE.isConfigurationAvailable(presentKey));
+		assertFalse("expected "+presentKey+" now not to be there",ConfigurationSourceRegistry.INSTANCE.isConfigurationAvailable(presentKey));
 	}
 	
 	@Test public void testWatchedResourceCaching(){

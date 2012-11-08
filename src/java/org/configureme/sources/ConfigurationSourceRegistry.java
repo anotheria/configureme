@@ -51,8 +51,9 @@ public enum ConfigurationSourceRegistry {
 	 * @return true if the key is translateable in an configuration source and the source exists
 	 */
 	public boolean isConfigurationAvailable(ConfigurationSourceKey key){
-		if (watchedSources.containsKey(key))
+		if (watchedSources.containsKey(key)){
 			return true;
+		}
 		SourceLoader loader = loaders.get(key.getType());
 		if (loader==null)
 			throw new IllegalArgumentException("Unsupported type: "+key.getType());
@@ -79,6 +80,7 @@ public enum ConfigurationSourceRegistry {
 	public void addListener(ConfigurationSourceKey key, ConfigurationSourceListener listener){
 		ConfigurationSource source = watchedSources.get(key);
 		if (source==null){
+			//TODO replace DCL with putIfAbsent
 			synchronized(watchedSources){
 				source = watchedSources.get(key);
 				if (source==null){
@@ -172,6 +174,7 @@ public enum ConfigurationSourceRegistry {
 	}
  	
 	/* test  */ void reset(){
+		watchedSources = new ConcurrentHashMap<ConfigurationSourceKey, ConfigurationSource>();
 		initLoaders();
 	}
 }
