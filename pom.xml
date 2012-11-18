@@ -44,16 +44,4 @@
 		<connection>scm:svn:svn://svn.anotheria.net/opensource/configureme/trunk</connection>
 		<developerConnection>scm:svn:svn://svn.anotheria.net/opensource/configureme/trunk</developerConnection>
 	</scm>
-    <repositories>
-          <repository>
-              <id>provided</id>
-              <url>http://nexus.anotheria.net/nexus/content/groups/public</url>
-              <releases>
-                      <enabled>true</enabled>
-              </releases>
-              <snapshots>
-                      <enabled>true</enabled>
-              </snapshots>
-          </repository>
-     </repositories>
 </project>
