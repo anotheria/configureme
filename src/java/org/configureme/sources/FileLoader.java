@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import net.anotheria.util.NumberUtils;
@@ -21,7 +22,14 @@ public class FileLoader implements SourceLoader{
 	/**
 	 * Logger.
 	 */
-	private static Logger log = Logger.getLogger(FileLoader.class);
+	private static final Logger log = Logger.getLogger(FileLoader.class);
+	
+	/**
+	 * prefix for external configuration. so you can, for example, setup a system property like 
+	 * 'configureme.external-configuration.moskito=[MY_PATH]' to have this configuration somewhere outside of your
+	 * classpath.
+	 */
+	private static final String EXTERNAL_CONF_PREFIX = "configureme.external-configuration.";
 	
 	/**
 	 * Returns the file name for the given source key.
@@ -37,25 +45,18 @@ public class FileLoader implements SourceLoader{
 	@Override
 	public boolean isAvailable(ConfigurationSourceKey key){
 		//ensure an exception is thrown if we are not file.
-		String fileName = getFileName(key);
-		ClassLoader myLoader = getClass().getClassLoader();
-
-		URL u = myLoader.getResource(fileName);
-		return u!=null;
+		File f = getFile(key);
+		return f != null && f.exists();
 	}
 
 	@Override
 	public long getLastChangeTimestamp(ConfigurationSourceKey key){
 		//ensure an exception is thrown if we are not file.
-		String fileName = getFileName(key);
-		ClassLoader myLoader = getClass().getClassLoader();
-
-		URL u = myLoader.getResource(fileName);
-		if (u==null){
-			throw new IllegalArgumentException("File: "+fileName+" doesn't exists (URL is null)");
+		File f = getFile(key);
+		if (f==null || !f.exists()) {
+			throw new IllegalArgumentException("unable to find configuration with key : " + key);
 		}
-		
-		File f = new File(u.getFile());
+
 		log.debug("Checking timestamp for file: "+f.getAbsolutePath());
 		long ret =  f.lastModified();
 		log.debug("file "+f.getAbsolutePath()+" last modified is: "+NumberUtils.makeISO8601TimestampString(ret));
@@ -64,20 +65,22 @@ public class FileLoader implements SourceLoader{
 	
 	@Override
 	public String getContent(ConfigurationSourceKey key){
-		//ensure an exception is thrown if we are not file.
-		String fileName = getFileName(key);
-		ClassLoader myLoader = getClass().getClassLoader();
-
-		URL u = myLoader.getResource(fileName);
-		if (u==null){
-			throw new IllegalArgumentException("File: "+fileName+" doesn't exists (URL is null)");
+		final File f = getFile(key);
+		if (f == null) {
+			throw new IllegalArgumentException("unable to find configuration with key : " + key);
 		}
+		
+		if (log.isInfoEnabled()) {
+			log.info("load configuration from file: " + f.getAbsolutePath());
+		}
+
 		Reader reader = null;
 		try{
-			File f = new File(u.getFile());
 			if (!f.exists()){
+				String fileName = getFileName(key);
 				return getContentFromJar(fileName);
 			}
+			
 			reader = new BufferedReader(new FileReader(f));
 			StringBuilder ret = new StringBuilder();
 			int c ; 
@@ -103,5 +106,33 @@ public class FileLoader implements SourceLoader{
 		return new String(data);
 	}
 	
-//*/
+	
+	/**
+	 * Determine a {@link File} handle related to given
+	 * {@link ConfigurationSourceKey}. Keep in mind, you still have to check if
+	 * such a file exists!
+	 * 
+	 * @param key
+	 *            {@link ConfigurationSourceKey}
+	 * @return {@link File} related to given {@link ConfigurationSourceKey} or
+	 *         NULL if no such configuration URL could be found.
+	 */
+	private File getFile(final ConfigurationSourceKey key) {
+		File f = null;
+		final String externalConfig = System.getProperty(EXTERNAL_CONF_PREFIX + key.getName(), null);
+		if (externalConfig == null) {
+			final String fileName = getFileName(key);
+			final ClassLoader myLoader = getClass().getClassLoader();
+			final URL url = myLoader.getResource(fileName);
+			if (url != null) {
+				f = new File(url.getFile());
+			}
+		
+		} else {
+			f = new File(externalConfig);
+		}
+
+		return f;
+	}
+
 }
