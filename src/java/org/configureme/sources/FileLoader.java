@@ -6,7 +6,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import net.anotheria.util.NumberUtils;
