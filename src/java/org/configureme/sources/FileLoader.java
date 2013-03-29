@@ -1,13 +1,11 @@
 package org.configureme.sources;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Reader;
 import java.net.URL;
 
+import net.anotheria.util.IOUtils;
 import net.anotheria.util.NumberUtils;
 
 import org.apache.log4j.Logger;
@@ -24,41 +22,49 @@ public class FileLoader implements SourceLoader{
 	private static final Logger log = Logger.getLogger(FileLoader.class);
 	
 	/**
-	 * prefix for external configuration. so you can, for example, setup a system property like 
-	 * 'configureme.external-configuration.moskito=[MY_PATH]' to have this configuration somewhere outside of your
-	 * classpath.
+	 * property key for external configuration path (see: {@link #externalConfigPath}). 
 	 */
-	private static final String EXTERNAL_CONF_PREFIX = "configureme.external-configuration.";
-	
+	private static final String EXTERNAL_CONF_PATH = "org.configureme.configuration-path";
+
 	/**
 	 * Returns the file name for the given source key.
 	 * @param source configuration source key
 	 * @return the file name for the given source key
 	 */
 	public static final String getFileName(ConfigurationSourceKey source){
+		//ensure an exception is thrown if we are not file.
 		if (source.getType()!=ConfigurationSourceKey.Type.FILE)
 			throw new AssertionError("Can only load configuration sources with type "+ConfigurationSourceKey.Type.FILE);
 		return source.getName()+"."+source.getFormat().getExtension();
 	}
 	
+	/**
+	 * property value for external configuration path. so you can, for example,
+	 * setup a system property like
+	 * 'configureme.configuration-path=[MY_PATH]' to have all
+	 * configurations somewhere outside of your classpath.
+	 */
+	private final String externalConfigPath = System.getProperty(EXTERNAL_CONF_PATH, null);
+	
 	@Override
 	public boolean isAvailable(ConfigurationSourceKey key){
-		//ensure an exception is thrown if we are not file.
-		File f = getFile(key);
-		return f != null && f.exists();
+		return getFile(key) != null;
 	}
 
 	@Override
 	public long getLastChangeTimestamp(ConfigurationSourceKey key){
-		//ensure an exception is thrown if we are not file.
 		File f = getFile(key);
-		if (f==null || !f.exists()) {
+		if (f==null) {
 			throw new IllegalArgumentException("unable to find configuration with key : " + key);
 		}
 
-		log.debug("Checking timestamp for file: "+f.getAbsolutePath());
+		if (log.isDebugEnabled()) {
+			log.debug("Checking timestamp for file: "+f.getAbsolutePath());
+		}
 		long ret =  f.lastModified();
-		log.debug("file "+f.getAbsolutePath()+" last modified is: "+NumberUtils.makeISO8601TimestampString(ret));
+		if (log.isDebugEnabled()) {
+			log.debug("file "+f.getAbsolutePath()+" last modified is: "+NumberUtils.makeISO8601TimestampString(ret));
+		}
 		return ret;
 	}
 	
@@ -73,65 +79,50 @@ public class FileLoader implements SourceLoader{
 			log.info("load configuration from file: " + f.getAbsolutePath());
 		}
 
-		Reader reader = null;
 		try{
 			if (!f.exists()){
-				String fileName = getFileName(key);
-				return getContentFromJar(fileName);
+				return getContentFromJar(f.getName());
 			}
 			
-			reader = new BufferedReader(new FileReader(f));
-			StringBuilder ret = new StringBuilder();
-			int c ; 
-			while((c=reader.read())!=-1)
-				ret.append((char)c);
-			return ret.toString();
+			return IOUtils.readFileBufferedAsString(f, "UTF-8");
 		}catch(IOException e){
-			log.error("getSourceContent("+key+")", e);
+			log.error("getContent("+key+")", e);
 			throw new RuntimeException("can't read source: "+key, e);
-		}finally{
-			try{
-				if (reader!=null)
-					reader.close();
-			}catch(IOException ignored){}
 		}
 	}
 	
 	private String getContentFromJar(String fileName) throws IOException{
 		ClassLoader myLoader = getClass().getClassLoader();
 		InputStream input = myLoader.getResourceAsStream(fileName);
-		byte[] data = new byte[input.available()];
-		input.read(data);
-		return new String(data);
+		return IOUtils.readInputStreamBufferedAsString(input, "UTF-8");
 	}
 	
 	
 	/**
-	 * Determine a {@link File} handle related to given
-	 * {@link ConfigurationSourceKey}. Keep in mind, you still have to check if
-	 * such a file exists!
+	 * Determine a {@link File} handle related to given {@link ConfigurationSourceKey}. This method returns 
+	 * NULL if file does not exists - neither on file-system nor within a classpath-JAR-file. 
+	 * Keep in mind, if file is located within JAR, {@link File#exists()} will return FALSE.
 	 * 
 	 * @param key
 	 *            {@link ConfigurationSourceKey}
 	 * @return {@link File} related to given {@link ConfigurationSourceKey} or
-	 *         NULL if no such configuration URL could be found.
+	 *         maybe NULL if no such configuration URL could be found.
 	 */
 	private File getFile(final ConfigurationSourceKey key) {
-		File f = null;
-		final String externalConfig = System.getProperty(EXTERNAL_CONF_PREFIX + key.getName(), null);
-		if (externalConfig == null) {
-			final String fileName = getFileName(key);
-			final ClassLoader myLoader = getClass().getClassLoader();
-			final URL url = myLoader.getResource(fileName);
-			if (url != null) {
-				f = new File(url.getFile());
+		final String fileName = getFileName(key);
+		if (externalConfigPath != null) {
+			final File f = new File(externalConfigPath, fileName);
+			if (f.exists()) {
+				// return overwritten configuration location
+				return f;
 			}
-		
-		} else {
-			f = new File(externalConfig);
 		}
-
-		return f;
+		
+		// configuration-file was not overwritten, so read from class path
+		final ClassLoader myLoader = getClass().getClassLoader();
+		final URL url = myLoader.getResource(fileName);
+		
+		return url == null ? null : new File(url.getFile());
 	}
 
 }
