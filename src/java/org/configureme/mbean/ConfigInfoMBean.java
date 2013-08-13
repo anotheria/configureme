@@ -1,5 +1,7 @@
 package org.configureme.mbean;
 
+import org.json.JSONException;
+
 import java.util.Map;
 
 /**
@@ -26,4 +28,13 @@ public interface ConfigInfoMBean {
 	 * @return map of attributes
 	 */
 	Map<String, Object> getAttributes();
+
+	/**
+	 * Set new value for provided attribute.
+	 *
+	 * @param attrName  attribute name
+	 * @param attrValue attribute value
+	 * @throws JSONException on errors
+	 */
+	void setAttributeValue(final String attrName, final String attrValue) throws JSONException;
 }

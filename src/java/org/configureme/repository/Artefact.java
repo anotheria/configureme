@@ -5,6 +5,7 @@ import org.configureme.GlobalEnvironment;
 import org.configureme.sources.ConfigurationSourceKey;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -23,6 +24,10 @@ public class Artefact {
 	 * The attribute map.
 	 */
 	private Map<String, Attribute> attributes;
+	/**
+	 * Content map.
+	 */
+	private Map<Environment, Map<String, Object>> contentMap;
 
 	/**
 	 * External configurations that was included in current configuration
@@ -39,6 +44,7 @@ public class Artefact {
 		name = aName;
 		attributes = new ConcurrentHashMap<String, Attribute>();
 		externalConfigurations = new ArrayList<ConfigurationSourceKey>();
+		contentMap = new HashMap<Environment, Map<String, Object>>();
 	}
 
 	public List<ConfigurationSourceKey> getExternalConfigurations() {
@@ -81,9 +87,18 @@ public class Artefact {
 		}
 		attr.addValue(attributeValue, in);
 
+		Map<String, Object> valueMap = contentMap.get(in);
+		if(valueMap == null)
+			valueMap = new HashMap<String, Object>();
+		valueMap.put(attributeName, attributeValue.getRaw());
+		contentMap.put(in, valueMap);
 		//TODO check for loops and process such situation
-		if(attributeValue instanceof IncludeValue)
+		if (attributeValue instanceof IncludeValue)
 			externalConfigurations.add(((IncludeValue) attributeValue).getConfigName());
+	}
+
+	public Map<Environment, Map<String, Object>> getContent() {
+		return this.contentMap;
 	}
 
 	@Override

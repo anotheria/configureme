@@ -139,7 +139,7 @@ public class JsonParser implements ConfigurationParser {
 		return result;
 	}
 
-	private static List<? extends ParsedAttribute<?>> parse(String key, Object value, DynamicEnvironment environment) throws JSONException {
+	public static List<? extends ParsedAttribute<?>> parse(String key, Object value, DynamicEnvironment environment) throws JSONException {
 		// an object value means a change in environment, let's see what it is
 		if (value instanceof JSONObject && key.startsWith(COMPOSITE_ATTR_PREFIX))
 			return Arrays.asList(parseComposite(key, (JSONObject) value, environment));
