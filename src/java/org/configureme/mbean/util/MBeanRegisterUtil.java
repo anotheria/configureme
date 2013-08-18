@@ -10,6 +10,7 @@ import javax.management.MalformedObjectNameException;
 import javax.management.NotCompliantMBeanException;
 import javax.management.ObjectName;
 import java.lang.management.ManagementFactory;
+import java.security.AccessControlException;
 
 /**
  * Util for register mBeans in {@link MBeanServer}.
@@ -47,6 +48,8 @@ public final class MBeanRegisterUtil {
 			log.error(LogMessageUtil.failMsg(e, object, object));
 		} catch (NotCompliantMBeanException e) {
 			log.error(LogMessageUtil.failMsg(e, object, object));
+		} catch(AccessControlException e){
+			log.error("Access denied, can no register mbean add permission javax.management.MBeanTrustPermission \"register\"; to java.policy file", e);
 		}
 	}
 
