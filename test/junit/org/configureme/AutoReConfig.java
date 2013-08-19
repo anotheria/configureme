@@ -1,14 +1,11 @@
 package org.configureme;
 
-import ch.qos.logback.classic.BasicConfigurator;
-import ch.qos.logback.classic.LoggerContext;
 import net.anotheria.util.StringUtils;
 import org.configureme.sources.ConfigurationSourceRegistryTest;
 import org.configureme.sources.FixtureLoader;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -16,11 +13,6 @@ import static org.junit.Assert.assertTrue;
 
 
 public class AutoReConfig {
-
-	static{
-		LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-		BasicConfigurator.configure(lc);
-	}
 
 	@BeforeClass public static void setupRegistry(){
 		//use the other test which can access protected methods
