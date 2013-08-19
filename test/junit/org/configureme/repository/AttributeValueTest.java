@@ -1,18 +1,21 @@
 package org.configureme.repository;
 
+import ch.qos.logback.classic.BasicConfigurator;
+import ch.qos.logback.classic.LoggerContext;
+import org.configureme.Environment;
+import org.configureme.environments.DynamicEnvironment;
+import org.junit.Test;
+import org.slf4j.LoggerFactory;
+
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 
-import org.apache.log4j.BasicConfigurator;
-import org.configureme.Environment;
-import org.configureme.environments.DynamicEnvironment;
-import org.junit.Test;
-
 public class AttributeValueTest {
 
 	static{
-		BasicConfigurator.configure();
+		LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+		BasicConfigurator.configure(lc);
 	}
 
 	@Test public void testEnvironments(){

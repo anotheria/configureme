@@ -1,22 +1,25 @@
 package org.configureme;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import ch.qos.logback.classic.BasicConfigurator;
+import ch.qos.logback.classic.LoggerContext;
 import net.anotheria.util.StringUtils;
-
-import org.apache.log4j.BasicConfigurator;
 import org.configureme.sources.ConfigurationSourceRegistryTest;
 import org.configureme.sources.FixtureLoader;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.LoggerFactory;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 
 public class AutoReConfig {
 
 	static{
-		BasicConfigurator.configure();
+		LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+		BasicConfigurator.configure(lc);
 	}
 
 	@BeforeClass public static void setupRegistry(){
