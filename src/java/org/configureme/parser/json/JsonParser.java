@@ -1,7 +1,6 @@
 package org.configureme.parser.json;
 
 import net.anotheria.util.StringUtils;
-import org.apache.log4j.Logger;
 import org.configureme.Environment;
 import org.configureme.environments.DynamicEnvironment;
 import org.configureme.parser.ArrayParsedAttribute;
@@ -17,6 +16,8 @@ import org.configureme.sources.ConfigurationSourceRegistry;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,7 +46,7 @@ public class JsonParser implements ConfigurationParser {
 	/**
 	 * Logger.
 	 */
-	private static final Logger log = Logger.getLogger(JsonParser.class);
+	private static final Logger log = LoggerFactory.getLogger(JsonParser.class);
 
 	@Override
 	public ParsedConfiguration parseConfiguration(String name, String content) throws ConfigurationParserException {

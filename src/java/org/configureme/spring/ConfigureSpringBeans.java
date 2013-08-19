@@ -3,9 +3,10 @@
  */
 package org.configureme.spring;
 
-import org.apache.log4j.Logger;
 import org.configureme.ConfigurationManager;
 import org.configureme.Environment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Spring integration utility. 
@@ -17,7 +18,7 @@ public class ConfigureSpringBeans {
 	/**
 	 * Logger.
 	 */
-	private static Logger log = Logger.getLogger(ConfigureSpringBeans.class);
+	private static Logger log = LoggerFactory.getLogger(ConfigureSpringBeans.class);
 
 	/**
 	 * Constructor driven configuration.

@@ -1,8 +1,9 @@
 package org.configureme.sources;
 
 import net.anotheria.util.NumberUtils;
-import org.apache.log4j.Logger;
 import org.configureme.repository.ConfigurationRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,7 @@ public class ConfigurationSource {
 	/**
 	 * Logger.
 	 */
-	private static Logger log = Logger.getLogger(ConfigurationSource.class);
+	private static Logger log = LoggerFactory.getLogger(ConfigurationSource.class);
 	
 	/**
 	 * Creates a new configuration source.

@@ -1,10 +1,11 @@
 package org.configureme.repository;
 
+import org.configureme.Environment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import org.apache.log4j.Logger;
-import org.configureme.Environment;
 
 /**
  * The internal representation of the attribute value(s).
@@ -15,7 +16,7 @@ public class AttributeValue {
 	/**
 	 * The logger.
 	 */
-	private static Logger log = Logger.getLogger(AttributeValue.class);
+	private static Logger log = LoggerFactory.getLogger(AttributeValue.class);
 	/**
 	 * Internal map of the values. The keys are the extendedStringFrom of the environment in which the attribute applies.
 	 */

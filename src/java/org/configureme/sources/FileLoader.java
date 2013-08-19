@@ -1,14 +1,14 @@
 package org.configureme.sources;
 
+import net.anotheria.util.IOUtils;
+import net.anotheria.util.NumberUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-
-import net.anotheria.util.IOUtils;
-import net.anotheria.util.NumberUtils;
-
-import org.apache.log4j.Logger;
 
 /**
  * A source loader for files.
@@ -19,7 +19,7 @@ public class FileLoader implements SourceLoader{
 	/**
 	 * Logger.
 	 */
-	private static final Logger log = Logger.getLogger(FileLoader.class);
+	private static final Logger log = LoggerFactory.getLogger(FileLoader.class);
 	
 	/**
 	 * property key for external configuration path (see: {@link #externalConfigPath}). 

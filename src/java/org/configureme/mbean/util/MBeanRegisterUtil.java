@@ -1,7 +1,8 @@
 package org.configureme.mbean.util;
 
 import net.anotheria.util.log.LogMessageUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.management.InstanceAlreadyExistsException;
 import javax.management.MBeanRegistrationException;
@@ -21,7 +22,7 @@ public final class MBeanRegisterUtil {
 	/**
 	 * Logger util.
 	 */
-	private static final Logger log = Logger.getLogger(MBeanRegisterUtil.class);
+	private static final Logger log = LoggerFactory.getLogger(MBeanRegisterUtil.class);
 	/**
 	 * {@link MBeanServer} server.
 	 */

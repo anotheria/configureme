@@ -1,6 +1,5 @@
 package org.configureme;
 
-import org.apache.log4j.Logger;
 import org.configureme.annotations.AfterConfiguration;
 import org.configureme.annotations.AfterInitialConfiguration;
 import org.configureme.annotations.AfterReConfiguration;
@@ -15,8 +14,8 @@ import org.configureme.annotations.Set;
 import org.configureme.annotations.SetAll;
 import org.configureme.annotations.SetIf;
 import org.configureme.environments.DynamicEnvironment;
-import org.configureme.mbean.WatchedConfigFiles;
 import org.configureme.mbean.ConfigInfo;
+import org.configureme.mbean.WatchedConfigFiles;
 import org.configureme.mbean.util.MBeanRegisterUtil;
 import org.configureme.parser.ConfigurationParser;
 import org.configureme.parser.ConfigurationParserException;
@@ -37,6 +36,8 @@ import org.configureme.sources.ConfigurationSourceKey.Type;
 import org.configureme.sources.ConfigurationSourceRegistry;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
@@ -147,7 +148,7 @@ public enum ConfigurationManager {
 	/**
 	 * Logger.
 	 */
-	private static final Logger log = Logger.getLogger(ConfigurationManager.class);
+	private static final Logger log = LoggerFactory.getLogger(ConfigurationManager.class);
 
 	/**
 	 * Initializes the one and only instance of the ConfigurationManager.

@@ -1,8 +1,9 @@
 package org.configureme.repository;
 
-import org.apache.log4j.Logger;
 import org.configureme.Environment;
 import org.configureme.GlobalEnvironment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The internal representation of an attribute.
@@ -12,7 +13,7 @@ public class Attribute {
 	/**
 	 * The logger.
 	 */
-	private static Logger log = Logger.getLogger(Attribute.class);
+	private static Logger log = LoggerFactory.getLogger(Attribute.class);
 	/**
 	 * The name of the attribute.
 	 */

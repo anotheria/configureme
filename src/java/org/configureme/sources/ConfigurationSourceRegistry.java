@@ -1,9 +1,10 @@
 package org.configureme.sources;
 
 import net.anotheria.util.NumberUtils;
-import org.apache.log4j.Logger;
 import org.configureme.ConfigurableWrapper;
 import org.configureme.sources.ConfigurationSourceKey.Type;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.Map;
@@ -24,7 +25,7 @@ public enum ConfigurationSourceRegistry {
 	/**
 	 * Logger.
 	 */
-	private static Logger log = Logger.getLogger(ConfigurationSourceRegistry.class);
+	private static Logger log = LoggerFactory.getLogger(ConfigurationSourceRegistry.class);
 	/**
 	 * The map with watched sources.
 	 */
