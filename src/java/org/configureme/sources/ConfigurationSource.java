@@ -1,12 +1,12 @@
 package org.configureme.sources;
 
-import net.anotheria.util.NumberUtils;
-import org.configureme.repository.ConfigurationRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.configureme.repository.ConfigurationRepository;
+import org.configureme.util.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Represents a loaded configuration source for example a file. Doesn't contain the content of the file, only metadata is included. The ConfigurationSource object is a surogate which is used to execute functions
@@ -63,7 +63,7 @@ public class ConfigurationSource {
 	}
 	
 	@Override public String toString(){
-		return "ConfigurationSource "+key+", listeners: "+listeners.size()+", "+NumberUtils.makeISO8601TimestampString(getLastChangeTimestamp());
+		return "ConfigurationSource "+key+", listeners: "+listeners.size()+", "+ DateUtils.toISO8601String(getLastChangeTimestamp());
 	}
 
 	/**

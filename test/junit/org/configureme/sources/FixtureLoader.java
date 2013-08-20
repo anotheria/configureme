@@ -1,6 +1,6 @@
 package org.configureme.sources;
 
-import net.anotheria.util.IOUtils;
+import org.configureme.util.IOUtils;
 
 public class FixtureLoader implements SourceLoader{
 	

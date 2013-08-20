@@ -1,15 +1,15 @@
 package org.configureme;
 
-import net.anotheria.util.StringUtils;
-import org.configureme.sources.ConfigurationSourceRegistryTest;
-import org.configureme.sources.FixtureLoader;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import org.configureme.sources.ConfigurationSourceRegistryTest;
+import org.configureme.sources.FixtureLoader;
+import org.configureme.util.StringUtils;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
 
 
 public class AutoReConfig {

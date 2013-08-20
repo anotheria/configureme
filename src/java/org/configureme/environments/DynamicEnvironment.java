@@ -3,10 +3,9 @@ package org.configureme.environments;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.anotheria.util.StringUtils;
-
 import org.configureme.Environment;
 import org.configureme.GlobalEnvironment;
+import org.configureme.util.StringUtils;
 
 /**
  * A dynamic environment class. This class can be used for any type of environments, for any environment deepth. However, we recommend the usage of more strict Application/LocaleBased Environment if 

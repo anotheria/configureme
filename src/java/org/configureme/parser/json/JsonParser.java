@@ -1,6 +1,15 @@
 package org.configureme.parser.json;
 
-import net.anotheria.util.StringUtils;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.configureme.Environment;
 import org.configureme.environments.DynamicEnvironment;
 import org.configureme.parser.ArrayParsedAttribute;
@@ -13,21 +22,12 @@ import org.configureme.parser.ParsedConfiguration;
 import org.configureme.parser.PlainParsedAttribute;
 import org.configureme.sources.ConfigurationSourceKey;
 import org.configureme.sources.ConfigurationSourceRegistry;
+import org.configureme.util.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * ConfigurationParser implementation for JSON.
@@ -136,7 +136,7 @@ public class JsonParser implements ConfigurationParser {
 	private String readIncludedContent(String includeName) {
 		ConfigurationSourceKey configurationSourceKey = new ConfigurationSourceKey(ConfigurationSourceKey.Type.FILE, ConfigurationSourceKey.Format.JSON, includeName);
 		String result = ConfigurationSourceRegistry.INSTANCE.readConfigurationSource(configurationSourceKey);
-		result = StringUtils.strip(result, 1, 1);
+		result = result.substring(1, result.length()-1);		
 		return result;
 	}
 

@@ -1,14 +1,14 @@
 package org.configureme.sources;
 
-import net.anotheria.util.IOUtils;
-import net.anotheria.util.NumberUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+
+import org.configureme.util.DateUtils;
+import org.configureme.util.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A source loader for files.
@@ -63,7 +63,7 @@ public class FileLoader implements SourceLoader{
 		}
 		long ret =  f.lastModified();
 		if (log.isDebugEnabled()) {
-			log.debug("file "+f.getAbsolutePath()+" last modified is: "+NumberUtils.makeISO8601TimestampString(ret));
+			log.debug("file "+f.getAbsolutePath()+" last modified is: "+ DateUtils.toISO8601String(ret));
 		}
 		return ret;
 	}

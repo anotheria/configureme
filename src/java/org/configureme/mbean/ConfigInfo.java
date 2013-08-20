@@ -1,6 +1,9 @@
 package org.configureme.mbean;
 
-import net.anotheria.util.StringUtils;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.configureme.Configuration;
 import org.configureme.ConfigurationManager;
 import org.configureme.Environment;
@@ -10,11 +13,8 @@ import org.configureme.parser.json.JsonParser;
 import org.configureme.repository.Artefact;
 import org.configureme.repository.ConfigurationRepository;
 import org.configureme.repository.Value;
+import org.configureme.util.StringUtils;
 import org.json.JSONException;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Config info mBean.

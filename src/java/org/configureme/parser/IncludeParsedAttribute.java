@@ -1,8 +1,8 @@
 package org.configureme.parser;
 
-import net.anotheria.util.StringUtils;
 import org.configureme.Environment;
 import org.configureme.repository.IncludeValue;
+import org.configureme.util.StringUtils;
 
 /**
  * Represents parsed value of include attribute within a certain environment.

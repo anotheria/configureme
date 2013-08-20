@@ -10,14 +10,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.anotheria.util.StringUtils;
-
 import org.configureme.parser.ConfigurationParserException;
 import org.configureme.parser.ParsedAttribute;
 import org.configureme.parser.ParsedConfiguration;
 import org.configureme.repository.ArrayValue;
 import org.configureme.repository.PlainValue;
 import org.configureme.repository.Value;
+import org.configureme.util.StringUtils;
 import org.junit.Test;
 
 

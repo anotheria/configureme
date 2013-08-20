@@ -1,13 +1,12 @@
 package org.configureme.parser.properties;
 
-import net.anotheria.util.StringUtils;
-
 import org.configureme.environments.DynamicEnvironment;
 import org.configureme.parser.ConfigurationParser;
 import org.configureme.parser.ConfigurationParserException;
 import org.configureme.parser.ParsedAttribute;
 import org.configureme.parser.ParsedConfiguration;
 import org.configureme.parser.PlainParsedAttribute;
+import org.configureme.util.StringUtils;
 
 /**
  * COnfigurationparser implementation for Property files.

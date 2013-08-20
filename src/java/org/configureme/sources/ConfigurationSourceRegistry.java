@@ -1,15 +1,15 @@
 package org.configureme.sources;
 
-import net.anotheria.util.NumberUtils;
-import org.configureme.ConfigurableWrapper;
-import org.configureme.sources.ConfigurationSourceKey.Type;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.configureme.ConfigurableWrapper;
+import org.configureme.sources.ConfigurationSourceKey.Type;
+import org.configureme.util.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * ConfigurationSourceRegistry is the singleton object that controls and manages all known configuration sources. It also has an internal thread that checks the sources for update in defined time periods.
@@ -169,7 +169,7 @@ public enum ConfigurationSourceRegistry {
 
 						try {
 							long lastUpdate = loader.getLastChangeTimestamp(source.getKey());
-							log.debug("Checking source: " + source + ", lastUpdateFromLoader= " + NumberUtils.makeISO8601TimestampString(lastUpdate) + ", storedLastUpdate=" + NumberUtils.makeISO8601TimestampString(source.getLastChangeTimestamp()));
+							log.debug("Checking source: " + source + ", lastUpdateFromLoader= " + DateUtils.toISO8601String(lastUpdate) + ", storedLastUpdate=" + DateUtils.toISO8601String(source.getLastChangeTimestamp()));
 							if (source.isOlderAs(lastUpdate)) {
 								log.debug("firing update event: " + source);
 //								System.out.println("firing update on source: "+source);
