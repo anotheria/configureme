@@ -30,7 +30,7 @@ public final class DateUtils {
 	 * @return {@link String}
 	 */
 	public static String toISO8601String(final long timestamp) {
-		return new SimpleDateFormat(FORMAT_ISO_8601).format(new Date(timestamp));
+		return toISO8601String(new Date(timestamp));
 	}
 
 	/**
