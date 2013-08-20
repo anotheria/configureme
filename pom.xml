@@ -33,8 +33,8 @@
 	</build>
 
 	<scm>
-		<url>svn:svn://svn.anotheria.net/opensource/configureme/trunk</url>
-		<connection>scm:svn:svn://svn.anotheria.net/opensource/configureme/trunk</connection>
-		<developerConnection>scm:svn:svn://svn.anotheria.net/opensource/configureme/trunk</developerConnection>
+		<url>git:git@github.com:anotheria/configureme.git</url>
+		<connection>scm:git:git@github.com:anotheria/configureme.git</connection>
+		<developerConnection>scm:git:git@github.com:anotheria/configureme.git</developerConnection>
 	</scm>
 </project>
