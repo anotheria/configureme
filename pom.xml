@@ -34,7 +34,7 @@
 
 	<scm>
 		<url>https://github.com/anotheria/configureme</url>
-		<connection>scm:git:ssh://github.com/anotheria/configureme.git</connection>
+		<connection>scm:git:ssh://git@github.com:anotheria/configureme.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com:anotheria/configureme.git</developerConnection>
 	</scm>
 </project>
