@@ -33,8 +33,8 @@
 	</build>
 
 	<scm>
-		<url>git:git@github.com:anotheria/configureme.git</url>
-		<connection>scm:git:git@github.com:anotheria/configureme.git</connection>
-		<developerConnection>scm:git:git@github.com:anotheria/configureme.git</developerConnection>
+		<url>https://github.com/anotheria/configureme</url>
+		<connection>scm:git:ssh://github.com/anotheria/configureme.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com:anotheria/configureme.git</developerConnection>
 	</scm>
 </project>
