@@ -11,16 +11,18 @@
 	<name>ConfigureMe</name>
 
 	<dependencies>
+        <!-- general dependencies -->
+        <dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
 			<version>20090211</version>
 		</dependency>
-		<!-- logging -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-		</dependency>
+        
+		<!-- testing scope dependencies -->
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
@@ -33,8 +35,8 @@
 	</build>
 
 	<scm>
+		<connection>scm:git:git@github.com:anotheria/configureme.git</connection>
+		<developerConnection>scm:git:git@github.com:anotheria/configureme.git</developerConnection>
 		<url>https://github.com/anotheria/configureme</url>
-		<connection>scm:git:ssh://git@github.com/anotheria/configureme.git</connection>
-		<developerConnection>scm:git:ssh://git@github.com/anotheria/configureme.git</developerConnection>
 	</scm>
 </project>
