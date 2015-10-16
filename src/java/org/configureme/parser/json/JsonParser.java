@@ -1,15 +1,5 @@
 package org.configureme.parser.json;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.configureme.Environment;
 import org.configureme.environments.DynamicEnvironment;
 import org.configureme.parser.ArrayParsedAttribute;
@@ -29,6 +19,16 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * ConfigurationParser implementation for JSON.
  *
@@ -40,7 +40,14 @@ public class JsonParser implements ConfigurationParser {
 	 * The names of last ones shall starts with this prefix.
 	 */
 	private static final String COMPOSITE_ATTR_PREFIX = "@";
+	/**
+	 * The prefix string for attribute inclusion.
+	 */
 	private static final String INCLUDE_ATTR_PREFIX = "$<";
+
+	/**
+	 * Parsed includes.
+	 */
 	private static Map<String, Set<String>> includes = new HashMap<String, Set<String>>();
 
 	/**
