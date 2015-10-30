@@ -32,6 +32,7 @@
 
 	<build>
 		<sourceDirectory>${project.basedir}/src/java</sourceDirectory>
+		<testSourceDirectory>${project.basedir}/test/junit</testSourceDirectory>
 	</build>
 
 	<scm>
