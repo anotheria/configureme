@@ -30,11 +30,6 @@
 		</dependency>
 	</dependencies>
 
-	<build>
-		<sourceDirectory>${project.basedir}/src/java</sourceDirectory>
-		<testSourceDirectory>${project.basedir}/test/junit</testSourceDirectory>
-	</build>
-
 	<scm>
 		<connection>scm:git:git@github.com:anotheria/configureme.git</connection>
 		<developerConnection>scm:git:git@github.com:anotheria/configureme.git</developerConnection>

@@ -11,7 +11,7 @@ public class FixtureLoader implements SourceLoader{
 
 	static{
 		try{
-			originalContent = IOUtils.readFileAtOnceAsString("test/junit/fixture.json"); 
+			originalContent = IOUtils.readFileAtOnceAsString("src/test/resources/fixture.json");
 		}catch(Exception e){
 			throw new AssertionError("can't run tests without fixture file");
 		}
