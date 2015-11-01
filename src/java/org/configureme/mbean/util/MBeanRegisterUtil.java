@@ -1,7 +1,7 @@
 package org.configureme.mbean.util;
 
-import java.lang.management.ManagementFactory;
-import java.security.AccessControlException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.management.InstanceAlreadyExistsException;
 import javax.management.MBeanRegistrationException;
@@ -9,10 +9,9 @@ import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
 import javax.management.NotCompliantMBeanException;
 import javax.management.ObjectName;
-
-import org.configureme.util.LogMessageUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.lang.management.ManagementFactory;
+import java.security.AccessControlException;
+import java.util.Arrays;
 
 /**
  * Util for register mBeans in {@link MBeanServer}.
@@ -42,14 +41,8 @@ public final class MBeanRegisterUtil {
 			if (mbs.isRegistered(objectName))
 				return;
 			mbs.registerMBean(object, objectName);
-		} catch (MalformedObjectNameException e) {
-			log.error(LogMessageUtil.failMsg(e, object));
-		} catch (InstanceAlreadyExistsException e) {
-			log.error(LogMessageUtil.failMsg(e, object, object));
-		} catch (MBeanRegistrationException e) {
-			log.error(LogMessageUtil.failMsg(e, object, object));
-		} catch (NotCompliantMBeanException e) {
-			log.error(LogMessageUtil.failMsg(e, object, object));
+		} catch (MalformedObjectNameException | InstanceAlreadyExistsException | MBeanRegistrationException | NotCompliantMBeanException e) {
+			log.error("can't register mbean regMBean("+object+", "+ Arrays.toString(parameters)+")", e);
 		} catch(AccessControlException e){
 			log.error("Access denied, can no register mbean add permission javax.management.MBeanTrustPermission \"register\"; to java.policy file", e);
 		}
