@@ -29,10 +29,7 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
 	<build>
-		<sourceDirectory>${project.basedir}/src/java</sourceDirectory>
-		<testSourceDirectory>${project.basedir}/test/junit</testSourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -45,7 +42,6 @@
 
         </plugins>
 	</build>
-
 	<scm>
 		<connection>scm:git:git@github.com:anotheria/configureme.git</connection>
 		<developerConnection>scm:git:git@github.com:anotheria/configureme.git</developerConnection>
