@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.configureme.ConfigurableWrapper;
 import org.configureme.sources.ConfigurationSourceKey.Type;
@@ -29,11 +30,11 @@ public enum ConfigurationSourceRegistry {
 	/**
 	 * The map with watched sources.
 	 */
-	private Map<ConfigurationSourceKey, ConfigurationSource> watchedSources = new ConcurrentHashMap<ConfigurationSourceKey, ConfigurationSource>();
+	private ConcurrentMap<ConfigurationSourceKey, ConfigurationSource> watchedSources = new ConcurrentHashMap<>();
 	/**
 	 * A map with loaders for different source types.
 	 */
-	private Map<ConfigurationSourceKey.Type, SourceLoader> loaders = new ConcurrentHashMap<Type, SourceLoader>();
+	private Map<ConfigurationSourceKey.Type, SourceLoader> loaders = new ConcurrentHashMap<>();
 
 	/**
 	 * Creates a new registry and starts the watcher thread.
@@ -94,18 +95,16 @@ public enum ConfigurationSourceRegistry {
 	 */
 	public void addListener(ConfigurationSourceKey key, ConfigurationSourceListener listener) {
 		ConfigurationSource source = watchedSources.get(key);
-		if (source == null) {
-			//TODO replace DCL with putIfAbsent
-			synchronized (watchedSources) {
-				source = watchedSources.get(key);
-				if (source == null) {
-					source = new ConfigurationSource(key);
-					watchedSources.put(key, source);
-				}
-			}
+		if (source != null) {
+			source.addListener(listener);
+			return;
 		}
-
-		// --->
+		source = new ConfigurationSource(key);
+		ConfigurationSource existentSource = watchedSources.putIfAbsent(key, source);
+		if (existentSource != null) {
+			existentSource.addListener(listener);
+			return;
+		}
 		source.addListener(listener);
 	}
 
@@ -130,7 +129,9 @@ public enum ConfigurationSourceRegistry {
 	 * @param wrapper
 	 */
 	public void removeWatchedConfigurable(ConfigurableWrapper wrapper) {
+		ConfigurationSource source = watchedSources.get(wrapper.getKey());
 		removeListener(wrapper.getKey(), wrapper);
+		watchedSources.remove(wrapper.getKey(), source);
 	}
 
 	/**
