@@ -119,7 +119,6 @@ public enum ConfigurationSourceRegistry {
 		if (source == null) {
 			return;
 		}
-
 		source.removeListener(listener);
 	}
 
