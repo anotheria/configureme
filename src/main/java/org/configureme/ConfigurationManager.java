@@ -34,6 +34,7 @@ import org.configureme.sources.ConfigurationSourceKey;
 import org.configureme.sources.ConfigurationSourceKey.Format;
 import org.configureme.sources.ConfigurationSourceKey.Type;
 import org.configureme.sources.ConfigurationSourceRegistry;
+import org.configureme.util.ReflectionUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -456,7 +457,7 @@ public enum ConfigurationManager {
 		callAnnotations(o, methods, callBefore);
 
 		//first set fields
-		Field[] fields = clazz.getDeclaredFields();
+		List<Field> fields = ReflectionUtils.getAllFields(clazz);
 		for (Field f : fields) {
 			if (f.isAnnotationPresent(ConfigureAlso.class)) {
 				Object externalConfig = null;
