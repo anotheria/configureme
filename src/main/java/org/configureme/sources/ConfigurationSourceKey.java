@@ -17,8 +17,13 @@ public class ConfigurationSourceKey {
 		 * Configuration comes from a test fixture.
 		 */
 		FIXTURE,
-	};
-	
+
+		/**
+		 * Configuration comes from a REST API.
+		 */
+		REST,
+	}
+
 	/**
 	 * The format of the file. The format decides which parser will be used to parse the file.
 	 * @author lrosenberg
@@ -58,6 +63,10 @@ public class ConfigurationSourceKey {
 	 * The name of the source.
 	 */
 	private String name;
+	/**
+	 * Externally provided url for remote configuration repository.
+	 */
+	private String remoteConfigurationRepositoryUrl;
 	
 	/**
 	 * Creates a new key.
@@ -84,6 +93,13 @@ public class ConfigurationSourceKey {
 	public void setType(Type type) {
 		this.type = type;
 	}
+	public void setTypeIfNotDefault(Type defType, Type toChange){
+		if(defType != Type.FILE){
+			setType(defType);
+		} else {
+			setType(toChange);
+		}
+	}
 	public Format getFormat() {
 		return format;
 	}
@@ -96,7 +112,13 @@ public class ConfigurationSourceKey {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+	public String getRemoteConfigurationRepositoryUrl() {
+		return remoteConfigurationRepositoryUrl;
+	}
+	public void setRemoteConfigurationRepositoryUrl(String remoteConfigurationRepositoryUrl) {
+		this.remoteConfigurationRepositoryUrl = remoteConfigurationRepositoryUrl;
+	}
+
 	@Override public String toString(){
 		return getType().toString()+"::"+getName()+"::"+getFormat();
 	}

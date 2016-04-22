@@ -98,7 +98,10 @@ public enum ConfigurationManager {
 	 * The format of the configuration file. At the moment only json is supported. The format of the configuration file decides which parser is used to parse the configuration.
 	 */
 	private ConfigurationSourceKey.Format defaultConfigurationSourceFormat = Format.JSON;
-
+    /**
+     * Externally provided url for remote configuration repository.
+     */
+    private String remoteConfigurationRepositoryUrl = "";
 	/**
 	 * A map which contains configuration parser for different formats.
 	 */
@@ -144,9 +147,11 @@ public enum ConfigurationManager {
 	 * Property name for the system property which ConfigurationManager checks to set its defaultEnvironment with at startup.
 	 */
 	public static final String PROP_NAME_DEFAULT_ENVIRONMENT = "configureme.defaultEnvironment";
-
-
-	/**
+    /**
+     * Property name for the system property which ConfigurationManager checks to set its remote configuration repository url with at startup.
+     */
+    public static final String PROP_NAME_CONFIGURATION_REPOSITORY = "configurationRepository";
+    /**
 	 * Logger.
 	 */
 	private static final Logger log = LoggerFactory.getLogger(ConfigurationManager.class);
@@ -158,6 +163,7 @@ public enum ConfigurationManager {
 		MBeanRegisterUtil.regMBean(new WatchedConfigFiles());
 		String defEnvironmentAsString = System.getProperty(PROP_NAME_DEFAULT_ENVIRONMENT, "");
 		defaultEnvironment = DynamicEnvironment.parse(defEnvironmentAsString);
+        setExternalConfigurationRepository();
 
 		parsers = new ConcurrentHashMap<Format, ConfigurationParser>();
 		parsers.put(Format.JSON, new JsonParser());
@@ -276,8 +282,9 @@ public enum ConfigurationManager {
 
 		ConfigurationSourceKey configSourceKey = new ConfigurationSourceKey();
 		configSourceKey.setFormat(Format.JSON);
-		configSourceKey.setType(ann.type());
+		configSourceKey.setTypeIfNotDefault(defaultConfigurationSourceType, ann.type());
 		configSourceKey.setName(name);
+		configSourceKey.setRemoteConfigurationRepositoryUrl(remoteConfigurationRepositoryUrl);
 
 		configureInitially(configSourceKey, o, in, ann);
 	}
@@ -298,8 +305,9 @@ public enum ConfigurationManager {
 
 		ConfigurationSourceKey configSourceKey = new ConfigurationSourceKey();
 		configSourceKey.setFormat(format);
-		configSourceKey.setType(ann.type());
+		configSourceKey.setTypeIfNotDefault(defaultConfigurationSourceType, ann.type());
 		configSourceKey.setName(configurationName);
+		configSourceKey.setRemoteConfigurationRepositoryUrl(remoteConfigurationRepositoryUrl);
 
 		configureAs(o, in, configSourceKey);
 	}
@@ -352,6 +360,17 @@ public enum ConfigurationManager {
 
 		configureAs(o, in, configurationName, format);
 	}
+
+    /**
+     * This method is used to check and set an external configuration repository url for further processing.
+     */
+    private void setExternalConfigurationRepository(){
+        String rmtConfRepUrl = System.getProperty(PROP_NAME_CONFIGURATION_REPOSITORY);
+		if(rmtConfRepUrl != null){
+            remoteConfigurationRepositoryUrl = rmtConfRepUrl;
+            defaultConfigurationSourceType = Type.REST;
+        }
+    }
 
 	/**
 	 * Internal method used at initial, user triggered configuration.
