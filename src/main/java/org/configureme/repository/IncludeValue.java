@@ -1,6 +1,5 @@
 package org.configureme.repository;
 
-import org.configureme.Configuration;
 import org.configureme.ConfigurationManager;
 import org.configureme.Environment;
 import org.configureme.sources.ConfigurationSourceKey;
@@ -12,24 +11,28 @@ import org.configureme.sources.ConfigurationSourceKey;
  * @since: 26.09.12
  */
 public class IncludeValue implements Value {
-	/**
-	 * Configuration of the include attribute value.
-	 */
-	private Configuration config;
 
 	/**
 	 * Needed attribute name in the configuration
 	 */
 	private final String attributeName;
 
+	/**
+	 * Name of the target configuration.
+	 */
+	private String configurationName;
+
 	public IncludeValue() {
-		config = new ConfigurationImpl(null);
 		attributeName = "";
 	}
 
 	@Override
 	public Object getRaw() {
-		return config.getAttribute(attributeName);
+		return new PlainValue(attributeName+"->"+configurationName);
+	}
+
+	public Value getIncludedValue(Environment in){
+		return ConfigurationManager.INSTANCE.getConfiguration(configurationName, in).getAttribute(attributeName);
 	}
 
 	/**
@@ -38,7 +41,7 @@ public class IncludeValue implements Value {
 	 * @return configuration name of the linked config
 	 */
 	public ConfigurationSourceKey getConfigName() {
-		return new ConfigurationSourceKey(ConfigurationSourceKey.Type.FILE, ConfigurationSourceKey.Format.JSON, config.getName());
+		return new ConfigurationSourceKey(ConfigurationSourceKey.Type.FILE, ConfigurationSourceKey.Format.JSON, configurationName);
 	}
 
 	/**
@@ -47,34 +50,33 @@ public class IncludeValue implements Value {
 	 * @param configurationName name config to load
 	 * @param attributeName     namee of the attribute to get from loaded config
 	 */
-	public IncludeValue(Environment environment, String configurationName, String attributeName) {
-		config = ConfigurationManager.INSTANCE.getConfiguration(configurationName, environment);
+	public IncludeValue(String configurationName, String attributeName) {
 		this.attributeName = attributeName;
+		this.configurationName = configurationName;
 	}
 
 	@Override
 	public String toString() {
-		return String.valueOf(config);
+		return attributeName+"->"+configurationName;
 	}
 
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+		if (!(o instanceof IncludeValue)) return false;
 
 		IncludeValue that = (IncludeValue) o;
 
 		if (attributeName != null ? !attributeName.equals(that.attributeName) : that.attributeName != null)
 			return false;
-		if (config != null ? !config.equals(that.config) : that.config != null) return false;
+		return configurationName != null ? configurationName.equals(that.configurationName) : that.configurationName == null;
 
-		return true;
 	}
 
 	@Override
 	public int hashCode() {
-		int result = config != null ? config.hashCode() : 0;
-		result = 31 * result + (attributeName != null ? attributeName.hashCode() : 0);
+		int result = attributeName != null ? attributeName.hashCode() : 0;
+		result = 31 * result + (configurationName != null ? configurationName.hashCode() : 0);
 		return result;
 	}
 }

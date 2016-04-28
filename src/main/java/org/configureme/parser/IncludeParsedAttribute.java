@@ -20,21 +20,20 @@ public class IncludeParsedAttribute extends ParsedAttribute<IncludeValue> {
 	 * @param value       list of child attribute values of the attribute within the environment
 	 */
 	public IncludeParsedAttribute(String name, Environment environment, String value) {
-		super(name, environment, createIncludeValue(value, environment));
+		super(name, environment, createIncludeValue(value));
 	}
 
 	/**
 	 * Creates internal representation of the attribute value.
 	 *
 	 * @param value       name of the link attribute in the another config
-	 * @param environment environment to configure the correct one
 	 * @return internal representation of the include attribute value
 	 */
-	private static IncludeValue createIncludeValue(String value, Environment environment) {
+	private static IncludeValue createIncludeValue(String value) {
 		if (value.charAt(1) != '<')
 			return new IncludeValue();
 		//remove wrappers
 		value = value.substring(2, value.length() - 1);
-		return new IncludeValue(environment, StringUtils.getStringBefore(value, "."), StringUtils.getStringAfter(value, "."));
+		return new IncludeValue(StringUtils.getStringBefore(value, "."), StringUtils.getStringAfter(value, "."));
 	}
 }

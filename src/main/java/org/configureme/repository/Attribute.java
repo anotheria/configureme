@@ -49,6 +49,7 @@ public class Attribute {
 	public Value getValue(Environment in){
 		log.debug("looking up value for "+name+" in "+in);
 		return attributeValue.get(in);
+
 	}
 
 	/**

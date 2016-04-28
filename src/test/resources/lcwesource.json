@@ -1,0 +1,6 @@
+{
+	"linked": "$<lcwedestination.someValue>",
+    "other": {
+      "linked": "$<lcwedestination.someValue>"
+    }
+}
