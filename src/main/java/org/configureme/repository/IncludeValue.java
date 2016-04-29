@@ -44,10 +44,17 @@ public class IncludeValue implements Value {
 	}
 
 	/**
+	 * Default constructor.
+	 */
+	public IncludeValue() {
+		attributeName = "";
+	}
+
+	/**
 	 * Constructs new include attribute value.
 	 *
 	 * @param configurationName name config to load
-	 * @param attributeName     namee of the attribute to get from loaded config
+	 * @param attributeName     name of the attribute to get from loaded config
 	 */
 	public IncludeValue(String configurationName, String attributeName) {
 		this.attributeName = attributeName;
