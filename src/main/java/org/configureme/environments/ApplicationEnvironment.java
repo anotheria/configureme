@@ -133,25 +133,33 @@ public class ApplicationEnvironment implements Environment{
 		 * Sets the property system. 
 		 * @return self for chaining
 		 */
-		public Builder system(String value){ system=value; return this; }
+		public Builder system(String value){
+			system=value; return this;
+		}
 		
 		/**
 		 * Sets the property app.
 		 * @return self for chaining
 		 */
-		public Builder app(String value){ app=value; return this; }
+		public Builder app(String value){
+			app=value; return this;
+		}
 		
 		/**
 		 * Sets the property service.
 		 * @return self for chaining
 		 */
-		public Builder service(String value){ service=value; return this; }
+		public Builder service(String value){
+			service=value; return this;
+		}
 
 		/**
 		 * Sets the property host.
 		 * @return self for chaining
 		 */
-		public Builder host(String value){ host=value; return this; }
+		public Builder host(String value){
+			host=value; return this;
+		}
 		
 		/**
 		 * Creates a new ApplicationEnvironment from this builder.
