@@ -1,5 +1,6 @@
 package org.configureme;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.configureme.annotations.AfterConfiguration;
 import org.configureme.annotations.AfterInitialConfiguration;
 import org.configureme.annotations.AfterReConfiguration;
@@ -681,6 +682,7 @@ public enum ConfigurationManager {
 	 *
 	 * @param anEnvironment
 	 */
+	@SuppressFBWarnings("ME_ENUM_FIELD_SETTER")
 	public final void setDefaultEnvironment(Environment anEnvironment) {
 		defaultEnvironment = anEnvironment;
 	}

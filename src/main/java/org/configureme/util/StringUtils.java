@@ -65,7 +65,7 @@ public final class StringUtils {
 				if (currentS.length() > 0) {
 					v.addElement(currentS.toString());
 				} else {
-					v.addElement(new String(""));
+					v.addElement("");
 				}
 				currentS = new StringBuilder();
 			} else {

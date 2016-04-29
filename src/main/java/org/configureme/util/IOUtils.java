@@ -1,5 +1,7 @@
 package org.configureme.util;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
@@ -14,6 +16,7 @@ import java.io.InputStream;
  * 
  * @author anotheria team
  */
+@SuppressFBWarnings("DM_DEFAULT_ENCODING")
 public final class IOUtils {
 
 	/**
@@ -82,7 +85,7 @@ public final class IOUtils {
 	 * determinable, for example /proc/xxx files on linux.
 	 * 
 	 * @param filename
-	 * @return
+	 * @return file content.
 	 * @throws IOException
 	 */
 	public static String readFileBufferedAsString(String filename) throws IOException {
