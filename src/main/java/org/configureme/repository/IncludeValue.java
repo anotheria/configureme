@@ -5,15 +5,14 @@ import org.configureme.Environment;
 import org.configureme.sources.ConfigurationSourceKey;
 
 /**
- * Value of a include attribute. Link to the another config with a configurable attribute name
- *
- * @author ivanbatura
+ * Value of a include attribute. Link to the another config with a configurable attribute name.
+ * @author ivanbatura, lrosenberg
  * @since: 26.09.12
  */
 public class IncludeValue implements Value {
 
 	/**
-	 * Needed attribute name in the configuration
+	 * Needed attribute name in the configuration.
 	 */
 	private final String attributeName;
 
@@ -22,22 +21,22 @@ public class IncludeValue implements Value {
 	 */
 	private String configurationName;
 
-	public IncludeValue() {
-		attributeName = "";
-	}
-
 	@Override
 	public Object getRaw() {
 		return new PlainValue(attributeName+"->"+configurationName);
 	}
 
+	/**
+	 * Resolves included value dynamically from the linked config in the specified environment.
+	 * @param in target environment.
+	 * @return
+	 */
 	public Value getIncludedValue(Environment in){
 		return ConfigurationManager.INSTANCE.getConfiguration(configurationName, in).getAttribute(attributeName);
 	}
 
 	/**
 	 * Get configuration name of the linked config
-	 *
 	 * @return configuration name of the linked config
 	 */
 	public ConfigurationSourceKey getConfigName() {
