@@ -1,5 +1,7 @@
 package org.configureme.sources.configurationrepository;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.configureme.sources.ConfigurationSourceKey;
 import org.configureme.sources.SourceLoader;
 import org.slf4j.Logger;
@@ -56,7 +58,18 @@ public class RestConfigurationRepositorySourceLoader implements SourceLoader {
             throw new IllegalStateException("Can only get configuration for type: " + ConfigurationSourceKey.Type.REST);
         }
         Map<String, Object> result = getConfigurationReplyObject(key).getResults();
-        return ((String) result.get(key.getName()));
+        return mapObjectToString(result.get(key.getName()));
+    }
+
+    private String mapObjectToString(Object toMap) {
+        ObjectMapper mapper = new ObjectMapper();
+        String resultString = null;
+        try {
+            resultString = mapper.writeValueAsString(toMap);
+        } catch (JsonProcessingException e) {
+            log.error("Json parsing exception: ", e);
+        }
+        return resultString;
     }
 
     private ReplyObject getConfigurationReplyObject(ConfigurationSourceKey key) {
@@ -64,14 +77,19 @@ public class RestConfigurationRepositorySourceLoader implements SourceLoader {
         if (response.getStatus() != 200) {
             log.error("Http request to url: " + key.getRemoteConfigurationRepositoryUrl() + " is failed");
         }
-        return response.readEntity(ReplyObject.class);
+        try {
+            return response.readEntity(ReplyObject.class);
+        } finally {
+            response.close();
+        }
+
     }
 
     private Response getResponse(ConfigurationSourceKey key, String additionalPath) {
-        Client client = ClientBuilder.newClient();
         if (key.getRemoteConfigurationRepositoryUrl() == null) {
             throw new IllegalArgumentException("Target url unknown");
         }
+        Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(key.getRemoteConfigurationRepositoryUrl()).path(additionalPath).path(key.getName());
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
         return invocationBuilder.get();

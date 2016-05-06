@@ -1,5 +1,10 @@
 package org.configureme.sources.configurationrepository;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,6 +16,10 @@ public enum ConfigurationsHolder {
      * The configurationsholder is a singleton.
      */
     INSTANCE;
+    /**
+     * Logger.
+     */
+    private static final Logger log = LoggerFactory.getLogger(ConfigurationsHolder.class);
 
     /**
      * key - configuration name
@@ -22,8 +31,19 @@ public enum ConfigurationsHolder {
         return configurations.get(name).getContent();
     }
 
-    public void putConfigurationWithName(String name, String context) {
-        configurations.put(name, new Configuration(System.currentTimeMillis(), context));
+    public void putConfigurationWithName(String name, Object context) {
+        configurations.put(name, new Configuration(System.currentTimeMillis(), mapObjectToString(context)));
+    }
+
+    private String mapObjectToString(Object toMap) {
+        ObjectMapper mapper = new ObjectMapper();
+        String resultString = null;
+        try {
+            resultString = mapper.writeValueAsString(toMap);
+        } catch (JsonProcessingException e) {
+            log.error("Json parsing exception: ", e);
+        }
+        return resultString;
     }
 
     public boolean isConfigurationWithNameExist(String name) {

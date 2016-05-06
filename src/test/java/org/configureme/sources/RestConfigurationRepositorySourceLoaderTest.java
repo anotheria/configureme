@@ -43,7 +43,7 @@ public class RestConfigurationRepositorySourceLoaderTest {
     public void getContentTest() {
         String result = loader.getContent(getTestKey());
         log.info(result);
-        assertThat(result, is("{\"a\":\"A\", \"b\":\"B\", \"c\":\"C\"}"));
+        assertThat(result, is("{\"a\":\"A\",\"b\":\"B\",\"c\":\"C\"}"));
     }
 
     @Test
@@ -73,7 +73,7 @@ public class RestConfigurationRepositorySourceLoaderTest {
         testConfiguration.setA("A");
         testConfiguration.setB("B");
         testConfiguration.setC("C");
-        ReplyObject replyObject = ReplyObject.success("Test", testConfiguration.toString());
+        ReplyObject replyObject = ReplyObject.success("Test", testConfiguration);
         String result = null;
         try {
             result = mapper.writeValueAsString(replyObject);
