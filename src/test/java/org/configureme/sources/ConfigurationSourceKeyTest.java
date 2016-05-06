@@ -38,7 +38,7 @@ public class ConfigurationSourceKeyTest {
 	}
 	
 	@Test public void ensureCodeIsWatchedWhenAddingNewFilesAndFormats(){
-		assertEquals(3, ConfigurationSourceKey.Type.values().length);
+		assertEquals(4, ConfigurationSourceKey.Type.values().length);
 		assertEquals(3, ConfigurationSourceKey.Format.values().length);
 	}
 	
@@ -59,6 +59,6 @@ public class ConfigurationSourceKeyTest {
 		assertEquals(Format.PROPERTIES, prop.getFormat());
 		assertEquals(Type.FILE, prop.getType());
 		assertEquals(name, prop.getName());
-}
+	}
 } 
 

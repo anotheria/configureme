@@ -152,6 +152,10 @@ public enum ConfigurationManager {
      * Property name for the system property which ConfigurationManager checks to set its remote configuration repository url with at startup.
      */
     public static final String PROP_NAME_CONFIGURATION_REPOSITORY = "configurationRepository";
+	/**
+	 * Property name for the system property which ConfigurationManager checks to set its remote configuration repository url with at startup.
+	 */
+	public static final String PROP_NAME_USED_IN_CONFIGURATION_REPOSITORY = "usedInConfigurationRepository";
     /**
 	 * Logger.
 	 */
@@ -165,6 +169,7 @@ public enum ConfigurationManager {
 		String defEnvironmentAsString = System.getProperty(PROP_NAME_DEFAULT_ENVIRONMENT, "");
 		defaultEnvironment = DynamicEnvironment.parse(defEnvironmentAsString);
         setExternalConfigurationRepository();
+		setConfigurationRepository();
 
 		parsers = new ConcurrentHashMap<Format, ConfigurationParser>();
 		parsers.put(Format.JSON, new JsonParser());
@@ -365,13 +370,21 @@ public enum ConfigurationManager {
     /**
      * This method is used to check and set an external configuration repository url for further processing.
      */
-    private void setExternalConfigurationRepository(){
+    private void setExternalConfigurationRepository() {
         String rmtConfRepUrl = System.getProperty(PROP_NAME_CONFIGURATION_REPOSITORY);
 		if(rmtConfRepUrl != null){
             remoteConfigurationRepositoryUrl = rmtConfRepUrl;
             defaultConfigurationSourceType = Type.REST;
         }
     }
+
+	/**
+	 * Check and set if configureme used in configuration repository
+	 */
+	private void setConfigurationRepository() {
+		String usedForConfRep = System.getProperty(PROP_NAME_USED_IN_CONFIGURATION_REPOSITORY);
+		if(usedForConfRep != null) defaultConfigurationSourceType = Type.REPOSITORY;
+	}
 
 	/**
 	 * Internal method used at initial, user triggered configuration.

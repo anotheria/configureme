@@ -3,7 +3,7 @@ package org.configureme.sources;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import org.configureme.sources.configurationrepository.ConfigurationRepositorySourceLoader;
+import org.configureme.sources.configurationrepository.RestConfigurationRepositorySourceLoader;
 import org.configureme.sources.configurationrepository.ReplyObject;
 import org.junit.Before;
 import org.junit.Rule;
@@ -16,11 +16,11 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class ConfigurationRepositorySourceLoaderTest {
+public class RestConfigurationRepositorySourceLoaderTest {
     private static final Logger log = LoggerFactory.getLogger(Slf4jLog.class);
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(8080);
-    private ConfigurationRepositorySourceLoader loader = new ConfigurationRepositorySourceLoader();
+    private RestConfigurationRepositorySourceLoader loader = new RestConfigurationRepositorySourceLoader();
 
     @Before
     public void init() {

@@ -18,11 +18,11 @@ import java.util.Map;
  *
  * @author andriiskrypnyk
  */
-public class ConfigurationRepositorySourceLoader implements SourceLoader {
+public class RestConfigurationRepositorySourceLoader implements SourceLoader {
     /**
      * Logger.
      */
-    private static final Logger log = LoggerFactory.getLogger(ConfigurationRepositorySourceLoader.class);
+    private static final Logger log = LoggerFactory.getLogger(RestConfigurationRepositorySourceLoader.class);
     /**
      * Configuration path.
      */

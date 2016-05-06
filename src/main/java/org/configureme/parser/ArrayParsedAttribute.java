@@ -24,7 +24,6 @@ public class ArrayParsedAttribute extends ParsedAttribute<ArrayValue> {
 
 	/**
 	 * Creates internal representation of the attribute value.
-	 * @param name name of the attribute
 	 * @param value list of child attribute values of the attribute within the environment
 	 * @return internal representation of the composite attribute value
 	 */

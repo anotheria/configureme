@@ -8,7 +8,8 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.configureme.ConfigurableWrapper;
 import org.configureme.sources.ConfigurationSourceKey.Type;
-import org.configureme.sources.configurationrepository.ConfigurationRepositorySourceLoader;
+import org.configureme.sources.configurationrepository.ConfigurationHolderSourceLoader;
+import org.configureme.sources.configurationrepository.RestConfigurationRepositorySourceLoader;
 import org.configureme.util.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +50,8 @@ public enum ConfigurationSourceRegistry {
 	private void initLoaders() {
 		loaders.clear();
 		loaders.put(Type.FILE, new FileLoader());
-		loaders.put(Type.REST, new ConfigurationRepositorySourceLoader());
+		loaders.put(Type.REST, new RestConfigurationRepositorySourceLoader());
+		loaders.put(Type.REPOSITORY, new ConfigurationHolderSourceLoader());
 	}
 
 	/**

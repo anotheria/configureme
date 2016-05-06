@@ -22,6 +22,11 @@ public class ConfigurationSourceKey {
 		 * Configuration comes from a REST API.
 		 */
 		REST,
+
+		/**
+		 * Configuration comes from a repository.
+		 */
+		REPOSITORY
 	}
 
 	/**
