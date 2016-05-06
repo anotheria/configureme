@@ -28,7 +28,7 @@ public class RestConfigurationRepositorySourceLoader implements SourceLoader {
     /**
      * Configuration path.
      */
-    private static final String PATH_CONFIGURATION = "configuration";
+    private static final String PATH_CONFIGURATION = "configurations";
     /**
      * Last change timestamp path.
      */
