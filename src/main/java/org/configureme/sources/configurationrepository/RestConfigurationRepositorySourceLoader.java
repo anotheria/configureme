@@ -58,10 +58,13 @@ public class RestConfigurationRepositorySourceLoader implements SourceLoader {
             throw new IllegalStateException("Can only get configuration for type: " + ConfigurationSourceKey.Type.REST);
         }
         Map<String, Object> result = getConfigurationReplyObject(key).getResults();
-        return mapObjectToString(result.get(key.getName()));
+        return mapObjectToString(result.get(key.getName()), key.getName());
     }
 
-    private String mapObjectToString(Object toMap) {
+    private String mapObjectToString(Object toMap, String configName) {
+        if (toMap == null) {
+            throw new IllegalStateException("No configuration with name: " + configName);
+        }
         ObjectMapper mapper = new ObjectMapper();
         String resultString = null;
         try {
