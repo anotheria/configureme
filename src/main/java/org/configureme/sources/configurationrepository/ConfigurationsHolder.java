@@ -35,6 +35,11 @@ public enum ConfigurationsHolder {
         configurations.put(name, new Configuration(System.currentTimeMillis(), mapObjectToString(context)));
     }
 
+    public String deleteConfigurationWithName(String name) {
+        Configuration removedConfiguration = configurations.remove(name);
+        return removedConfiguration != null ? removedConfiguration.getContent() : "";
+    }
+
     private String mapObjectToString(Object toMap) {
         ObjectMapper mapper = new ObjectMapper();
         String resultString = null;
