@@ -24,7 +24,7 @@ public class RestConfigurationRepositorySourceLoaderTest {
 
     @Before
     public void init() {
-        stubFor(get(urlEqualTo("/configuration/Test"))
+        stubFor(get(urlEqualTo("/configurations/Test"))
                 .withHeader("Accept", equalTo("application/json"))
                 .willReturn(aResponse()
                         .withStatus(200)
