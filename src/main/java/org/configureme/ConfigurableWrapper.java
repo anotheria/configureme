@@ -61,7 +61,7 @@ public class ConfigurableWrapper implements ConfigurationSourceListener{
 	}
 
 	@Override public String toString(){
-		return getKey()+", "+getConfigurable();
+        return key +", "+ configurable;
 	}
 
 	/**
@@ -76,7 +76,7 @@ public class ConfigurableWrapper implements ConfigurationSourceListener{
 		if (!(anotherObject instanceof ConfigurableWrapper ))
 			return false;
 		ConfigurableWrapper w = (ConfigurableWrapper)anotherObject;
-		return key.equals(w.getKey()) && configurable.equals(w.getConfigurable()) && environment.equals(w.getEnvironment());
+        return key.equals(w.key) && configurable.equals(w.configurable) && environment.equals(w.environment);
 	}
 	
 	@Override public int hashCode(){

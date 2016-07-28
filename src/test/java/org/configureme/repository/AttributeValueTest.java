@@ -28,7 +28,7 @@ public class AttributeValueTest {
 		assertEquals(new PlainValue("c"), v.get(c));
 		assertEquals(new PlainValue("d"), v.get(d));
 
-		assertTrue(v.toString().length()>0);
+		assertTrue(!v.toString().isEmpty());
 	}
 
 	@Test public void testFallback(){

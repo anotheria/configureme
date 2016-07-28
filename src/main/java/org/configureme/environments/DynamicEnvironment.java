@@ -1,7 +1,7 @@
 package org.configureme.environments;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 import org.configureme.Environment;
 import org.configureme.GlobalEnvironment;
@@ -25,7 +25,7 @@ public class DynamicEnvironment implements Environment, Cloneable{
 	 * Warning, since the environment produced by this call is another form of the GlobalEnvironment, it should better not be used, except you are planing to add elements immediately after the creation.
 	 */
 	public DynamicEnvironment(){
-		elements = new ArrayList<String>();
+		elements = new ArrayList<>();
 	}
 	
 	/**
@@ -46,8 +46,8 @@ public class DynamicEnvironment implements Environment, Cloneable{
 	 * Creates a new environment with the given list of elements Used internally to create a reduced environment version.
 	 * @param someElements starting elements of the environment.
 	 */
-	private DynamicEnvironment(List<String> someElements){
-		elements = new ArrayList<String>(someElements.size());
+	private DynamicEnvironment(Collection<String> someElements){
+		elements = new ArrayList<>(someElements.size());
 		//ensure immutability
 		elements.addAll(someElements);
 	}
@@ -58,7 +58,7 @@ public class DynamicEnvironment implements Environment, Cloneable{
 		StringBuilder ret = new StringBuilder();
 		for (String s : elements){
 			if (ret.length()>0)
-				ret.append("_");
+				ret.append('_');
 			ret.append(s);
 		}
 		return ret.toString();
@@ -91,12 +91,11 @@ public class DynamicEnvironment implements Environment, Cloneable{
 	 * Reduces current environment. Modifies current object, hence NOT THREADSAFE.
 	 */
 	public void reduceThis(){
-		if (elements==null || elements.size()==0)
+		if (elements==null || elements.isEmpty())
 			throw new AssertionError("Can't reduce this environment");
 		elements.remove(elements.size()-1);
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override public Object clone(){
 		try{
 			DynamicEnvironment ret = (DynamicEnvironment)super.clone();
@@ -109,7 +108,7 @@ public class DynamicEnvironment implements Environment, Cloneable{
 	
 	@Override
 	public boolean isReduceable() {
-		return elements!=null && elements.size()>0;
+		return elements!=null && !elements.isEmpty();
 	}
 
 	@Override
@@ -127,7 +126,7 @@ public class DynamicEnvironment implements Environment, Cloneable{
 	 * @return new Environment which corresponds the string
 	 */
 	public static Environment parse(String s){
-		if (s==null || s.length()==0 || s.trim().length()==0)
+		if (s==null || s.isEmpty() || s.trim().isEmpty())
 			return GlobalEnvironment.INSTANCE;
 		String[] tokens = StringUtils.tokenize(s, '_');
 		DynamicEnvironment env = new DynamicEnvironment();

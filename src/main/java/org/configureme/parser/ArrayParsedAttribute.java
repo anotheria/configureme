@@ -1,11 +1,12 @@
 package org.configureme.parser;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.configureme.Environment;
 import org.configureme.repository.ArrayValue;
 import org.configureme.repository.Value;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Represents parsed value of named array attribute within a certain environment.
@@ -27,8 +28,8 @@ public class ArrayParsedAttribute extends ParsedAttribute<ArrayValue> {
 	 * @param value list of child attribute values of the attribute within the environment
 	 * @return internal representation of the composite attribute value
 	 */
-	private static ArrayValue createArrayValue(List<? extends ParsedAttribute<?>> value) {
-		List<Value> list = new ArrayList<Value>(value.size());
+	private static ArrayValue createArrayValue(Collection<? extends ParsedAttribute<?>> value) {
+		List<Value> list = new ArrayList<>(value.size());
 		for (ParsedAttribute<?> parsed : value)
 			list.add(parsed.getValue());
 

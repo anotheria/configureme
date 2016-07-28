@@ -20,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -48,7 +47,7 @@ public class JsonParser implements ConfigurationParser {
 	/**
 	 * Parsed includes.
 	 */
-	private static Map<String, Set<String>> includes = new HashMap<String, Set<String>>();
+	private static Map<String, Set<String>> includes = new HashMap<>();
 
 	/**
 	 * Logger.
@@ -62,7 +61,7 @@ public class JsonParser implements ConfigurationParser {
 		content = StringUtils.removeCPPComments(content);
 		Set<String> include = includes.get(name);
 		if (include == null)
-			include = new HashSet<String>();
+			include = new HashSet<>();
 		include.clear();
 		include.add(name);
 		//parse file includes, should be first than parsing tags
@@ -150,17 +149,17 @@ public class JsonParser implements ConfigurationParser {
 	public static List<? extends ParsedAttribute<?>> parse(String key, Object value, DynamicEnvironment environment) throws JSONException {
 		// an object value means a change in environment, let's see what it is
 		if (value instanceof JSONObject && key.startsWith(COMPOSITE_ATTR_PREFIX))
-			return Arrays.asList(parseComposite(key, (JSONObject) value, environment));
+			return Collections.singletonList(parseComposite(key, (JSONObject) value, environment));
 		else if (value instanceof JSONArray && key.startsWith(COMPOSITE_ATTR_PREFIX))
-			return Arrays.asList(parseArray(key, (JSONArray) value, environment));
+			return Collections.singletonList(parseArray(key, (JSONArray) value, environment));
 		else if (value instanceof String && ((String) value).startsWith(INCLUDE_ATTR_PREFIX))
-			return Arrays.asList(parseInclude(key, (String) value, environment));
+			return Collections.singletonList(parseInclude(key, (String) value, environment));
 		else if (value instanceof JSONObject)
 			return parseObject(key, (JSONObject) value, environment);
 		else if (value instanceof JSONArray)
-			return Arrays.asList(parseArray(key, (JSONArray) value, environment));
+			return Collections.singletonList(parseArray(key, (JSONArray) value, environment));
 		else
-			return Arrays.asList(new PlainParsedAttribute(key, (Environment) environment.clone(), JSONObject.NULL.equals(value) ? null : value.toString()));
+			return Collections.singletonList(new PlainParsedAttribute(key, (Environment) environment.clone(), JSONObject.NULL.equals(value) ? null : value.toString()));
 	}
 
 	private static IncludeParsedAttribute parseInclude(String key, String value, DynamicEnvironment environment) throws JSONException {
@@ -168,7 +167,7 @@ public class JsonParser implements ConfigurationParser {
 	}
 
 	private static List<ParsedAttribute<?>> parseObject(String key, JSONObject value, DynamicEnvironment environment) throws JSONException {
-		List<ParsedAttribute<?>> parsed = new ArrayList<ParsedAttribute<?>>();
+		List<ParsedAttribute<?>> parsed = new ArrayList<>();
 
 		environment.extendThis(key);
 		try {
@@ -188,7 +187,7 @@ public class JsonParser implements ConfigurationParser {
 		if (names == null)
 			return new CompositeParsedAttribute(stripKey(key), (Environment) environment.clone(), Collections.<ParsedAttribute<?>>emptyList());
 
-		List<ParsedAttribute<?>> leafAttr = new ArrayList<ParsedAttribute<?>>();
+		List<ParsedAttribute<?>> leafAttr = new ArrayList<>();
 		for (String subKey : names)
 			leafAttr.addAll(parse(subKey, value.get(subKey), environment));
 
@@ -196,7 +195,7 @@ public class JsonParser implements ConfigurationParser {
 	}
 
 	private static ArrayParsedAttribute parseArray(String key, JSONArray value, DynamicEnvironment environment) throws JSONException {
-		List<ParsedAttribute<?>> parsed = new ArrayList<ParsedAttribute<?>>(value.length());
+		List<ParsedAttribute<?>> parsed = new ArrayList<>(value.length());
 		for (int index = 0; index < value.length(); index++){
 			parsed.addAll(parse(key, value.get(index), environment));
 		}

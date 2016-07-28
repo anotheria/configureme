@@ -70,6 +70,6 @@ public class Attribute {
 	}
 
 	@Override public String toString(){
-		return getName()+"="+attributeValue;
+        return name + '=' +attributeValue;
 	}
 }

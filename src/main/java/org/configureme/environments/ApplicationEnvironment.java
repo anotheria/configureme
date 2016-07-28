@@ -59,18 +59,18 @@ public class ApplicationEnvironment implements Environment{
 
 	@Override
 	public boolean isReduceable() {
-		return system!=null && system.length()>0;
+		return system!=null && !system.isEmpty();
 	}
 
 	@Override
 	public Environment reduce() {
-		if (host!=null && host.length()>0)
+		if (host!=null && !host.isEmpty())
 			return new ApplicationEnvironment(system, app, service, "");
-		if (service!=null && service.length()>0)
+		if (service!=null && !service.isEmpty())
 			return new ApplicationEnvironment(system, app, "", "");
-		if (app!=null && app.length()>0)
+		if (app!=null && !app.isEmpty())
 			return new ApplicationEnvironment(system, "", "", "");
-		if (system!=null && system.length()>0)
+		if (system!=null && !system.isEmpty())
 			return GlobalEnvironment.INSTANCE;
 		throw new AssertionError("Environment isn't reduceable, have you called isReduceable() prior to reduce()?");
 	}
@@ -79,14 +79,14 @@ public class ApplicationEnvironment implements Environment{
 	@Override public String toString(){
 		StringBuilder ret = new StringBuilder();
 		
-		if (system!=null && system.length()>0){
+		if (system!=null && !system.isEmpty()){
 			ret.append(system);
-			if (app!=null && app.length()>0){
-				ret.append("_").append(app);
-				if (service!=null && service.length()>0){
-					ret.append("_").append(service);
-					if (host!=null && host.length()>0){
-						ret.append("_").append(host);
+			if (app!=null && !app.isEmpty()){
+				ret.append('_').append(app);
+				if (service!=null && !service.isEmpty()){
+					ret.append('_').append(service);
+					if (host!=null && !host.isEmpty()){
+						ret.append('_').append(host);
 					}
 				}
 			}

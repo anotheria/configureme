@@ -40,7 +40,7 @@ public @interface SetIf {
 	 * @author dzhmud.
 	 *
 	 */
-	public enum SetIfCondition {
+    enum SetIfCondition {
 		/**
 		 * Does the key start with given annotation value.
 		 */
@@ -60,7 +60,7 @@ public @interface SetIf {
 	 * @author dzhmud.
 	 *
 	 */
-	public static final class ConditionChecker {
+	final class ConditionChecker {
 		private ConditionChecker() {
 		}
 

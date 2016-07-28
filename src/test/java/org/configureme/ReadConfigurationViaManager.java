@@ -1,12 +1,12 @@
 package org.configureme;
 
-import static junit.framework.Assert.assertEquals;
-
 import org.configureme.environments.DynamicEnvironment;
 import org.configureme.repository.PlainValue;
 import org.configureme.sources.ConfigurationSourceRegistryTest;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class ReadConfigurationViaManager {
 	@BeforeClass public static void setupRegistry(){

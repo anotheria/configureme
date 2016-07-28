@@ -15,7 +15,7 @@ public class WatchedConfigFiles implements WatchedConfigFilesMBean {
 	/**
 	 * Configurations names.
 	 */
-	private Set<String> configNames = new HashSet<String>();
+	private Set<String> configNames = new HashSet<>();
 
 
 	@Override

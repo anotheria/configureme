@@ -38,8 +38,8 @@ public class ConfigurationImpl implements Configuration {
 	 */
 	public ConfigurationImpl(String aName) {
 		name = aName;
-		attributes = new ConcurrentHashMap<String, Value>();
-		externalConfigurations = new HashSet<ConfigurationSourceKey>();
+		attributes = new ConcurrentHashMap<>();
+		externalConfigurations = new HashSet<>();
 	}
 
 	@Override
@@ -91,7 +91,7 @@ public class ConfigurationImpl implements Configuration {
 
 	@Override
 	public String toString() {
-		return getName() + ": " + attributes;
+        return name + ": " + attributes;
 	}
 
 	@Override

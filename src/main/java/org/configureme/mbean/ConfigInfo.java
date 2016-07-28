@@ -56,13 +56,13 @@ public class ConfigInfo implements ConfigInfoMBean {
 				resultContent.append("      ").append(stringObjectEntry.getKey()).append(" : ").append(stringObjectEntry.getValue()).append(",\n");
 			resultContent.append("   },\n");
 		}
-		resultContent.append("}");
+		resultContent.append('}');
 		return resultContent.toString();
 	}
 
 	@Override
 	public Map<String, Object> getAttributes() {
-		Map<String, Object> attributeMap = new HashMap<String, Object>();
+		Map<String, Object> attributeMap = new HashMap<>();
 		final Environment defaultEnvironment = ConfigurationManager.INSTANCE.getDefaultEnvironment();
 		final Configuration configuration = ConfigurationRepository.INSTANCE.getConfiguration(configName, defaultEnvironment);
 

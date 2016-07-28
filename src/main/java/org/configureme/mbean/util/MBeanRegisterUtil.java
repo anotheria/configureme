@@ -42,7 +42,7 @@ public final class MBeanRegisterUtil {
 				return;
 			mbs.registerMBean(object, objectName);
 		} catch (MalformedObjectNameException | InstanceAlreadyExistsException | MBeanRegistrationException | NotCompliantMBeanException e) {
-			log.error("can't register mbean regMBean("+object+", "+ Arrays.toString(parameters)+")", e);
+			log.error("can't register mbean regMBean("+object+", "+ Arrays.toString(parameters)+ ')', e);
 		} catch(AccessControlException e){
 			log.error("Access denied, can no register mbean add permission javax.management.MBeanTrustPermission \"register\"; to java.policy file", e);
 		}
@@ -61,11 +61,11 @@ public final class MBeanRegisterUtil {
 		objectName.append(":type=");
 		objectName.append(object.getClass().getName());
 		if (parameters.length > 0) {
-			objectName.append("(");
+			objectName.append('(');
 			for (String parameter : parameters)
-				objectName.append(parameter).append(",");
+				objectName.append(parameter).append(',');
 			objectName.deleteCharAt(objectName.length() - 1);
-			objectName.append(")");
+			objectName.append(')');
 		}
 		return objectName.toString();
 	}

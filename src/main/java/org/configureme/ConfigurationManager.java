@@ -74,8 +74,7 @@ public enum ConfigurationManager {
 	 * Set of classes specifying plain attribute types.
 	 * Allows quickly check whether an attribute is plain or not.
 	 */
-	@SuppressWarnings("unchecked")
-	private static final java.util.Set<Class<?>> PLAIN_TYPES = new HashSet<Class<?>>(
+	private static final Collection<Class<?>> PLAIN_TYPES = new HashSet<Class<?>>(
 			Arrays.asList(
 					String.class,
 					Boolean.class, boolean.class,
@@ -111,11 +110,10 @@ public enum ConfigurationManager {
 	/**
 	 * Cache for object in oder to cover situation with loops in ConfigureAlso
 	 */
-	private ThreadLocal<Map<String, Map<Environment, Object>>> localCache = new ThreadLocal<Map<String, Map<Environment, Object>>>();
+	private ThreadLocal<Map<String, Map<Environment, Object>>> localCache = new ThreadLocal<>();
 	/**
 	 * Annotations to call before initial configuration.
 	 */
-	@SuppressWarnings("unchecked")
 	private static final Class<? extends Annotation>[] CALL_BEFORE_INITIAL_CONFIGURATION = (Class<? extends Annotation>[]) new Class<?>[]{
 			BeforeInitialConfiguration.class, BeforeConfiguration.class
 	};
@@ -123,7 +121,6 @@ public enum ConfigurationManager {
 	/**
 	 * Annotations to call after initial configuration.
 	 */
-	@SuppressWarnings("unchecked")
 	private static final Class<? extends Annotation>[] CALL_AFTER_INITIAL_CONFIGURATION = (Class<? extends Annotation>[]) new Class<?>[]{
 			AfterConfiguration.class, AfterInitialConfiguration.class
 	};
@@ -131,7 +128,6 @@ public enum ConfigurationManager {
 	/**
 	 * Annotations to call before reconfiguration.
 	 */
-	@SuppressWarnings("unchecked")
 	private static final Class<? extends Annotation>[] CALL_BEFORE_RE_CONFIGURATION = (Class<? extends Annotation>[]) new Class<?>[]{
 			BeforeReConfiguration.class, BeforeConfiguration.class
 	};
@@ -139,7 +135,6 @@ public enum ConfigurationManager {
 	/**
 	 * Annotations to call before after reconfiguration.
 	 */
-	@SuppressWarnings("unchecked")
 	private static final Class<? extends Annotation>[] CALL_AFTER_RE_CONFIGURATION = (Class<? extends Annotation>[]) new Class<?>[]{
 			AfterConfiguration.class, AfterReConfiguration.class
 	};
@@ -171,7 +166,7 @@ public enum ConfigurationManager {
         setExternalConfigurationRepository();
 		setConfigurationRepository();
 
-		parsers = new ConcurrentHashMap<Format, ConfigurationParser>();
+		parsers = new ConcurrentHashMap<>();
 		parsers.put(Format.JSON, new JsonParser());
 		parsers.put(Format.PROPERTIES, new PropertiesParser());
 	}
@@ -359,7 +354,7 @@ public enum ConfigurationManager {
 
 		String configurationName = "";
 		ConfigureMe ann = clazz.getAnnotation(ConfigureMe.class);
-		if (ann.name() == null || ann.name().length() == 0)
+		if (ann.name() == null || ann.name().isEmpty())
 			configurationName = extractConfigurationNameFromClassName(clazz);
 		else
 			configurationName = ann.name();
@@ -425,10 +420,10 @@ public enum ConfigurationManager {
 					try {
 						m.invoke(configurable);
 					} catch (IllegalAccessException e) {
-						log.error("callAnnotations(" + Arrays.toString(methods) + ", " + Arrays.toString(annotationClasses) + ")", e);
+						log.error("callAnnotations(" + Arrays.toString(methods) + ", " + Arrays.toString(annotationClasses) + ')', e);
 						throw new AssertionError("Error declaration in method " + m + ", wrong declaration (public void " + m.getName() + " expected)? - " + e.getMessage());
 					} catch (InvocationTargetException e) {
-						log.error("callAnnotations(Exception in annotated method: " + m + ")", e);
+						log.error("callAnnotations(Exception in annotated method: " + m + ')', e);
 						throw new RuntimeException("Exception in annotated method: " + e.getMessage(), e);
 					}
 				}
@@ -515,7 +510,7 @@ public enum ConfigurationManager {
 					try {
 						f.set(o, externalConfig);
 					} catch (Exception e) {
-						log.warn(f + ".set(" + o + ", " + externalConfig.toString() + ")", e);
+						log.warn(f + ".set(" + o + ", " + externalConfig + ')', e);
 					}
 				} else {
 					String methodName = "set" + f.getName().toUpperCase().charAt(0) + f.getName().substring(1);
@@ -523,9 +518,9 @@ public enum ConfigurationManager {
 						Method toSet = clazz.getMethod(methodName, f.getType());
 						toSet.invoke(o, externalConfig);
 					} catch (NoSuchMethodException e) {
-						log.error("can't find method " + methodName + " (" + f.getType() + ")");
+						log.error("can't find method " + methodName + " (" + f.getType() + ')');
 					} catch (Exception e) {
-						log.error("can't set " + f.getName() + " to " + externalConfig.toString() + ", because: ", e);
+						log.error("can't set " + f.getName() + " to " + externalConfig + ", because: ", e);
 					}
 				}
 				continue;
@@ -540,7 +535,7 @@ public enum ConfigurationManager {
 					try {
 						f.set(o, resolveValue(f.getType(), attributeValue, callBefore, callAfter, configureAllFields, environment));
 					} catch (Exception e) {
-						log.warn(f + ".set(" + o + ", " + attributeValue + ")", e);
+						log.warn(f + ".set(" + o + ", " + attributeValue + ')', e);
 					}
 				} else {
 					String methodName = "set" + f.getName().toUpperCase().charAt(0) + f.getName().substring(1);
@@ -548,7 +543,7 @@ public enum ConfigurationManager {
 						Method toSet = clazz.getMethod(methodName, f.getType());
 						toSet.invoke(o, resolveValue(f.getType(), attributeValue, callBefore, callAfter, configureAllFields, environment));
 					} catch (NoSuchMethodException e) {
-						log.error("can't find method " + methodName + " (" + f.getType() + ")");
+						log.error("can't find method " + methodName + " (" + f.getType() + ')');
 					} catch (Exception e) {
 						log.error("can't set " + attributeName + " to " + attributeValue + ", because: ", e);
 					}
@@ -565,7 +560,7 @@ public enum ConfigurationManager {
 					try {
 						method.invoke(o, entry.getKey(), resolveValue(method.getParameterTypes()[1], entry.getValue(), callBefore, callAfter, configureAllFields, environment));
 					} catch (Exception e) {
-						log.warn(method.getName() + "invoke(" + o + ", " + entry.getKey() + ", " + entry.getValue() + ")", e);
+						log.warn(method.getName() + "invoke(" + o + ", " + entry.getKey() + ", " + entry.getValue() + ')', e);
 					}
 				}
 			}
@@ -574,11 +569,11 @@ public enum ConfigurationManager {
 				SetIf setIfAnnotation = method.getAnnotation(SetIf.class);
 				for (Entry<String, Value> entry : entries) {
 					if (SetIf.ConditionChecker.satisfyCondition(setIfAnnotation, entry.getKey())) {
-						log.debug("Calling method " + method + " with parameters : \"" + entry.getKey() + "\", \"" + entry.getValue() + "\"");
+						log.debug("Calling method " + method + " with parameters : \"" + entry.getKey() + "\", \"" + entry.getValue() + '"');
 						try {
 							method.invoke(o, entry.getKey(), resolveValue(method.getParameterTypes()[1], entry.getValue(), callBefore, callAfter, configureAllFields, environment));
 						} catch (Exception e) {
-							log.warn(method.getName() + "invoke(" + o + ", " + entry.getKey() + ", " + entry.getValue() + ")", e);
+							log.warn(method.getName() + "invoke(" + o + ", " + entry.getKey() + ", " + entry.getValue() + ')', e);
 						}
 					}
 				}
@@ -593,7 +588,7 @@ public enum ConfigurationManager {
 					try {
 						method.invoke(o, resolveValue(method.getParameterTypes()[0], attributeValue, callBefore, callAfter, configureAllFields, environment));
 					} catch (Exception e) {
-						log.warn(method.getName() + "invoke(" + o + ", " + attributeValue + ")", e);
+						log.warn(method.getName() + "invoke(" + o + ", " + attributeValue + ')', e);
 					}
 				}
 
@@ -657,7 +652,7 @@ public enum ConfigurationManager {
 		String configurationName = configSourceKey.getName();
 		if (!ConfigurationRepository.INSTANCE.hasConfiguration(configurationName)) {
 			if (!ConfigurationSourceRegistry.INSTANCE.isConfigurationAvailable(configSourceKey)) {
-				throw new IllegalArgumentException("No such configuration: " + configurationName + " (" + configSourceKey + ")");
+				throw new IllegalArgumentException("No such configuration: " + configurationName + " (" + configSourceKey + ')');
 			}
 			//reading config
 			String content = ConfigurationSourceRegistry.INSTANCE.readConfigurationSource(configSourceKey);
@@ -669,7 +664,7 @@ public enum ConfigurationManager {
 			try {
 				pa = parser.parseConfiguration(configurationName, content);
 			} catch (ConfigurationParserException e) {
-				log.error("getConfiguration(" + configurationName + ", " + in + ")", e);
+				log.error("getConfiguration(" + configurationName + ", " + in + ')', e);
 				throw new IllegalArgumentException(configSourceKey + " is not parseable: " + e.getMessage(), e);
 			}
 			//System.out.println("Parsed "+pa);
@@ -719,30 +714,34 @@ public enum ConfigurationManager {
 		return targetClazz.getName().substring(targetClazz.getName().lastIndexOf('.') + 1).toLowerCase();
 	}
 
-	/**
-	 * Resolves attribute value to an instance of specified value class.
-	 *
-	 * @param valueClass     class of the resulting value instance
-	 * @param attributeValue array attribute value specifying the configuration of the resulting instance
-	 * @param callBefore     annotations, methods annotated with those will be called prior to the configuration
-	 * @param callAfter      annotations, methods annotated with those will be called after the configuration
-	 * @return an instance of the specified value class which is configured according to the specified attribute value.
-	 */
-	private Object resolveValue(Class<?> valueClass, Value attributeValue, Class<? extends Annotation>[] callBefore, Class<? extends Annotation>[] callAfter, boolean configureAllFields, Environment environment) throws InstantiationException, IllegalAccessException {
-		boolean isValueClassPlain = isPlain(valueClass);
-		boolean isValueClassDummy = valueClass.equals(Object.class) || valueClass.equals(String.class);
+    /**
+     * Resolves attribute value to an instance of specified value class.
+     *
+     * @param valueClass     class of the resulting value instance
+     * @param attributeValue array attribute value specifying the configuration of the resulting instance
+     * @param callBefore     annotations, methods annotated with those will be called prior to the configuration
+     * @param callAfter      annotations, methods annotated with those will be called after the configuration
+     * @return an instance of the specified value class which is configured according to the specified attribute value.
+     */
+    private Object resolveValue(Class<?> valueClass, Value attributeValue, Class<? extends Annotation>[] callBefore, Class<? extends Annotation>[] callAfter, boolean configureAllFields, Environment environment) throws InstantiationException, IllegalAccessException {
+        while (true) {
+            boolean isValueClassPlain = isPlain(valueClass);
+            boolean isValueClassDummy = valueClass.equals(Object.class) || valueClass.equals(String.class);
 
-		if (attributeValue instanceof PlainValue && !valueClass.isArray() && (isValueClassPlain || isValueClassDummy))
-			return resolvePlainValue(valueClass, (PlainValue) attributeValue);
-		if (attributeValue instanceof CompositeValue && !valueClass.isArray() && (!isValueClassPlain || isValueClassDummy))
-			return resolveCompositeValue(valueClass, (CompositeValue) attributeValue, callBefore, callAfter, configureAllFields);
-		if (attributeValue instanceof ArrayValue && (valueClass.isArray() || isValueClassDummy))
-			return resolveArrayValue(valueClass, (ArrayValue) attributeValue, callBefore, callAfter, configureAllFields, environment);
-		if (attributeValue instanceof IncludeValue && (!valueClass.isArray() || !isValueClassDummy))
-			return resolveValue(valueClass, ((IncludeValue) attributeValue).getIncludedValue(environment), callBefore, callAfter, configureAllFields, environment);
+            if (attributeValue instanceof PlainValue && !valueClass.isArray() && (isValueClassPlain || isValueClassDummy))
+                return resolvePlainValue(valueClass, (PlainValue) attributeValue);
+            if (attributeValue instanceof CompositeValue && !valueClass.isArray() && (!isValueClassPlain || isValueClassDummy))
+                return resolveCompositeValue(valueClass, (CompositeValue) attributeValue, callBefore, callAfter, configureAllFields);
+            if (attributeValue instanceof ArrayValue && (valueClass.isArray() || isValueClassDummy))
+                return resolveArrayValue(valueClass, (ArrayValue) attributeValue, callBefore, callAfter, configureAllFields, environment);
+            if (attributeValue instanceof IncludeValue && (!valueClass.isArray() || !isValueClassDummy)) {
+                attributeValue = ((IncludeValue) attributeValue).getIncludedValue(environment);
+                continue;
+            }
 
-		throw new IllegalArgumentException("Can't resolve attribute value " + attributeValue + " to type: " + valueClass.getCanonicalName());
-	}
+            throw new IllegalArgumentException("Can't resolve attribute value " + attributeValue + " to type: " + valueClass.getCanonicalName());
+        }
+    }
 
 	/**
 	 * Checks whether the class specifies a plain type or array (with arbitrary number of dimensions) of plain types.
@@ -758,7 +757,7 @@ public enum ConfigurationManager {
 
 	private static Object resolvePlainValue(Class<?> type, PlainValue value) {
 		if (type == null)
-			throw new IllegalArgumentException("Checkstyle forced me to do this, apparently type is null which can't happen in resolveValue(null, " + value + ")");
+			throw new IllegalArgumentException("Checkstyle forced me to do this, apparently type is null which can't happen in resolveValue(null, " + value + ')');
 		if (type.equals(String.class) || type.equals(Object.class))
 			return value.get();
 		if (type.equals(Boolean.class) || type.equals(boolean.class))
@@ -779,21 +778,11 @@ public enum ConfigurationManager {
 		if (Enum.class.isAssignableFrom(type))
 			try {
 				return type.cast(type.getMethod("valueOf", String.class).invoke(null, value.get()));
-			} catch (SecurityException e) {
-				throw new IllegalArgumentException("Can not resolve '" + value + "' to " + type.getCanonicalName(), e);
-			} catch (IllegalAccessException e) {
-				throw new IllegalArgumentException("Can not resolve '" + value + "' to " + type.getCanonicalName(), e);
-			} catch (InvocationTargetException e) {
-				throw new IllegalArgumentException("Can not resolve '" + value + "' to " + type.getCanonicalName(), e);
-			} catch (NoSuchMethodException e) {
-				throw new IllegalArgumentException("Can not resolve '" + value + "' to " + type.getCanonicalName(), e);
-			} catch (ClassCastException e) {
-				throw new IllegalArgumentException("Can not resolve '" + value + "' to " + type.getCanonicalName(), e);
-			} catch (IllegalArgumentException e) {
+			} catch (SecurityException | IllegalArgumentException | ClassCastException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
 				throw new IllegalArgumentException("Can not resolve '" + value + "' to " + type.getCanonicalName(), e);
 			}
 
-		throw new IllegalArgumentException("Can not resolve '" + value + "' to " + type.getCanonicalName());
+        throw new IllegalArgumentException("Can not resolve '" + value + "' to " + type.getCanonicalName());
 	}
 
 	/**
@@ -849,12 +838,12 @@ public enum ConfigurationManager {
 	private Object getCachedObject(String name, Environment environment) {
 		Map<String, Map<Environment, Object>> globalCache = localCache.get();
 		if (globalCache == null) {
-			globalCache = new HashMap<String, Map<Environment, Object>>();
+			globalCache = new HashMap<>();
 			localCache.set(globalCache);
 		}
 		Map<Environment, Object> environmentCache = globalCache.get(name);
 		if (environmentCache == null) {
-			environmentCache = new HashMap<Environment, Object>();
+			environmentCache = new HashMap<>();
 			globalCache.put(name, environmentCache);
 		}
 
@@ -871,12 +860,12 @@ public enum ConfigurationManager {
 	private void setCachedObject(String name, Environment environment, Object o) {
 		Map<String, Map<Environment, Object>> globalCache = localCache.get();
 		if (globalCache == null) {
-			globalCache = new HashMap<String, Map<Environment, Object>>();
+			globalCache = new HashMap<>();
 			localCache.set(globalCache);
 		}
 		Map<Environment, Object> environmentCache = globalCache.get(name);
 		if (environmentCache == null) {
-			environmentCache = new HashMap<Environment, Object>();
+			environmentCache = new HashMap<>();
 			globalCache.put(name, environmentCache);
 		}
 		environmentCache.put(environment, o);

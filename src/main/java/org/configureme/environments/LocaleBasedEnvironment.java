@@ -154,7 +154,7 @@ public class LocaleBasedEnvironment implements Environment{
 	 * @param s string to check
 	 * @return
 	 */
-	private static boolean isEmpty(String s){
+	private static boolean isEmpty(CharSequence s){
 		return s==null || s.length()==0;
 	}
 	

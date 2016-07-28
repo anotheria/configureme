@@ -42,9 +42,9 @@ public class Artefact {
 	 */
 	Artefact(String aName) {
 		name = aName;
-		attributes = new ConcurrentHashMap<String, Attribute>();
-		externalConfigurations = new ArrayList<ConfigurationSourceKey>();
-		contentMap = new HashMap<Environment, Map<String, Object>>();
+		attributes = new ConcurrentHashMap<>();
+		externalConfigurations = new ArrayList<>();
+		contentMap = new HashMap<>();
 	}
 
 	public List<ConfigurationSourceKey> getExternalConfigurations() {
@@ -89,7 +89,7 @@ public class Artefact {
 
 		Map<String, Object> valueMap = contentMap.get(in);
 		if(valueMap == null)
-			valueMap = new HashMap<String, Object>();
+			valueMap = new HashMap<>();
 		valueMap.put(attributeName, attributeValue.getRaw());
 		contentMap.put(in, valueMap);
 		//TODO check for loops and process such situation
@@ -103,7 +103,7 @@ public class Artefact {
 
 	@Override
 	public String toString() {
-		return getName() + ": " + attributes;
+		return name + ": " + attributes;
 	}
 
 	/**
@@ -121,8 +121,7 @@ public class Artefact {
 	 * @return names of the contained attributes
 	 */
 	public List<String> getAttributeNames() {
-		ArrayList<String> names = new ArrayList<String>();
-		names.addAll(attributes.keySet());
+		List<String> names = new ArrayList<>(attributes.keySet());
 		return names;
 	}
 }
