@@ -3,7 +3,7 @@ package org.configureme.sources;
 import org.configureme.sources.ConfigurationSourceKey.Format;
 import org.configureme.sources.ConfigurationSourceKey.Type;
 import org.junit.Test;
-import static junit.framework.Assert.*;
+import static org.junit.Assert.*;
 
 public class ConfigurationSourceTest {
 	@Test public void testRobustness(){
