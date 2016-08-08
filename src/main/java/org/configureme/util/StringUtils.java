@@ -56,7 +56,7 @@ public final class StringUtils {
 	 */
 	public static final Vector<String> tokenize2vector(final String source, final char delimiter) {
 		Vector<String> v;
-		v = new Vector<String>();
+		v = new Vector<>();
 		StringBuilder currentS = new StringBuilder();
 		char c;
 		for (int i = 0; i < source.length(); i++) {
@@ -273,7 +273,7 @@ public final class StringUtils {
 	 * @return {@link List} of {@link String}
 	 */
 	public static List<String> extractTags(final String source, final char tagStart, final char tagEnd) {
-		final ArrayList<String> ret = new ArrayList<String>();
+		final ArrayList<String> ret = new ArrayList<>();
 		String currentTag = null;
 		boolean inTag = false;
 		char c;
@@ -281,7 +281,7 @@ public final class StringUtils {
 			c = source.charAt(i);
 			if (!inTag) {
 				if (c == tagStart) {
-					currentTag = "" + c;
+					currentTag = String.valueOf(c);
 					inTag = true;
 				}
 			} else {

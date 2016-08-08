@@ -26,7 +26,7 @@ public class PropertiesParser implements ConfigurationParser {
 		ParsedConfiguration configuration = new ParsedConfiguration(name);
 
 		for (String line : lines){
-			if (line==null || line.trim().length()==0)
+			if (line==null || line.trim().isEmpty())
 				continue;
 			String[] tokensQL =  StringUtils.tokenize(line, '=');
 			if (tokensQL.length!=2){

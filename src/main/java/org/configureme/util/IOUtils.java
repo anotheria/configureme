@@ -110,7 +110,7 @@ public final class IOUtils {
 		BufferedReader reader = null;
 		try {
 			reader = new BufferedReader(new UnicodeReader(in, charset));
-			StringBuffer result = new StringBuffer();
+			StringBuilder result = new StringBuilder();
 			char[] cbuf = new char[2048];
 			int read;
 			while ((read = reader.read(cbuf)) > 0)

@@ -201,7 +201,7 @@ public enum ConfigurationSourceRegistry {
 	}
 
 	/* test  */ void reset() {
-		watchedSources = new ConcurrentHashMap<ConfigurationSourceKey, ConfigurationSource>();
+		watchedSources = new ConcurrentHashMap<>();
 		initLoaders();
 	}
 }

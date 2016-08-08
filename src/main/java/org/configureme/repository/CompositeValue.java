@@ -36,7 +36,7 @@ public class CompositeValue implements Value {
 
 	@Override
 	public Object getRaw() {
-		Map<String, Object> raw = new HashMap<String, Object>(config.getEntries().size());
+		Map<String, Object> raw = new HashMap<>(config.getEntries().size());
 		for (Map.Entry<String, Value> entry : config.getEntries())
 			raw.put(entry.getKey(), entry.getValue().getRaw());
 

@@ -4,7 +4,7 @@ import org.configureme.sources.ConfigurationSourceKey.Format;
 import org.configureme.sources.ConfigurationSourceKey.Type;
 import org.junit.Test;
 
-import static junit.framework.Assert.*;
+import static org.junit.Assert.*;
 
 public class FileLoaderTest {
 	@Test (expected=AssertionError.class) public void acceptOnlyFileKeys(){

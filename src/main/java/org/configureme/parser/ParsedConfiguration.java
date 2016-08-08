@@ -55,8 +55,8 @@ public class ParsedConfiguration {
 	public ParsedConfiguration(String aName){
 		name = aName;
 		parseTimestamp = System.currentTimeMillis();
-		attributes = new ArrayList<ParsedAttribute<?>>();
-		externalConfigurations = new ArrayList<String>();
+		attributes = new ArrayList<>();
+		externalConfigurations = new ArrayList<>();
 	}
 
 
@@ -102,6 +102,6 @@ public class ParsedConfiguration {
 	}
 
 	@Override public String toString(){
-		return getName()+": "+getAttributes();
+        return name +": "+ attributes;
 	}
 }

@@ -1,10 +1,10 @@
 package org.configureme;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertSame;
-import static junit.framework.Assert.assertTrue;
-import static junit.framework.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.Date;
 
@@ -109,7 +109,7 @@ public class TestForErrors {
 
 	@ConfigureMe(name="fixture")
 	private class ObjectWithHiddenAnnotation{
-		@SuppressWarnings("unused") @BeforeConfiguration private void methodWithWrongVisibility(){
+		{
 
 		}
 	}
@@ -160,7 +160,6 @@ public class TestForErrors {
 	}
 
 	@ConfigureMe(name="fixture")
-	@SuppressWarnings("unused")
 	private class ObjectWithUnsupportedMethods{
 
 		@Configure private int intValue = 0;
@@ -182,7 +181,6 @@ public class TestForErrors {
 
 	}
 
-	@SuppressWarnings("unused")
 	@ConfigureMe(name="fixture")
 	private class ObjectWithMissingMethods{
 
@@ -193,7 +191,7 @@ public class TestForErrors {
 	@ConfigureMe(name="fixture")
 	private class ObjectWithExceptionsInSetMethods{
 
-		@SuppressWarnings("unused") @Configure private int intValue;
+		@Configure private int intValue;
 
 		@Set("intValue") public void aSetMethod(){
 			throw new RuntimeException("Set failed");

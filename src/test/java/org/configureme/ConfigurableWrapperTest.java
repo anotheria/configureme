@@ -1,6 +1,6 @@
 package org.configureme;
 
-import static junit.framework.Assert.*;
+import static org.junit.Assert.*;
 
 import org.configureme.environments.DynamicEnvironment;
 import org.configureme.sources.ConfigurationSourceKey;

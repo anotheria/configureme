@@ -1,6 +1,7 @@
 package org.configureme.repository;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -31,7 +32,7 @@ public class ArrayValue implements Value {
 
 	@Override
 	public Object getRaw() {
-		List<Object> raw = new ArrayList<Object>(list.size());
+		Collection<Object> raw = new ArrayList<>(list.size());
 		for (Value val : list)
 			raw.add(val.getRaw());
 

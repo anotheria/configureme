@@ -17,7 +17,7 @@ public class CompositeAttribute {
     /**
      * The container for attribute values.
      */
-    private List<Attribute> attributeList = new ArrayList<Attribute>();
+    private List<Attribute> attributeList = new ArrayList<>();
 
     /**
      * Creates a new attribute.
@@ -53,6 +53,6 @@ public class CompositeAttribute {
 
     @Override
     public String toString() {
-        return getName() + "=" + attributeList;
+        return name + '=' + attributeList;
     }
 }

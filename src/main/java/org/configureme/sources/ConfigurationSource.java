@@ -38,7 +38,7 @@ public class ConfigurationSource {
 	 */
 	public ConfigurationSource(ConfigurationSourceKey aKey){
 		key = aKey;
-		listeners = new ArrayList<ConfigurationSourceListener>(); 
+		listeners = new ArrayList<>();
 		lastChangeTimestamp = System.currentTimeMillis();
 		listeners.add(ConfigurationRepository.INSTANCE);
 	}
@@ -63,7 +63,8 @@ public class ConfigurationSource {
 	}
 	
 	@Override public String toString(){
-		return "ConfigurationSource "+key+", listeners: "+listeners.size()+", "+ DateUtils.toISO8601String(getLastChangeTimestamp());
+
+        return "ConfigurationSource "+key+", listeners: "+listeners.size()+", "+ DateUtils.toISO8601String(lastChangeTimestamp);
 	}
 
 	/**

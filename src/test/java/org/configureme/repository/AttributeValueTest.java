@@ -4,9 +4,9 @@ import org.configureme.Environment;
 import org.configureme.environments.DynamicEnvironment;
 import org.junit.Test;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class AttributeValueTest {
 
@@ -28,7 +28,7 @@ public class AttributeValueTest {
 		assertEquals(new PlainValue("c"), v.get(c));
 		assertEquals(new PlainValue("d"), v.get(d));
 
-		assertTrue(v.toString().length()>0);
+		assertTrue(!v.toString().isEmpty());
 	}
 
 	@Test public void testFallback(){

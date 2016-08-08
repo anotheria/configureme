@@ -27,7 +27,7 @@ public enum ConfigurationRepository implements ConfigurationSourceListener {
 	/**
 	 * The internal artifact storage.
 	 */
-	private Map<String, Artefact> artefacts = new ConcurrentHashMap<String, Artefact>();
+	private Map<String, Artefact> artefacts = new ConcurrentHashMap<>();
 
 	/**
 	 * Creates a new internal artefact for the given name.

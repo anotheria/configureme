@@ -100,10 +100,10 @@ public class ConfigurationSourceKey {
 	}
 	public void setTypeIfNotDefault(Type defType, Type toChange){
 		if(defType != Type.FILE){
-			setType(defType);
-		} else {
-			setType(toChange);
-		}
+            this.type = defType;
+        } else {
+            this.type = toChange;
+        }
 	}
 	public Format getFormat() {
 		return format;
@@ -125,7 +125,7 @@ public class ConfigurationSourceKey {
 	}
 
 	@Override public String toString(){
-		return getType().toString()+"::"+getName()+"::"+getFormat();
+        return type +"::"+ name +"::"+ format;
 	}
 	
 	@Override public boolean equals(Object o){

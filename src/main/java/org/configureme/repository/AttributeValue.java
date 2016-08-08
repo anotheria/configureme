@@ -26,25 +26,28 @@ public class AttributeValue {
 	 * Creates a new attribute values container.
 	 */
 	public AttributeValue(){
-		values = new ConcurrentHashMap<String, Value>();
+		values = new ConcurrentHashMap<>();
 	}
 
-	/**
-	 * Returns the value in the given environment. If no value is found for a specific environment the code will fallback to a less complex environment (reduced form of the environment)
-	 * unless a value is found or the environment is not further reduceable.
-	 * @param in environment
-	 * @return the value in the given environment
-	 */
-	public Value get(Environment in){
-		if (log.isDebugEnabled())
-			log.debug("looking up in "+in +"("+in.expandedStringForm()+")");
-		Value retValue = values.get(in.expandedStringForm());
-		if (retValue!=null)
-			return retValue;
-		if (!in.isReduceable())
-			return null;
-		return get(in.reduce());
-	}
+    /**
+     * Returns the value in the given environment. If no value is found for a specific environment the code will fallback to a less complex environment (reduced form of the environment)
+     * unless a value is found or the environment is not further reduceable.
+     *
+     * @param in environment
+     * @return the value in the given environment
+     */
+    public Value get(Environment in) {
+        while (true) {
+            if (log.isDebugEnabled())
+                log.debug("looking up in " + in + '(' + in.expandedStringForm() + ')');
+            Value retValue = values.get(in.expandedStringForm());
+            if (retValue != null)
+                return retValue;
+            if (!in.isReduceable())
+                return null;
+            in = in.reduce();
+        }
+    }
 
 	/**
 	 * Sets the value in a given environment.

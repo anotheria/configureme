@@ -35,7 +35,7 @@ public class FileLoader implements SourceLoader{
 		//ensure an exception is thrown if we are not file.
 		if (source.getType()!=ConfigurationSourceKey.Type.FILE)
 			throw new AssertionError("Can only load configuration sources with type "+ConfigurationSourceKey.Type.FILE);
-		return source.getName()+"."+source.getFormat().getExtension();
+		return source.getName()+ '.' +source.getFormat().getExtension();
 	}
 	
 	/**
@@ -86,7 +86,7 @@ public class FileLoader implements SourceLoader{
 			
 			return IOUtils.readFileBufferedAsString(f, "UTF-8");
 		}catch(IOException e){
-			log.error("getContent("+key+")", e);
+			log.error("getContent("+key+ ')', e);
 			throw new RuntimeException("can't read source: "+key, e);
 		}
 	}
