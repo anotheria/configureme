@@ -3,6 +3,9 @@ package org.configureme.repository;
 /**
  * Bare value of plain attributes in a string representation.
  * Suitable for attributes representing atomic values such as strings, booleans and all kind of numbers.
+ *
+ * @author another
+ * @version $Id: $Id
  */
 public class PlainValue implements Value {
 	/**
@@ -12,6 +15,7 @@ public class PlainValue implements Value {
 
 	/**
 	 * Constructs new plain attribute value.
+	 *
 	 * @param value string representation of the value.
 	 */
 	public PlainValue(String value) {
@@ -20,22 +24,26 @@ public class PlainValue implements Value {
 
 	/**
 	 * Gets the value.
+	 *
 	 * @return string representation of the value.
 	 */
 	public String get() {
 		return str;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object getRaw() {
 		return str;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return String.valueOf(str);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -44,6 +52,7 @@ public class PlainValue implements Value {
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {

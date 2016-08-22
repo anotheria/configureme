@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
  * Currently the update interval is 10 seconds.
  *
  * @author lrosenberg
+ * @version $Id: $Id
  */
 public enum ConfigurationSourceRegistry {
 	/**
@@ -58,6 +59,7 @@ public enum ConfigurationSourceRegistry {
 	 * Returns true if the key is translateable in an configuration source and the source exists.
 	 *
 	 * @return true if the key is translateable in an configuration source and the source exists
+	 * @param key a {@link org.configureme.sources.ConfigurationSourceKey} object.
 	 */
 	public boolean isConfigurationAvailable(ConfigurationSourceKey key) {
 		if (watchedSources.containsKey(key)) {
@@ -83,9 +85,9 @@ public enum ConfigurationSourceRegistry {
 	}
 
 	/**
-	 * Return set of {@link ConfigurationSourceKey}.
+	 * Return set of {@link org.configureme.sources.ConfigurationSourceKey}.
 	 *
-	 * @return set of {@link ConfigurationSourceKey}
+	 * @return set of {@link org.configureme.sources.ConfigurationSourceKey}
 	 */
 	public Set<ConfigurationSourceKey> getAllSourceKeys() {
 		return watchedSources.keySet();
@@ -129,7 +131,7 @@ public enum ConfigurationSourceRegistry {
 	/**
 	 * Removes a watched configurable.
 	 *
-	 * @param wrapper
+	 * @param wrapper a {@link org.configureme.ConfigurableWrapper} object.
 	 */
 	public void removeWatchedConfigurable(ConfigurableWrapper wrapper) {
 		ConfigurationSource source = watchedSources.get(wrapper.getKey());
@@ -141,7 +143,7 @@ public enum ConfigurationSourceRegistry {
 	 * `
 	 * Adds a watched configurable.
 	 *
-	 * @param wrapper
+	 * @param wrapper a {@link org.configureme.ConfigurableWrapper} object.
 	 */
 	public void addWatchedConfigurable(ConfigurableWrapper wrapper) {
 		if (wrapper.getConfigurable() == null) {

@@ -19,6 +19,7 @@ import java.util.Map;
  * A source loader for rest api configuration repositories
  *
  * @author andriiskrypnyk
+ * @version $Id: $Id
  */
 public class RestConfigurationRepositorySourceLoader implements SourceLoader {
     /**
@@ -34,6 +35,7 @@ public class RestConfigurationRepositorySourceLoader implements SourceLoader {
      */
     private static final String PATH_LAST_CHANGE_TIMESTAMP = "lastChangeTimestamp";
 
+    /** {@inheritDoc} */
     @Override
     public boolean isAvailable(ConfigurationSourceKey key) {
         if (key == null) {
@@ -42,6 +44,7 @@ public class RestConfigurationRepositorySourceLoader implements SourceLoader {
         return getResponse(key, PATH_CONFIGURATION).getStatus() == 200;
     }
 
+    /** {@inheritDoc} */
     @Override
     public long getLastChangeTimestamp(ConfigurationSourceKey key) {
         if (key == null) {
@@ -52,6 +55,7 @@ public class RestConfigurationRepositorySourceLoader implements SourceLoader {
         return ((long) result.get(key.getName()));
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getContent(ConfigurationSourceKey key) {
         if (key.getType() != ConfigurationSourceKey.Type.REST) {

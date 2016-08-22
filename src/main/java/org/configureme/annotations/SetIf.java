@@ -11,15 +11,16 @@ import java.lang.annotation.Target;
  * property name should exactly match the regular expression compiled form
  * annotation's value parameter. The method must expect exactly two parameter of
  * type string:
- * 
+ *
  * <pre>
  * &#064;SetIf(condition = SetIfCondition.matches, value = &quot;name[\\d]+&quot;)
  * public void debug(String name, String value) {
  * 	log.debug(name + &quot;= &quot; + value);
  * }
  * </pre>
- * 
+ *
  * @author dzhmud
+ * @version $Id: $Id
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)

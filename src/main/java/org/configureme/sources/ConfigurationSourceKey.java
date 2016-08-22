@@ -2,7 +2,9 @@ package org.configureme.sources;
 
 /**
  * A configuration source key is the unique identification of a configuration source. This class is also used as key in maps.
+ *
  * @author lrosenberg
+ * @version $Id: $Id
  */
 public class ConfigurationSourceKey {
 	/**
@@ -82,6 +84,7 @@ public class ConfigurationSourceKey {
 	
 	/**
 	 * Creates a new key preset to given parameters.
+	 *
 	 * @param aType the type of the source
 	 * @param aFormat the format of the source
 	 * @param aName the name of the source
@@ -92,12 +95,28 @@ public class ConfigurationSourceKey {
 		name = aName;
 	}
 
+	/**
+	 * <p>Getter for the field <code>type</code>.</p>
+	 *
+	 * @return a {@link org.configureme.sources.ConfigurationSourceKey.Type} object.
+	 */
 	public Type getType() {
 		return type;
 	}
+	/**
+	 * <p>Setter for the field <code>type</code>.</p>
+	 *
+	 * @param type a {@link org.configureme.sources.ConfigurationSourceKey.Type} object.
+	 */
 	public void setType(Type type) {
 		this.type = type;
 	}
+	/**
+	 * <p>setTypeIfNotDefault.</p>
+	 *
+	 * @param defType a {@link org.configureme.sources.ConfigurationSourceKey.Type} object.
+	 * @param toChange a {@link org.configureme.sources.ConfigurationSourceKey.Type} object.
+	 */
 	public void setTypeIfNotDefault(Type defType, Type toChange){
 		if(defType != Type.FILE){
             this.type = defType;
@@ -105,29 +124,61 @@ public class ConfigurationSourceKey {
             this.type = toChange;
         }
 	}
+	/**
+	 * <p>Getter for the field <code>format</code>.</p>
+	 *
+	 * @return a {@link org.configureme.sources.ConfigurationSourceKey.Format} object.
+	 */
 	public Format getFormat() {
 		return format;
 	}
+	/**
+	 * <p>Setter for the field <code>format</code>.</p>
+	 *
+	 * @param format a {@link org.configureme.sources.ConfigurationSourceKey.Format} object.
+	 */
 	public void setFormat(Format format) {
 		this.format = format;
 	}
+	/**
+	 * <p>Getter for the field <code>name</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getName() {
 		return name;
 	}
+	/**
+	 * <p>Setter for the field <code>name</code>.</p>
+	 *
+	 * @param name a {@link java.lang.String} object.
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
+	/**
+	 * <p>Getter for the field <code>remoteConfigurationRepositoryUrl</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getRemoteConfigurationRepositoryUrl() {
 		return remoteConfigurationRepositoryUrl;
 	}
+	/**
+	 * <p>Setter for the field <code>remoteConfigurationRepositoryUrl</code>.</p>
+	 *
+	 * @param remoteConfigurationRepositoryUrl a {@link java.lang.String} object.
+	 */
 	public void setRemoteConfigurationRepositoryUrl(String remoteConfigurationRepositoryUrl) {
 		this.remoteConfigurationRepositoryUrl = remoteConfigurationRepositoryUrl;
 	}
 
+	/** {@inheritDoc} */
 	@Override public String toString(){
         return type +"::"+ name +"::"+ format;
 	}
 	
+	/** {@inheritDoc} */
 	@Override public boolean equals(Object o){
 		return o instanceof ConfigurationSourceKey ? 
 				((ConfigurationSourceKey)o).type == type &&
@@ -136,6 +187,7 @@ public class ConfigurationSourceKey {
 					false;
 	}
 	
+	/** {@inheritDoc} */
 	@Override public int hashCode(){
 		int result = 17;
 		result = 31 * result + type.hashCode();
@@ -146,6 +198,7 @@ public class ConfigurationSourceKey {
 	
 	/**
 	 * Creates a new configuration source key for property files.
+	 *
 	 * @param name name of the property file.
 	 * @return a new configuration source key instance for property files
 	 */
@@ -155,6 +208,7 @@ public class ConfigurationSourceKey {
 
 	/**
 	 * Creates a new configuration source key for xml files.
+	 *
 	 * @param name name of the xml file.
 	 * @return a new configuration source key instance for xml files
 	 */
@@ -164,6 +218,7 @@ public class ConfigurationSourceKey {
 
 	/**
 	 * Creates a new configuration source key for json files.
+	 *
 	 * @param name name of the json file.
 	 * @return a new configuration source key instance for json files
 	 */

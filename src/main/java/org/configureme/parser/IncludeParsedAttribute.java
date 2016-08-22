@@ -10,6 +10,7 @@ import org.configureme.util.StringUtils;
  *
  * @author ivanbatura
  * @since: 26.09.12
+ * @version $Id: $Id
  */
 public class IncludeParsedAttribute extends ParsedAttribute<IncludeValue> {
 	/**

@@ -9,9 +9,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Spring integration utility. 
+ * Spring integration utility.
  * Missing example on usage!
+ *
  * @author matthiaskoch
+ * @version $Id: $Id
  */
 public class ConfigureSpringBeans {
 
@@ -22,7 +24,8 @@ public class ConfigureSpringBeans {
 
 	/**
 	 * Constructor driven configuration.
-	 * @param beans
+	 *
+	 * @param beans a {@link java.lang.Object} object.
 	 */
 	public ConfigureSpringBeans(Object... beans) {
 		for (Object bean : beans) {
@@ -34,7 +37,9 @@ public class ConfigureSpringBeans {
 
 	/**
 	 * Constructor driven configuration.
-	 * @param beans
+	 *
+	 * @param beans a {@link java.lang.Object} object.
+	 * @param environment a {@link org.configureme.Environment} object.
 	 */
 	public ConfigureSpringBeans(Environment environment, Object... beans) {
 		for (Object bean : beans) {

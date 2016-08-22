@@ -12,7 +12,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A source loader for files.
+ *
  * @author lrosenberg
+ * @version $Id: $Id
  */
 public class FileLoader implements SourceLoader{
 	
@@ -28,6 +30,7 @@ public class FileLoader implements SourceLoader{
 
 	/**
 	 * Returns the file name for the given source key.
+	 *
 	 * @param source configuration source key
 	 * @return the file name for the given source key
 	 */
@@ -46,11 +49,13 @@ public class FileLoader implements SourceLoader{
 	 */
 	private final String externalConfigPath = System.getProperty(EXTERNAL_CONF_PATH, null);
 	
+	/** {@inheritDoc} */
 	@Override
 	public boolean isAvailable(ConfigurationSourceKey key){
 		return getFile(key) != null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public long getLastChangeTimestamp(ConfigurationSourceKey key){
 		File f = getFile(key);
@@ -68,6 +73,7 @@ public class FileLoader implements SourceLoader{
 		return ret;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public String getContent(ConfigurationSourceKey key){
 		final File f = getFile(key);

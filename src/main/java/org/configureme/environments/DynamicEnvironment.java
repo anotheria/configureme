@@ -8,10 +8,12 @@ import org.configureme.GlobalEnvironment;
 import org.configureme.util.StringUtils;
 
 /**
- * A dynamic environment class. This class can be used for any type of environments, for any environment deepth. However, we recommend the usage of more strict Application/LocaleBased Environment if 
- * applicable, since they allow less and can prevent you from absolute environmental chaos. The DynamicEnvironment is the ultima ratio, a class that is capable of everything, but 
+ * A dynamic environment class. This class can be used for any type of environments, for any environment deepth. However, we recommend the usage of more strict Application/LocaleBased Environment if
+ * applicable, since they allow less and can prevent you from absolute environmental chaos. The DynamicEnvironment is the ultima ratio, a class that is capable of everything, but
  * requires not testable discipline of the developers.
+ *
  * @author lrosenberg
+ * @version $Id: $Id
  */
 public class DynamicEnvironment implements Environment, Cloneable{
 
@@ -30,8 +32,9 @@ public class DynamicEnvironment implements Environment, Cloneable{
 	
 	/**
 	 * Creates a new DynamicEnvironment with at least one element. Favor this constructor for modifyable DynamicEnvironment.
-	 * @param start
-	 * @param additional
+	 *
+	 * @param start a {@link java.lang.String} object.
+	 * @param additional a {@link java.lang.String} object.
 	 */
 	public DynamicEnvironment(String start, String ... additional){
 		this();
@@ -53,6 +56,7 @@ public class DynamicEnvironment implements Environment, Cloneable{
 	}
 	
 	
+	/** {@inheritDoc} */
 	@Override
 	public String toString(){
 		StringBuilder ret = new StringBuilder();
@@ -64,6 +68,7 @@ public class DynamicEnvironment implements Environment, Cloneable{
 		return ret.toString();
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public String expandedStringForm(){
 		return toString();
@@ -71,6 +76,7 @@ public class DynamicEnvironment implements Environment, Cloneable{
 	
 	/**
 	 * Creates a new DynamicEnvironment by adding an element to the current environment. Creates a new object, hence threadsafe.
+	 *
 	 * @param anElement element to add to the environment
 	 * @return new DynamicEnvironment by adding an element to the current environment
 	 */
@@ -81,7 +87,8 @@ public class DynamicEnvironment implements Environment, Cloneable{
 	
 	/**
 	 * Extends 'this' environment by adding an additional element to it. Modifies current object, hence NOT THREADSAFE.
-	 * @param anElement
+	 *
+	 * @param anElement a {@link java.lang.String} object.
 	 */
 	public void extendThis(String anElement){
 		elements.add(anElement);
@@ -96,6 +103,7 @@ public class DynamicEnvironment implements Environment, Cloneable{
 		elements.remove(elements.size()-1);
 	}
 	
+	/** {@inheritDoc} */
 	@Override public Object clone(){
 		try{
 			DynamicEnvironment ret = (DynamicEnvironment)super.clone();
@@ -106,11 +114,13 @@ public class DynamicEnvironment implements Environment, Cloneable{
 		}
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public boolean isReduceable() {
 		return elements!=null && !elements.isEmpty();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Environment reduce() {
 		if (!isReduceable())
@@ -121,7 +131,8 @@ public class DynamicEnvironment implements Environment, Cloneable{
 	}
 	
 	/**
-	 * Parses a string and creates a new Environment which corresponds the string. 
+	 * Parses a string and creates a new Environment which corresponds the string.
+	 *
 	 * @param s string to parse
 	 * @return new Environment which corresponds the string
 	 */
@@ -136,10 +147,12 @@ public class DynamicEnvironment implements Environment, Cloneable{
 		return env;
 	}
 	
+	/** {@inheritDoc} */
 	@Override public boolean equals(Object o){
 		return o == this || ((o instanceof DynamicEnvironment) && ((DynamicEnvironment)o).elements.equals(elements));
 	}
 	
+	/** {@inheritDoc} */
 	@Override public int hashCode(){
 		return elements == null ? 42 : elements.hashCode();
 	}

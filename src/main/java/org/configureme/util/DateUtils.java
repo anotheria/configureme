@@ -5,8 +5,9 @@ import java.util.Date;
 
 /**
  * Utilities for dates.
- * 
+ *
  * @author anotheria team
+ * @version $Id: $Id
  */
 public final class DateUtils {
 
@@ -23,22 +24,22 @@ public final class DateUtils {
 	}
 
 	/**
-	 * Convert timestamp to {@link String} representation in iso-8601 format.
-	 * 
+	 * Convert timestamp to {@link java.lang.String} representation in iso-8601 format.
+	 *
 	 * @param timestamp
 	 *            timestamp
-	 * @return {@link String}
+	 * @return {@link java.lang.String}
 	 */
 	public static String toISO8601String(final long timestamp) {
 		return toISO8601String(new Date(timestamp));
 	}
 
 	/**
-	 * Convert {@link Date} to {@link String} representation in iso-8601 format.
-	 * 
+	 * Convert {@link java.util.Date} to {@link java.lang.String} representation in iso-8601 format.
+	 *
 	 * @param date
-	 *            original {@link Date}
-	 * @return {@link String}
+	 *            original {@link java.util.Date}
+	 * @return {@link java.lang.String}
 	 */
 	public static String toISO8601String(final Date date) {
 		if (date == null)

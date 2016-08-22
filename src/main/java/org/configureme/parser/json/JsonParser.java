@@ -32,6 +32,7 @@ import java.util.Set;
  * ConfigurationParser implementation for JSON.
  *
  * @author lrosenberg
+ * @version $Id: $Id
  */
 public class JsonParser implements ConfigurationParser {
 	/**
@@ -54,6 +55,7 @@ public class JsonParser implements ConfigurationParser {
 	 */
 	private static final Logger log = LoggerFactory.getLogger(JsonParser.class);
 
+	/** {@inheritDoc} */
 	@Override
 	public ParsedConfiguration parseConfiguration(String name, String content) throws ConfigurationParserException {
 
@@ -146,6 +148,15 @@ public class JsonParser implements ConfigurationParser {
 		return result;
 	}
 
+	/**
+	 * <p>parse.</p>
+	 *
+	 * @param key a {@link java.lang.String} object.
+	 * @param value a {@link java.lang.Object} object.
+	 * @param environment a {@link org.configureme.environments.DynamicEnvironment} object.
+	 * @return a {@link java.util.List} object.
+	 * @throws org.json.JSONException if any.
+	 */
 	public static List<? extends ParsedAttribute<?>> parse(String key, Object value, DynamicEnvironment environment) throws JSONException {
 		// an object value means a change in environment, let's see what it is
 		if (value instanceof JSONObject && key.startsWith(COMPOSITE_ATTR_PREFIX))

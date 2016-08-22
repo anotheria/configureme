@@ -7,6 +7,9 @@ import java.lang.annotation.Target;
 
 /**
  * Called immediately before re-configuration is finished.
+ *
+ * @author another
+ * @version $Id: $Id
  */
 @Retention (RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)

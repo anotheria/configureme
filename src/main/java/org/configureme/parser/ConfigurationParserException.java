@@ -1,8 +1,10 @@
 package org.configureme.parser;
 
 /**
- * The base exception class for exceptions which can be thrown by the configuration parser. 
+ * The base exception class for exceptions which can be thrown by the configuration parser.
+ *
  * @author lrosenberg
+ * @version $Id: $Id
  */
 public class ConfigurationParserException extends Exception {
 
@@ -13,7 +15,8 @@ public class ConfigurationParserException extends Exception {
 
 	/**
 	 * Creates a new ConfigurationParserException with the given message.
-	 * @param message
+	 *
+	 * @param message a {@link java.lang.String} object.
 	 */
 	public ConfigurationParserException(String message) {
 		super(message);
@@ -21,8 +24,9 @@ public class ConfigurationParserException extends Exception {
 
 	/**
 	 * Creates a new ConfigurationParserException with given message and cause.
-	 * @param message 
-	 * @param cause
+	 *
+	 * @param message a {@link java.lang.String} object.
+	 * @param cause a {@link java.lang.Throwable} object.
 	 */
 	public ConfigurationParserException(String message, Throwable cause) {
 		super(message, cause);

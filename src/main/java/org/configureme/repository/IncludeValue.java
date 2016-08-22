@@ -6,8 +6,9 @@ import org.configureme.sources.ConfigurationSourceKey;
 
 /**
  * Value of a include attribute. Link to the another config with a configurable attribute name.
- * @author ivanbatura, lrosenberg
+ *
  * @since: 26.09.12
+ * @version $Id: $Id
  */
 public class IncludeValue implements Value {
 
@@ -21,6 +22,7 @@ public class IncludeValue implements Value {
 	 */
 	private String configurationName;
 
+	/** {@inheritDoc} */
 	@Override
 	public Object getRaw() {
 		return new PlainValue(attributeName+"->"+configurationName);
@@ -28,8 +30,9 @@ public class IncludeValue implements Value {
 
 	/**
 	 * Resolves included value dynamically from the linked config in the specified environment.
+	 *
 	 * @param in target environment.
-	 * @return
+	 * @return a {@link org.configureme.repository.Value} object.
 	 */
 	public Value getIncludedValue(Environment in){
 		return ConfigurationManager.INSTANCE.getConfiguration(configurationName, in).getAttribute(attributeName);
@@ -37,6 +40,7 @@ public class IncludeValue implements Value {
 
 	/**
 	 * Get configuration name of the linked config
+	 *
 	 * @return configuration name of the linked config
 	 */
 	public ConfigurationSourceKey getConfigName() {
@@ -61,11 +65,13 @@ public class IncludeValue implements Value {
 		this.configurationName = configurationName;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return attributeName+"->"+configurationName;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
@@ -79,6 +85,7 @@ public class IncludeValue implements Value {
 
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
 		int result = attributeName != null ? attributeName.hashCode() : 0;

@@ -7,7 +7,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * The internal representation of an attribute.
+ *
  * @author lrosenberg
+ * @version $Id: $Id
  */
 public class Attribute {
 	/**
@@ -26,6 +28,7 @@ public class Attribute {
 
 	/**
 	 * Creates a new attribute.
+	 *
 	 * @param aName attribute name
 	 */
 	public Attribute(String aName){
@@ -35,6 +38,7 @@ public class Attribute {
 
 	/**
 	 * Return the value of the attribute in the global environment.
+	 *
 	 * @return the value of the attribute in the global environment
 	 */
 	public Value getValue(){
@@ -43,6 +47,7 @@ public class Attribute {
 
 	/**
 	 * Returns the value of the attribute in the given environment.
+	 *
 	 * @param in the environment to look up
 	 * @return the value of the attribute in the given environment
 	 */
@@ -54,6 +59,7 @@ public class Attribute {
 
 	/**
 	 * Returns the name of the AttributeValue.
+	 *
 	 * @return the name of the AttributeValue
 	 */
 	public String getName(){
@@ -62,6 +68,7 @@ public class Attribute {
 
 	/**
 	 * Adds a value for a given environment.
+	 *
 	 * @param value the value to add
 	 * @param in the environment in which the value applies
 	 */
@@ -69,6 +76,7 @@ public class Attribute {
 		attributeValue.set(value, in);
 	}
 
+	/** {@inheritDoc} */
 	@Override public String toString(){
         return name + '=' +attributeValue;
 	}

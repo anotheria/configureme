@@ -1,9 +1,5 @@
 package org.configureme.mbean;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.configureme.Configuration;
 import org.configureme.ConfigurationManager;
 import org.configureme.Environment;
@@ -16,10 +12,15 @@ import org.configureme.repository.Value;
 import org.configureme.util.StringUtils;
 import org.json.JSONException;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Config info mBean.
  *
  * @author asamoilich
+ * @version $Id: $Id
  */
 public class ConfigInfo implements ConfigInfoMBean {
 	/**
@@ -36,11 +37,13 @@ public class ConfigInfo implements ConfigInfoMBean {
 		this.configName = configName;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getConfigName() {
 		return configName;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String showContent() {
 		final Artefact artefact = ConfigurationRepository.INSTANCE.getArtefact(configName);
@@ -60,6 +63,7 @@ public class ConfigInfo implements ConfigInfoMBean {
 		return resultContent.toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Map<String, Object> getAttributes() {
 		Map<String, Object> attributeMap = new HashMap<>();
@@ -73,6 +77,7 @@ public class ConfigInfo implements ConfigInfoMBean {
 		return attributeMap;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void setAttributeValue(final String attrName, final String attrValue) throws JSONException {
 		if (StringUtils.isEmpty(attrName))

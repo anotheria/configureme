@@ -10,6 +10,7 @@ import java.util.Set;
  * MBean object which contains set of all watches project configuration names.
  *
  * @author asamoilich
+ * @version $Id: $Id
  */
 public class WatchedConfigFiles implements WatchedConfigFilesMBean {
 	/**
@@ -18,6 +19,7 @@ public class WatchedConfigFiles implements WatchedConfigFilesMBean {
 	private Set<String> configNames = new HashSet<>();
 
 
+	/** {@inheritDoc} */
 	@Override
 	public Set<String> getConfigNames() {
 		Set<ConfigurationSourceKey> allSources = ConfigurationSourceRegistry.INSTANCE.getAllSourceKeys();

@@ -11,6 +11,7 @@ import java.util.Set;
  * This class represents a snapshot of a ConfigurationSource at once moment of time in one environment. It can be used for old style explicit configuration or debugging.
  *
  * @author lrosenberg
+ * @version $Id: $Id
  */
 public interface Configuration {
 	/**

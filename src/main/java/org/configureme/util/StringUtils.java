@@ -5,9 +5,10 @@ import java.util.List;
 import java.util.Vector;
 
 /**
- * Small but useful utilities for {@link String} handling.
- * 
+ * Small but useful utilities for {@link java.lang.String} handling.
+ *
  * @author anotheria team
+ * @version $Id: $Id
  */
 public final class StringUtils {
 
@@ -24,10 +25,10 @@ public final class StringUtils {
 	}
 
 	/**
-	 * Is {@link String} value <code>null</code> or empty (length is '0' after trim).
-	 * 
+	 * Is {@link java.lang.String} value <code>null</code> or empty (length is '0' after trim).
+	 *
 	 * @param value
-	 *            {@link String} value
+	 *            {@link java.lang.String} value
 	 * @return <code>true</code> if empty or <code>false</code>
 	 */
 	public static boolean isEmpty(final String value) {
@@ -35,10 +36,10 @@ public final class StringUtils {
 	}
 
 	/**
-	 * Is {@link String} value not <code>null</code> and not empty (length not '0' after trim).
-	 * 
+	 * Is {@link java.lang.String} value not <code>null</code> and not empty (length not '0' after trim).
+	 *
 	 * @param value
-	 *            {@link String} value
+	 *            {@link java.lang.String} value
 	 * @return <code>true</code> if not empty or <code>false</code>
 	 */
 	public static boolean isNotEmpty(final String value) {
@@ -47,12 +48,12 @@ public final class StringUtils {
 
 	/**
 	 * Return a Vector with tokens from the source string tokenized using the delimiter char.
-	 * 
+	 *
 	 * @param source
 	 *            source string
 	 * @param delimiter
 	 *            token delimiter
-	 * @return {@link Vector} with {@link String}
+	 * @return {@link java.util.Vector} with {@link java.lang.String}
 	 */
 	public static final Vector<String> tokenize2vector(final String source, final char delimiter) {
 		Vector<String> v;
@@ -80,12 +81,12 @@ public final class StringUtils {
 	/**
 	 * Returns an array of string tokens from the source string.<br>
 	 * The String "Leon Power Tools" with delimiter ' ' will return {"Leon","Power","Tools"}.
-	 * 
+	 *
 	 * @param source
 	 *            source string
 	 * @param delimiter
 	 *            token delimiter
-	 * @return array of {@link String}
+	 * @return array of {@link java.lang.String}
 	 */
 	public static final String[] tokenize(final String source, final char delimiter) {
 		String[] ret;
@@ -98,15 +99,15 @@ public final class StringUtils {
 	}
 
 	/**
-	 * Get {@link String} before given search {@link String} from given start search index.
-	 * 
+	 * Get {@link java.lang.String} before given search {@link java.lang.String} from given start search index.
+	 *
 	 * @param src
 	 *            source string
 	 * @param toSearch
 	 *            search string
 	 * @param start
 	 *            start search index
-	 * @return {@link String}
+	 * @return {@link java.lang.String}
 	 */
 	public static String getStringBefore(final String src, final String toSearch, final int start) {
 		int ind = src.indexOf(toSearch, start);
@@ -117,28 +118,28 @@ public final class StringUtils {
 	}
 
 	/**
-	 * Get {@link String} before given search {@link String}.
-	 * 
+	 * Get {@link java.lang.String} before given search {@link java.lang.String}.
+	 *
 	 * @param src
 	 *            source string
 	 * @param toSearch
 	 *            search string
-	 * @return {@link String}
+	 * @return {@link java.lang.String}
 	 */
 	public static String getStringBefore(final String src, final String toSearch) {
 		return getStringBefore(src, toSearch, 0);
 	}
 
 	/**
-	 * Get {@link String} after given search {@link String} from given start search index.
-	 * 
+	 * Get {@link java.lang.String} after given search {@link java.lang.String} from given start search index.
+	 *
 	 * @param src
 	 *            source string
 	 * @param toSearch
 	 *            search string
 	 * @param start
 	 *            start search index
-	 * @return {@link String}
+	 * @return {@link java.lang.String}
 	 */
 	public static String getStringAfter(final String src, final String toSearch, final int start) {
 		int ind = src.indexOf(toSearch, start);
@@ -148,13 +149,13 @@ public final class StringUtils {
 	}
 
 	/**
-	 * Get {@link String} after given search {@link String}.
-	 * 
+	 * Get {@link java.lang.String} after given search {@link java.lang.String}.
+	 *
 	 * @param src
 	 *            source string
 	 * @param toSearch
 	 *            search string
-	 * @return {@link String}
+	 * @return {@link java.lang.String}
 	 */
 	public static String getStringAfter(final String src, final String toSearch) {
 		return getStringAfter(src, toSearch, 0);
@@ -162,10 +163,10 @@ public final class StringUtils {
 
 	/**
 	 * Remove 'C' commentaries.
-	 * 
+	 *
 	 * @param src
 	 *            source string
-	 * @return processed {@link String}
+	 * @return processed {@link java.lang.String}
 	 */
 	public static String removeCComments(final String src) {
 		final StringBuilder ret = new StringBuilder();
@@ -195,10 +196,10 @@ public final class StringUtils {
 
 	/**
 	 * Remove 'CPP' commentaries.
-	 * 
+	 *
 	 * @param src
 	 *            source string
-	 * @return processed {@link String}
+	 * @return processed {@link java.lang.String}
 	 */
 	public static String removeCPPComments(final String src) {
 		final StringBuilder ret = new StringBuilder();
@@ -231,10 +232,10 @@ public final class StringUtils {
 
 	/**
 	 * Remove 'Bash' commentaries.
-	 * 
+	 *
 	 * @param src
 	 *            source string
-	 * @return processed {@link String}
+	 * @return processed {@link java.lang.String}
 	 */
 	public static final String removeBashComments(final String src) {
 		final StringBuilder ret = new StringBuilder();
@@ -262,15 +263,15 @@ public final class StringUtils {
 	}
 
 	/**
-	 * Extract tags from source {@link String}.
-	 * 
+	 * Extract tags from source {@link java.lang.String}.
+	 *
 	 * @param source
 	 *            source string
 	 * @param tagStart
 	 *            start tag
 	 * @param tagEnd
 	 *            end tag
-	 * @return {@link List} of {@link String}
+	 * @return {@link java.util.List} of {@link java.lang.String}
 	 */
 	public static List<String> extractTags(final String source, final char tagStart, final char tagEnd) {
 		final ArrayList<String> ret = new ArrayList<>();
@@ -298,15 +299,15 @@ public final class StringUtils {
 	}
 
 	/**
-	 * Replace once in source {@link String} some {@link String} with new {@link String}.
-	 * 
+	 * Replace once in source {@link java.lang.String} some {@link java.lang.String} with new {@link java.lang.String}.
+	 *
 	 * @param src
 	 *            source string
 	 * @param toReplace
 	 *            string to replace
 	 * @param with
 	 *            new string
-	 * @return {@link String} after replacement
+	 * @return {@link java.lang.String} after replacement
 	 */
 	public static String replaceOnce(final String src, final String toReplace, final String with) {
 		int index = src.indexOf(toReplace);

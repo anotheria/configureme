@@ -14,6 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * The artefact is the internal representation of a configuration.
  *
  * @author lrosenberg
+ * @version $Id: $Id
  */
 public class Artefact {
 	/**
@@ -47,10 +48,20 @@ public class Artefact {
 		contentMap = new HashMap<>();
 	}
 
+	/**
+	 * <p>Getter for the field <code>externalConfigurations</code>.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<ConfigurationSourceKey> getExternalConfigurations() {
 		return externalConfigurations;
 	}
 
+	/**
+	 * <p>addExternalConfigurations.</p>
+	 *
+	 * @param configurationSourceKey a {@link org.configureme.sources.ConfigurationSourceKey} object.
+	 */
 	public void addExternalConfigurations(ConfigurationSourceKey configurationSourceKey) {
 		if (configurationSourceKey == null)
 			return;
@@ -60,7 +71,7 @@ public class Artefact {
 	/**
 	 * Returns the attribute with the given name. Throws an IllegalArgumentException if there is no such attribute.
 	 *
-	 * @param attributeName
+	 * @param attributeName a {@link java.lang.String} object.
 	 * @return the attribute with the given name
 	 */
 	public Attribute getAttribute(String attributeName) {
@@ -97,10 +108,16 @@ public class Artefact {
 			externalConfigurations.add(((IncludeValue) attributeValue).getConfigName());
 	}
 
+	/**
+	 * <p>getContent.</p>
+	 *
+	 * @return a {@link java.util.Map} object.
+	 */
 	public Map<Environment, Map<String, Object>> getContent() {
 		return this.contentMap;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return name + ": " + attributes;

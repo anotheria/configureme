@@ -11,7 +11,9 @@ import org.slf4j.LoggerFactory;
 /**
  * Represents a loaded configuration source for example a file. Doesn't contain the content of the file, only metadata is included. The ConfigurationSource object is a surogate which is used to execute functions
  * which are semantically ment to be executed on the configuration source itself, like registering for a change event etc.
+ *
  * @author lrosenberg
+ * @version $Id: $Id
  */
 public class ConfigurationSource {
 	/**
@@ -34,6 +36,7 @@ public class ConfigurationSource {
 	
 	/**
 	 * Creates a new configuration source.
+	 *
 	 * @param aKey a configuration source key the as unique identification of a configuration source
 	 */
 	public ConfigurationSource(ConfigurationSourceKey aKey){
@@ -44,7 +47,8 @@ public class ConfigurationSource {
 	}
 	
 	/**
-	 * Adds a listener to this source. 
+	 * Adds a listener to this source.
+	 *
 	 * @param listener a listener to add
 	 */
 	public void addListener(ConfigurationSourceListener listener){
@@ -54,6 +58,7 @@ public class ConfigurationSource {
 	}
 	/**
 	 * Removes the listener from this source.
+	 *
 	 * @param listener a listener to remove
 	 */
 	public void removeListener(ConfigurationSourceListener listener){
@@ -62,6 +67,7 @@ public class ConfigurationSource {
 		}
 	}
 	
+	/** {@inheritDoc} */
 	@Override public String toString(){
 
         return "ConfigurationSource "+key+", listeners: "+listeners.size()+", "+ DateUtils.toISO8601String(lastChangeTimestamp);
@@ -69,6 +75,7 @@ public class ConfigurationSource {
 
 	/**
 	 * Return the last change timestamp of this source in millis.
+	 *
 	 * @return the last change timestamp of this source in millis
 	 */
 	public long getLastChangeTimestamp() {
@@ -78,6 +85,7 @@ public class ConfigurationSource {
 
 	/**
 	 * Returns the config key of this source.
+	 *
 	 * @return the configuration key of this source
 	 */
 	public ConfigurationSourceKey getKey(){
@@ -86,6 +94,7 @@ public class ConfigurationSource {
 	
 	/**
 	 * Returns true if this source's change timestamp is older as the given timestamp.
+	 *
 	 * @param sourceChangeTimestamp timestamp
 	 * @return true if this source's change timestamp is older as the given timestamp
 	 */
@@ -95,7 +104,8 @@ public class ConfigurationSource {
 	
 	/**
 	 * Called by the ConfigurationSourceRegistry if a change in the underlying source is detected.
-	 * @param timestamp
+	 *
+	 * @param timestamp a long.
 	 */
 	public void fireUpdateEvent(long timestamp){
 		synchronized(listeners){

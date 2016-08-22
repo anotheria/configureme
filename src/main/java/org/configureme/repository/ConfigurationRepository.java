@@ -17,6 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * reloading (which is triggered by another listener).
  *
  * @author lrosenberg
+ * @version $Id: $Id
  */
 public enum ConfigurationRepository implements ConfigurationSourceListener {
 	/**
@@ -48,7 +49,7 @@ public enum ConfigurationRepository implements ConfigurationSourceListener {
 	/**
 	 * Update artefact.
 	 *
-	 * @param toUpdate provided {@link Artefact}
+	 * @param toUpdate provided {@link org.configureme.repository.Artefact}
 	 */
 	public void updateArtefact(final Artefact toUpdate) {
 		Artefact old = artefacts.get(toUpdate.getName());
@@ -105,11 +106,15 @@ public enum ConfigurationRepository implements ConfigurationSourceListener {
 		return configurationImpl;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void configurationSourceUpdated(ConfigurationSource target) {
 		artefacts.remove(target.getKey().getName());
 	}
 
+	/**
+	 * <p>resetForUnitTests.</p>
+	 */
 	public void resetForUnitTests() {
 		artefacts.clear();
 	}

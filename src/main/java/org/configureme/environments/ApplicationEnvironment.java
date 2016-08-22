@@ -4,9 +4,11 @@ import org.configureme.Environment;
 import org.configureme.GlobalEnvironment;
 
 /**
- * This is a typical application environment. It contains of the system the application is running in (prod, test, dev, integration etc), 
+ * This is a typical application environment. It contains of the system the application is running in (prod, test, dev, integration etc),
  * the kind of application, the concrete service and the host the application has been deployed to.
+ *
  * @author lrosenberg
+ * @version $Id: $Id
  */
 public class ApplicationEnvironment implements Environment{
 
@@ -29,9 +31,10 @@ public class ApplicationEnvironment implements Environment{
 	
 	/**
 	 * Creates a new ApplicationEnvironment with explicit parameters.
+	 *
 	 * @param aSystem the system
 	 * @param anApp the app
-	 * @param aService the service 
+	 * @param aService the service
 	 * @param aHost the host
 	 */
 	public ApplicationEnvironment(String aSystem, String anApp, String aService, String aHost){
@@ -52,16 +55,19 @@ public class ApplicationEnvironment implements Environment{
 		host = builder.host;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public String expandedStringForm() {
 		return toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isReduceable() {
 		return system!=null && !system.isEmpty();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Environment reduce() {
 		if (host!=null && !host.isEmpty())
@@ -76,6 +82,7 @@ public class ApplicationEnvironment implements Environment{
 	}
 
 
+	/** {@inheritDoc} */
 	@Override public String toString(){
 		StringBuilder ret = new StringBuilder();
 		
@@ -172,6 +179,7 @@ public class ApplicationEnvironment implements Environment{
 
 	/**
 	 * Returns the value of the system property.
+	 *
 	 * @return value of the system property
 	 */
 	public String getSystem() {
@@ -180,6 +188,7 @@ public class ApplicationEnvironment implements Environment{
 
 	/**
 	 * Returns the value of the app property.
+	 *
 	 * @return value of the app property.
 	 */
 	public String getApp() {
@@ -188,6 +197,7 @@ public class ApplicationEnvironment implements Environment{
 
 	/**
 	 * Returns the service value.
+	 *
 	 * @return value of the service property
 	 */
 	public String getService() {
@@ -196,6 +206,7 @@ public class ApplicationEnvironment implements Environment{
 
 	/**
 	 * Returns the value of the host property.
+	 *
 	 * @return value for the host property
 	 */
 	public String getHost() {
@@ -213,6 +224,7 @@ public class ApplicationEnvironment implements Environment{
 			(a!=null && b!=null && a.equals(b));
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -224,6 +236,7 @@ public class ApplicationEnvironment implements Environment{
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(Object o){
 		if (!(o instanceof ApplicationEnvironment))

@@ -10,11 +10,13 @@ import org.configureme.util.StringUtils;
 
 /**
  * COnfigurationparser implementation for Property files.
- * @author another
  *
+ * @author another
+ * @version $Id: $Id
  */
 public class PropertiesParser implements ConfigurationParser {
 
+	/** {@inheritDoc} */
 	@Override
 	public ParsedConfiguration parseConfiguration(String name, String content)
 			throws ConfigurationParserException {

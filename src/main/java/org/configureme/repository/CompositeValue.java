@@ -8,6 +8,9 @@ import org.configureme.Configuration;
 /**
  * Value of a composite attribute. Maps names of the child attributes to their values.
  * Each child attribute can have arbitrary type.
+ *
+ * @author another
+ * @version $Id: $Id
  */
 public class CompositeValue implements Value {
 	/**
@@ -17,6 +20,7 @@ public class CompositeValue implements Value {
 
 	/**
 	 * Constructs new composite attribute value.
+	 *
 	 * @param name name of the attribute
 	 * @param value map of name/value pairs of child attributes.
 	 */
@@ -28,12 +32,14 @@ public class CompositeValue implements Value {
 
 	/**
 	 * Gets configuration of the composite attribute.
+	 *
 	 * @return configuration of the composite attribute.
 	 */
 	public Configuration get() {
 		return config;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object getRaw() {
 		Map<String, Object> raw = new HashMap<>(config.getEntries().size());
@@ -43,11 +49,13 @@ public class CompositeValue implements Value {
 		return raw;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return String.valueOf(config);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -56,6 +64,7 @@ public class CompositeValue implements Value {
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {

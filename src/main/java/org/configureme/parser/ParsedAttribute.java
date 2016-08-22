@@ -9,6 +9,7 @@ import org.configureme.repository.Value;
  *
  * @param <T> type of the attribute value.
  * @author another
+ * @version $Id: $Id
  */
 public abstract class ParsedAttribute<T extends Value> {
 	/**
@@ -26,6 +27,7 @@ public abstract class ParsedAttribute<T extends Value> {
 
 	/**
 	 * Constructs new parsed attribute with the specified name, environment and value.
+	 *
 	 * @param name name of the attribute
 	 * @param environment environment which the value is defined within
 	 * @param value value of the attribute within the environment
@@ -38,6 +40,7 @@ public abstract class ParsedAttribute<T extends Value> {
 
 	/**
 	 * Returns the name of the attribute.
+	 *
 	 * @return the name of the attribute
 	 */
 	public String getName() {
@@ -46,6 +49,7 @@ public abstract class ParsedAttribute<T extends Value> {
 
 	/**
 	 * Returns the value of the attribute.
+	 *
 	 * @return the value of the attribute
 	 */
 	public Value getValue() {
@@ -54,12 +58,14 @@ public abstract class ParsedAttribute<T extends Value> {
 
 	/**
 	 * Returns the environemnt of this attribute value.
+	 *
 	 * @return the environemnt of this attribute value
 	 */
 	public Environment getEnvironment() {
 		return environment;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString(){
 		return name+" = "+value+" in "+environment;

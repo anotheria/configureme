@@ -5,9 +5,12 @@ import java.util.Locale;
 import org.configureme.Environment;
 import org.configureme.GlobalEnvironment;
 
-/** 
+/**
  * This is an environment imlementation for locale based environments, i.e. environments which are depending on languages. They are still fully cascading but backed by java.util.Locale.
  * An example environment would be de_DE_bavaria_munich, en_US_california_sandiego etc.
+ *
+ * @author another
+ * @version $Id: $Id
  */
 public class LocaleBasedEnvironment implements Environment{
 	
@@ -18,6 +21,7 @@ public class LocaleBasedEnvironment implements Environment{
 	
 	/**
 	 * Creates a new environment from a given Locale.
+	 *
 	 * @param aLocale a java.util.Locale.
 	 */
 	public LocaleBasedEnvironment(Locale aLocale){
@@ -103,21 +107,25 @@ public class LocaleBasedEnvironment implements Environment{
 		
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public String toString(){
 		return locale.toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String expandedStringForm(){
 		return toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isReduceable() {
 		return !isEmpty(locale.getLanguage());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Environment reduce() {
 		if (!isEmpty(locale.getVariant())){
@@ -159,14 +167,16 @@ public class LocaleBasedEnvironment implements Environment{
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Two LocaleBasedEnvironments are equal to each other if the underlying locales are equal.
-	 * @return true if equals.
 	 */
 	@Override
 	public boolean equals(Object o){
 		return o instanceof LocaleBasedEnvironment && ((LocaleBasedEnvironment)o).locale.equals(locale);
 	}
 	
+	/** {@inheritDoc} */
 	@Override public int hashCode(){
 		return locale == null ? 42 : locale.hashCode();
 	}

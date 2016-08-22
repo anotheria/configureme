@@ -10,6 +10,7 @@ import java.lang.annotation.Target;
  *
  * @author ivanbatura
  * @since: 26.09.12
+ * @version $Id: $Id
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)

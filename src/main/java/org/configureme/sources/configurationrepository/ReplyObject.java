@@ -13,6 +13,7 @@ import java.util.Map;
  *
  * @author lrosenberg
  * @since 13.02.13 15:26
+ * @version $Id: $Id
  */
 @XmlRootElement(name = "reply")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -54,8 +55,8 @@ public class ReplyObject {
     /**
      * Adds
      *
-     * @param name
-     * @param result
+     * @param name a {@link java.lang.String} object.
+     * @param result a {@link java.lang.Object} object.
      */
     public void addResult(String name, Object result) {
         results.put(name, result);
@@ -64,9 +65,9 @@ public class ReplyObject {
     /**
      * Factory method that creates a new reply object for successful request.
      *
-     * @param name
-     * @param result
-     * @return
+     * @param name a {@link java.lang.String} object.
+     * @param result a {@link java.lang.Object} object.
+     * @return a {@link org.configureme.sources.configurationrepository.ReplyObject} object.
      */
     public static ReplyObject success(String name, Object result) {
         ReplyObject ret = new ReplyObject(name, result);
@@ -77,7 +78,7 @@ public class ReplyObject {
     /**
      * Factory method that creates a new reply object for successful request.
      *
-     * @return
+     * @return a {@link org.configureme.sources.configurationrepository.ReplyObject} object.
      */
     public static ReplyObject success() {
         ReplyObject ret = new ReplyObject();
@@ -88,8 +89,8 @@ public class ReplyObject {
     /**
      * Factory method that creates a new erroneous reply object.
      *
-     * @param message
-     * @return
+     * @param message a {@link java.lang.String} object.
+     * @return a {@link org.configureme.sources.configurationrepository.ReplyObject} object.
      */
     public static ReplyObject error(String message) {
         ReplyObject ret = new ReplyObject();
@@ -98,6 +99,12 @@ public class ReplyObject {
         return ret;
     }
 
+    /**
+     * <p>error.</p>
+     *
+     * @param exc a {@link java.lang.Throwable} object.
+     * @return a {@link org.configureme.sources.configurationrepository.ReplyObject} object.
+     */
     public static ReplyObject error(Throwable exc) {
         ReplyObject ret = new ReplyObject();
         ret.success = false;
@@ -105,6 +112,7 @@ public class ReplyObject {
         return ret;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         StringBuilder ret = new StringBuilder("ReplyObject ");
@@ -116,18 +124,38 @@ public class ReplyObject {
         return ret.toString();
     }
 
+    /**
+     * <p>Getter for the field <code>message</code>.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String getMessage() {
         return message;
     }
 
+    /**
+     * <p>isSuccess.</p>
+     *
+     * @return a boolean.
+     */
     public boolean isSuccess() {
         return success;
     }
 
+    /**
+     * <p>Setter for the field <code>success</code>.</p>
+     *
+     * @param success a boolean.
+     */
     public void setSuccess(boolean success) {
         this.success = success;
     }
 
+    /**
+     * <p>Getter for the field <code>results</code>.</p>
+     *
+     * @return a {@link java.util.Map} object.
+     */
     public Map<String, Object> getResults() {
         return results;
     }

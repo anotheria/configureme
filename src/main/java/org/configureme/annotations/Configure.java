@@ -7,6 +7,9 @@ import java.lang.annotation.Target;
 
 /**
  * Mark a field configurable.
+ *
+ * @author another
+ * @version $Id: $Id
  */
 @Retention (RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)

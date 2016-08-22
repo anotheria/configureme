@@ -63,6 +63,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * by <code>-Dconfigureme.defaultEnvironment=a_b_c</code>...
  *
  * @author lrosenberg
+ * @version $Id: $Id
  */
 public enum ConfigurationManager {
 	/**
@@ -198,6 +199,7 @@ public enum ConfigurationManager {
 	 * Configures a configurable component in the default environment. The object must be annotated with ConfigureMe and the configuration source must be present.
 	 *
 	 * @param o object to configure
+	 * @param format a {@link org.configureme.sources.ConfigurationSourceKey.Format} object.
 	 */
 	public void configure(Object o, Format format) {
 		configure(o, defaultEnvironment, format);
@@ -296,6 +298,7 @@ public enum ConfigurationManager {
 	 * @param o                 object to configure.
 	 * @param in                the environment for the configuration.
 	 * @param configurationName name of the configuration.
+	 * @param format a {@link org.configureme.sources.ConfigurationSourceKey.Format} object.
 	 */
 	public void configureAs(Object o, Environment in, String configurationName, Format format) {
 		if (!isConfigurable(o))
@@ -318,6 +321,7 @@ public enum ConfigurationManager {
 	 *
 	 * @param o               object to configure.
 	 * @param configSourceKey source definition.
+	 * @param in a {@link org.configureme.Environment} object.
 	 */
 	public void configureAs(Object o, Environment in, ConfigurationSourceKey configSourceKey) {
 		if (!isConfigurable(o))
@@ -344,6 +348,7 @@ public enum ConfigurationManager {
 	 *
 	 * @param o  object to configure
 	 * @param in the environment for the configuration
+	 * @param format a {@link org.configureme.sources.ConfigurationSourceKey.Format} object.
 	 */
 	public void configure(Object o, Environment in, Format format) {
 
@@ -688,7 +693,7 @@ public enum ConfigurationManager {
 	/**
 	 * Sets the default environment. The default environment is used in methods configure(Object) and getConfiguration(String) which have no explicit Environemnt parameter.
 	 *
-	 * @param anEnvironment
+	 * @param anEnvironment a {@link org.configureme.Environment} object.
 	 */
 	@SuppressFBWarnings("ME_ENUM_FIELD_SETTER")
 	public final void setDefaultEnvironment(Environment anEnvironment) {

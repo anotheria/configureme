@@ -6,7 +6,9 @@ import java.util.List;
 
 /**
  * The parsed configuration is flattened content of a configuration file which contains all contained attribute name,value,environment combinations.
+ *
  * @author lrosenberg
+ * @version $Id: $Id
  */
 public class ParsedConfiguration {
 	/**
@@ -32,6 +34,7 @@ public class ParsedConfiguration {
 
 	/**
 	 * Set External configuration
+	 *
 	 * @param externalConfigurations external configuration
 	 */
 	public void setExternalConfigurations(Collection<String> externalConfigurations) {
@@ -42,6 +45,7 @@ public class ParsedConfiguration {
 
 	/**
 	 * Get external configuration
+	 *
 	 * @return external configuration
 	 */
 	public Collection<String> getExternalConfigurations() {
@@ -50,6 +54,7 @@ public class ParsedConfiguration {
 
 	/**
 	 * Creates a new parsed configuration object.
+	 *
 	 * @param aName the name of the configuration to which the parsed version belongs.
 	 */
 	public ParsedConfiguration(String aName){
@@ -63,6 +68,7 @@ public class ParsedConfiguration {
 
 	/**
 	 * Adds an attribute to the internal attribute list.
+	 *
 	 * @param anAttribute the attribute to add
 	 */
 	public void addAttribute(ParsedAttribute<?> anAttribute){
@@ -71,6 +77,7 @@ public class ParsedConfiguration {
 
 	/**
 	 * Returns the internal list of attributes.
+	 *
 	 * @return the internal list of attributes
 	 */
 	public List<ParsedAttribute<?>> getAttributes() {
@@ -79,6 +86,7 @@ public class ParsedConfiguration {
 
 	/**
 	 * Sets the attributes.
+	 *
 	 * @param attributes attributes to set
 	 */
 	public void setAttributes(List<ParsedAttribute<?>> attributes) {
@@ -87,6 +95,7 @@ public class ParsedConfiguration {
 
 	/**
 	 * Returns the timestamp of the parse process.
+	 *
 	 * @return the timestamp of the parse process
 	 */
 	public long getParseTimestamp() {
@@ -95,12 +104,14 @@ public class ParsedConfiguration {
 
 	/**
 	 * Returns the name of the configuration.
+	 *
 	 * @return the name of the configuration
 	 */
 	public String getName() {
 		return name;
 	}
 
+	/** {@inheritDoc} */
 	@Override public String toString(){
         return name +": "+ attributes;
 	}

@@ -12,10 +12,14 @@ import java.util.Map;
 /**
  * Represents parsed value of named composite attribute within a certain environment.
  * Composite attribute contains arbitrary set of child attributes distinguished by their names. Nested attributes have have arbitrary type.
+ *
+ * @author another
+ * @version $Id: $Id
  */
 public class CompositeParsedAttribute extends ParsedAttribute<CompositeValue> {
 	/**
 	 * Constructs new composite parsed attribute value with specified name, environment and value.
+	 *
 	 * @param name name of the attribute
 	 * @param environment environment which the value is defined within
 	 * @param value list of child attribute values of the attribute within the environment

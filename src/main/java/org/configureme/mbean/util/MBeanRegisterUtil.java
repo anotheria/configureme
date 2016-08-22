@@ -14,9 +14,10 @@ import java.security.AccessControlException;
 import java.util.Arrays;
 
 /**
- * Util for register mBeans in {@link MBeanServer}.
+ * Util for register mBeans in {@link javax.management.MBeanServer}.
  *
  * @author asamoilich
+ * @version $Id: $Id
  */
 public final class MBeanRegisterUtil {
 	/**
@@ -29,7 +30,7 @@ public final class MBeanRegisterUtil {
 	private static MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
 
 	/**
-	 * Register mBean object in {@link MBeanServer}.
+	 * Register mBean object in {@link javax.management.MBeanServer}.
 	 *
 	 * @param object     provided object
 	 * @param parameters additional parameters
@@ -74,6 +75,6 @@ public final class MBeanRegisterUtil {
 	 * Private constructor.
 	 */
 	private MBeanRegisterUtil() {
-		throw new IllegalAccessError("Can't be initialise");
+		throw new IllegalAccessError("Can't instantiate.");
 	}
 }

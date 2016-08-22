@@ -6,6 +6,7 @@ import java.util.Set;
  * Common info mBean interface.
  *
  * @author asamoilich
+ * @version $Id: $Id
  */
 public interface WatchedConfigFilesMBean {
 	/**

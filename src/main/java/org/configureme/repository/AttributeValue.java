@@ -9,7 +9,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The internal representation of the attribute value(s).
+ *
  * @author lrosenberg
+ * @version $Id: $Id
  */
 public class AttributeValue {
 
@@ -51,6 +53,7 @@ public class AttributeValue {
 
 	/**
 	 * Sets the value in a given environment.
+	 *
 	 * @param value the value to set
 	 * @param in the environment in which the value applies
 	 */
@@ -58,6 +61,7 @@ public class AttributeValue {
 		values.put(in.expandedStringForm(), value);
 	}
 
+	/** {@inheritDoc} */
 	@Override public String toString(){
 		return values.toString();
 	}

@@ -5,7 +5,10 @@ import org.json.JSONException;
 import java.util.Map;
 
 /**
+ * <p>ConfigInfoMBean interface.</p>
+ *
  * @author asamoilich
+ * @version $Id: $Id
  */
 public interface ConfigInfoMBean {
 	/**
@@ -34,7 +37,7 @@ public interface ConfigInfoMBean {
 	 *
 	 * @param attrName  attribute name
 	 * @param attrValue attribute value
-	 * @throws JSONException on errors
+	 * @throws org.json.JSONException on errors
 	 */
 	void setAttributeValue(final String attrName, final String attrValue) throws JSONException;
 }

@@ -7,6 +7,7 @@ import java.util.List;
  * The internal representation of an composite attribute.
  *
  * @author lrosenberg
+ * @version $Id: $Id
  */
 public class CompositeAttribute {
     /**
@@ -38,19 +39,35 @@ public class CompositeAttribute {
     }
 
 
+    /**
+     * <p>Getter for the field <code>attributeList</code>.</p>
+     *
+     * @return a {@link java.util.List} object.
+     */
     public List<Attribute> getAttributeList() {
         return attributeList;
     }
 
+    /**
+     * <p>Setter for the field <code>attributeList</code>.</p>
+     *
+     * @param attributeList a {@link java.util.List} object.
+     */
     public void setAttributeList(List<Attribute> attributeList) {
         this.attributeList = attributeList;
     }
 
 
+    /**
+     * <p>addAttributeList.</p>
+     *
+     * @param attribute a {@link org.configureme.repository.Attribute} object.
+     */
     public void addAttributeList(Attribute attribute) {
         attributeList.add(attribute);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return name + '=' + attributeList;

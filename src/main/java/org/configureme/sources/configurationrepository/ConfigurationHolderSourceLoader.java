@@ -7,6 +7,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A source loader singleton configuration holder
+ *
+ * @author another
+ * @version $Id: $Id
  */
 public class ConfigurationHolderSourceLoader implements SourceLoader {
     /**
@@ -15,6 +18,7 @@ public class ConfigurationHolderSourceLoader implements SourceLoader {
     private static final Logger log = LoggerFactory.getLogger(ConfigurationHolderSourceLoader.class);
 
 
+    /** {@inheritDoc} */
     @Override
     public boolean isAvailable(ConfigurationSourceKey key) {
         if (key == null) {
@@ -23,6 +27,7 @@ public class ConfigurationHolderSourceLoader implements SourceLoader {
         return ConfigurationsHolder.INSTANCE.isConfigurationWithNameExist(key.getName());
     }
 
+    /** {@inheritDoc} */
     @Override
     public long getLastChangeTimestamp(ConfigurationSourceKey key) {
         if (key == null) {
@@ -31,6 +36,7 @@ public class ConfigurationHolderSourceLoader implements SourceLoader {
         return ConfigurationsHolder.INSTANCE.getConfigurationTimestamp(key.getName());
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getContent(ConfigurationSourceKey key) {
         if (key.getType() != ConfigurationSourceKey.Type.REPOSITORY) {
