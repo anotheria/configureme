@@ -1,10 +1,11 @@
 package org.configureme.sources.configurationrepository;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -66,7 +67,7 @@ public enum ConfigurationsHolder {
         String resultString = null;
         try {
             resultString = mapper.writeValueAsString(toMap);
-        } catch (JsonProcessingException e) {
+        } catch (IOException e) {
             log.error("Json parsing exception: ", e);
         }
         return resultString;

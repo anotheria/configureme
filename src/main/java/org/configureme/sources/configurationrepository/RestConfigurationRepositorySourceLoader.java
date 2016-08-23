@@ -1,18 +1,20 @@
 package org.configureme.sources.configurationrepository;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.config.ClientConfig;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
+import com.sun.jersey.api.json.JSONConfiguration;
+import org.codehaus.jackson.jaxrs.JacksonJaxbJsonProvider;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.configureme.sources.ConfigurationSourceKey;
 import org.configureme.sources.SourceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -41,7 +43,7 @@ public class RestConfigurationRepositorySourceLoader implements SourceLoader {
         if (key == null) {
             throw new IllegalArgumentException("isAvailable(): ConfigurationSourceKey is null");
         }
-        return getResponse(key, PATH_CONFIGURATION).getStatus() == 200;
+        return getConfigurationReplyObject(key, PATH_CONFIGURATION).isSuccess();
     }
 
     /** {@inheritDoc} */
@@ -50,7 +52,7 @@ public class RestConfigurationRepositorySourceLoader implements SourceLoader {
         if (key == null) {
             throw new IllegalArgumentException("getLastChangeTimestamp(): ConfigurationSourceKey is null");
         }
-        ReplyObject replyObject = getResponse(key, PATH_LAST_CHANGE_TIMESTAMP).readEntity(ReplyObject.class);
+        ReplyObject replyObject = getConfigurationReplyObject(key, PATH_LAST_CHANGE_TIMESTAMP);
         Map<String, Object> result = replyObject.getResults();
         return ((long) result.get(key.getName()));
     }
@@ -61,7 +63,7 @@ public class RestConfigurationRepositorySourceLoader implements SourceLoader {
         if (key.getType() != ConfigurationSourceKey.Type.REST) {
             throw new IllegalStateException("Can only get configuration for type: " + ConfigurationSourceKey.Type.REST);
         }
-        Map<String, Object> result = getConfigurationReplyObject(key).getResults();
+        Map<String, Object> result = getConfigurationReplyObject(key, PATH_CONFIGURATION).getResults();
         return mapObjectToString(result.get(key.getName()), key.getName());
     }
 
@@ -73,32 +75,26 @@ public class RestConfigurationRepositorySourceLoader implements SourceLoader {
         String resultString = null;
         try {
             resultString = mapper.writeValueAsString(toMap);
-        } catch (JsonProcessingException e) {
+        } catch (IOException e) {
             log.error("Json parsing exception: ", e);
         }
         return resultString;
     }
 
-    private ReplyObject getConfigurationReplyObject(ConfigurationSourceKey key) {
-        Response response = getResponse(key, PATH_CONFIGURATION);
-        if (response.getStatus() != 200) {
-            log.error("Http request to url: " + key.getRemoteConfigurationRepositoryUrl() + " is failed");
-        }
-        try {
-            return response.readEntity(ReplyObject.class);
-        } finally {
-            response.close();
-        }
 
-    }
-
-    private Response getResponse(ConfigurationSourceKey key, String additionalPath) {
+    private ReplyObject getConfigurationReplyObject(ConfigurationSourceKey key, String additionalPath) {
         if (key.getRemoteConfigurationRepositoryUrl() == null) {
             throw new IllegalArgumentException("Target url unknown");
         }
-        Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target(key.getRemoteConfigurationRepositoryUrl()).path(additionalPath).path(key.getName());
-        Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
-        return invocationBuilder.get();
+        Client client = Client.create(getClientConfig());
+        WebResource resource = client.resource(key.getRemoteConfigurationRepositoryUrl()).path(additionalPath).path(key.getName());
+        return resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).get(ReplyObject.class);
+    }
+
+    private ClientConfig getClientConfig() {
+        ClientConfig clientConfig = new DefaultClientConfig();
+        clientConfig.getClasses().add(JacksonJaxbJsonProvider.class);
+        clientConfig.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
+        return clientConfig;
     }
 }
