@@ -6,6 +6,7 @@ import java.util.Vector;
 
 /**
  * Small but useful utilities for {@link java.lang.String} handling.
+ * This class is a fork of net.anotheria.util.StringUtils. It is forked to reduce dependencies.
  *
  * @author anotheria team
  * @version $Id: $Id
@@ -55,7 +56,7 @@ public final class StringUtils {
 	 *            token delimiter
 	 * @return {@link java.util.Vector} with {@link java.lang.String}
 	 */
-	public static final Vector<String> tokenize2vector(final String source, final char delimiter) {
+	public static Vector<String> tokenize2vector(final String source, final char delimiter) {
 		Vector<String> v;
 		v = new Vector<>();
 		StringBuilder currentS = new StringBuilder();
@@ -88,7 +89,7 @@ public final class StringUtils {
 	 *            token delimiter
 	 * @return array of {@link java.lang.String}
 	 */
-	public static final String[] tokenize(final String source, final char delimiter) {
+	public static String[] tokenize(final String source, final char delimiter) {
 		String[] ret;
 		Vector<String> v = tokenize2vector(source, delimiter);
 		ret = new String[v.size()];
@@ -237,7 +238,7 @@ public final class StringUtils {
 	 *            source string
 	 * @return processed {@link java.lang.String}
 	 */
-	public static final String removeBashComments(final String src) {
+	public static String removeBashComments(final String src) {
 		final StringBuilder ret = new StringBuilder();
 		boolean inComments = false;
 		boolean inQuotes = false;
