@@ -1,7 +1,5 @@
 package org.configureme.util;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
@@ -10,6 +8,8 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Utilities for input output.
@@ -21,14 +21,21 @@ import java.io.InputStream;
 public final class IOUtils {
 
 	/**
+	 * Default constructor with preventing instantiations of this class.
+	 */
+	private IOUtils() {
+		throw new IllegalAccessError("Shouldn't be instantiated.");
+	}
+
+	/**
 	 * Reads the contents of the file at once and returns the byte array.
 	 *
 	 * @param file a {@link java.io.File} object.
 	 * @throws java.io.IOException if any.
 	 * @return an array of byte.
 	 */
-	public static byte[] readFileAtOnce(File file) throws IOException {
-		FileInputStream fIn = new FileInputStream(file);
+	public static byte[] readFileAtOnce(final File file) throws IOException {
+		final FileInputStream fIn = new FileInputStream(file);
 		return readFileAtOnce(fIn);
 	}
 
@@ -40,8 +47,8 @@ public final class IOUtils {
 	 * @throws java.io.IOException if any.
 	 * @return an array of byte.
 	 */
-	public static byte[] readFileAtOnce(String filename) throws IOException {
-		FileInputStream fIn = new FileInputStream(filename);
+	public static byte[] readFileAtOnce(final String filename) throws IOException {
+		final FileInputStream fIn = new FileInputStream(filename);
 		return readFileAtOnce(fIn);
 	}
 
@@ -52,8 +59,8 @@ public final class IOUtils {
 	 * @return
 	 * @throws IOException
 	 */
-	private static byte[] readFileAtOnce(FileInputStream fIn) throws IOException {
-		byte[] ret = new byte[fIn.available()];
+	private static byte[] readFileAtOnce(final FileInputStream fIn) throws IOException {
+		final byte[] ret = new byte[fIn.available()];
 		fIn.read(ret);
 		fIn.close();
 		return ret;
@@ -66,7 +73,7 @@ public final class IOUtils {
 	 * @throws java.io.IOException if any.
 	 * @return a {@link java.lang.String} object.
 	 */
-	public static String readFileAtOnceAsString(String filename) throws IOException {
+	public static String readFileAtOnceAsString(final String filename) throws IOException {
 		return new String(readFileAtOnce(filename));
 	}
 
@@ -77,7 +84,7 @@ public final class IOUtils {
 	 * @throws java.io.IOException if any.
 	 * @return a {@link java.lang.String} object.
 	 */
-	public static String readFileAtOnceAsString(File file) throws IOException {
+	public static String readFileAtOnceAsString(final File file) throws IOException {
 		return new String(readFileAtOnce(file));
 	}
 
@@ -89,7 +96,7 @@ public final class IOUtils {
 	 * @return file content.
 	 * @throws java.io.IOException if any.
 	 */
-	public static String readFileBufferedAsString(String filename) throws IOException {
+	public static String readFileBufferedAsString(final String filename) throws IOException {
 		FileReader in = null;
 		try {
 			StringBuilder result = new StringBuilder();
@@ -115,7 +122,7 @@ public final class IOUtils {
 	 * @return a {@link java.lang.String} object.
 	 * @throws java.io.IOException if any.
 	 */
-	public static String readInputStreamBufferedAsString(InputStream in, String charset) throws IOException {
+	public static String readInputStreamBufferedAsString(final InputStream in, final String charset) throws IOException {
 		BufferedReader reader = null;
 		try {
 			reader = new BufferedReader(new UnicodeReader(in, charset));
@@ -139,7 +146,7 @@ public final class IOUtils {
 	 * @return a {@link java.lang.String} object.
 	 * @throws java.io.IOException if any.
 	 */
-	public static String readFileBufferedAsString(File file, String charset) throws IOException {
+	public static String readFileBufferedAsString(final File file, final String charset) throws IOException {
 		return readInputStreamBufferedAsString(new FileInputStream(file), charset);
 	}
 
@@ -165,13 +172,15 @@ public final class IOUtils {
 	 * @param closeable
 	 *            to close
 	 */
-	public static void closeIgnoringException(Closeable closeable) {
-		if (closeable != null)
-			try {
-				closeable.close();
-			} catch (IOException ignored) {
-				// We can do nothing if on close failure
-			}
+	public static void closeIgnoringException(final Closeable closeable) {
+		if (closeable == null)
+			return;
+
+		try {
+			closeable.close();
+		} catch (IOException ignored) {
+			// We can do nothing if on close failure
+		}
 	}
 
 	/**
@@ -181,7 +190,7 @@ public final class IOUtils {
 	 * @return an array of byte.
 	 * @throws java.io.IOException if any.
 	 */
-	public static byte[] readBytes(InputStream in) throws IOException {
+	public static byte[] readBytes(final InputStream in) throws IOException {
 		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 		int nRead;
 		byte[] data = new byte[16384];

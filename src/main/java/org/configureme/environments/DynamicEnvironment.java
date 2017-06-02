@@ -1,11 +1,11 @@
 package org.configureme.environments;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import org.configureme.Environment;
 import org.configureme.GlobalEnvironment;
 import org.configureme.util.StringUtils;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * A dynamic environment class. This class can be used for any type of environments, for any environment deepth. However, we recommend the usage of more strict Application/LocaleBased Environment if
@@ -39,10 +39,12 @@ public class DynamicEnvironment implements Environment, Cloneable{
 	public DynamicEnvironment(String start, String ... additional){
 		this();
 		add(start);
-		if (additional!=null){
-			for (String s : additional)
-				add(s);
-		}
+		if (additional==null)
+			return ;
+
+		for (final String s : additional)
+			add(s);
+
 	}
 
 	/**
@@ -56,19 +58,17 @@ public class DynamicEnvironment implements Environment, Cloneable{
 	}
 	
 	
-	/** {@inheritDoc} */
 	@Override
 	public String toString(){
-		StringBuilder ret = new StringBuilder();
-		for (String s : elements){
-			if (ret.length()>0)
+		final StringBuilder ret = new StringBuilder();
+		for (final String s : elements){
+			if (ret.length() > 0)
 				ret.append('_');
 			ret.append(s);
 		}
 		return ret.toString();
 	}
 	
-	/** {@inheritDoc} */
 	@Override
 	public String expandedStringForm(){
 		return toString();
@@ -80,7 +80,7 @@ public class DynamicEnvironment implements Environment, Cloneable{
 	 * @param anElement element to add to the environment
 	 * @return new DynamicEnvironment by adding an element to the current environment
 	 */
-	public DynamicEnvironment add(String anElement){
+	public DynamicEnvironment add(final String anElement){
 		elements.add(anElement);
 		return this;
 	}
@@ -103,24 +103,22 @@ public class DynamicEnvironment implements Environment, Cloneable{
 		elements.remove(elements.size()-1);
 	}
 	
-	/** {@inheritDoc} */
-	@Override public Object clone(){
+	@Override
+	public Object clone(){
 		try{
-			DynamicEnvironment ret = (DynamicEnvironment)super.clone();
+			final DynamicEnvironment ret = (DynamicEnvironment)super.clone();
 			ret.elements = (ArrayList<String>)elements.clone();
 			return ret;
-		}catch(CloneNotSupportedException e){
+		}catch(final CloneNotSupportedException e){
 			throw new AssertionError("cloneable we are!");
 		}
 	}
 	
-	/** {@inheritDoc} */
 	@Override
 	public boolean isReduceable() {
 		return elements!=null && !elements.isEmpty();
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public Environment reduce() {
 		if (!isReduceable())
@@ -136,24 +134,24 @@ public class DynamicEnvironment implements Environment, Cloneable{
 	 * @param s string to parse
 	 * @return new Environment which corresponds the string
 	 */
-	public static Environment parse(String s){
+	public static Environment parse(final String s){
 		if (s==null || s.isEmpty() || s.trim().isEmpty())
 			return GlobalEnvironment.INSTANCE;
-		String[] tokens = StringUtils.tokenize(s, '_');
-		DynamicEnvironment env = new DynamicEnvironment();
-		for (String t : tokens) {
+		final String[] tokens = StringUtils.tokenize(s, '_');
+		final DynamicEnvironment env = new DynamicEnvironment();
+		for (final String t : tokens) {
             env.add(t);
         }
 		return env;
 	}
 	
-	/** {@inheritDoc} */
-	@Override public boolean equals(Object o){
+	@Override
+	public boolean equals(Object o){
 		return o == this || ((o instanceof DynamicEnvironment) && ((DynamicEnvironment)o).elements.equals(elements));
 	}
 	
-	/** {@inheritDoc} */
-	@Override public int hashCode(){
+	@Override
+	public int hashCode(){
 		return elements == null ? 42 : elements.hashCode();
 	}
 }

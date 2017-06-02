@@ -28,7 +28,7 @@ public enum ConfigurationRepository implements ConfigurationSourceListener {
 	/**
 	 * The internal artifact storage.
 	 */
-	private Map<String, Artefact> artefacts = new ConcurrentHashMap<>();
+	private final Map<String, Artefact> artefacts = new ConcurrentHashMap<>();
 
 	/**
 	 * Creates a new internal artefact for the given name.
@@ -36,12 +36,12 @@ public enum ConfigurationRepository implements ConfigurationSourceListener {
 	 * @param name the name of the artefact
 	 * @return a new internal Artefact instance for the given name
 	 */
-	public Artefact createArtefact(String name) {
-		Artefact old = artefacts.get(name);
+	public Artefact createArtefact(final String name) {
+		final Artefact old = artefacts.get(name);
 		if (old != null)
 			throw new IllegalArgumentException("Artefact '" + name + "' already exists: " + old);
 
-		Artefact a = new Artefact(name);
+		final Artefact a = new Artefact(name);
 		artefacts.put(a.getName(), a);
 		return a;
 	}
@@ -52,7 +52,7 @@ public enum ConfigurationRepository implements ConfigurationSourceListener {
 	 * @param toUpdate provided {@link org.configureme.repository.Artefact}
 	 */
 	public void updateArtefact(final Artefact toUpdate) {
-		Artefact old = artefacts.get(toUpdate.getName());
+		final Artefact old = artefacts.get(toUpdate.getName());
 		if (old == null)
 			throw new IllegalArgumentException("Artefact = " + toUpdate + " doesn't exists.");
 		artefacts.put(toUpdate.getName(), toUpdate);
@@ -85,28 +85,27 @@ public enum ConfigurationRepository implements ConfigurationSourceListener {
 	 * @param environment the environment of the configuration
 	 * @return a snapshot of the configuration with the given name in the given environment
 	 */
-	public Configuration getConfiguration(String name, Environment environment) {
+	public Configuration getConfiguration(final String name, Environment environment) {
 		if (environment == null)
 			environment = GlobalEnvironment.INSTANCE;
-		Artefact a = getArtefact(name);
+		final Artefact a = getArtefact(name);
 		if (a == null)
 			throw new IllegalArgumentException("No such artefact: " + name);
-		ConfigurationImpl configurationImpl = new ConfigurationImpl(a.getName());
-		List<String> attributeNames = a.getAttributeNames();
+		final ConfigurationImpl configurationImpl = new ConfigurationImpl(a.getName());
+		final List<String> attributeNames = a.getAttributeNames();
 
 		configurationImpl.clearExternalConfigurations();
-		for (ConfigurationSourceKey include : a.getExternalConfigurations())
+		for (final ConfigurationSourceKey include : a.getExternalConfigurations())
 			configurationImpl.addExternalConfiguration(include);
 
-		for (String attributeName : attributeNames) {
-			Value attributeValue = a.getAttribute(attributeName).getValue(environment);
+		for (final String attributeName : attributeNames) {
+			final Value attributeValue = a.getAttribute(attributeName).getValue(environment);
 			if (attributeValue != null)
 				configurationImpl.setAttribute(attributeName, attributeValue);
 		}
 		return configurationImpl;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public void configurationSourceUpdated(ConfigurationSource target) {
 		artefacts.remove(target.getKey().getName());

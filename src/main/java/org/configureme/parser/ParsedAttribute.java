@@ -65,7 +65,6 @@ public abstract class ParsedAttribute<T extends Value> {
 		return environment;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public String toString(){
 		return name+" = "+value+" in "+environment;

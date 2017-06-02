@@ -33,7 +33,7 @@ public class SetIfTest {
 	@ConfigureMe(name="fixture", type=ConfigurationSourceKey.Type.FIXTURE, watch=false)
 	public static class Configurable{
 
-		Map<String, Integer> counts = new HashMap<String, Integer>();
+		Map<String, Integer> counts = new HashMap<>();
 
 		//this method should be called 9 times in the current fixture
 		@SetIf(value="Value", condition=SetIfCondition.contains) public void setifcontainsvalue(String key, String value){
@@ -60,12 +60,8 @@ public class SetIfTest {
 		}
 
 		private void increase(String key){
-			Integer old = counts.get(key);
-			Integer result = null;
-			if (old == null)
-				result = Integer.valueOf(1);
-			else
-				result = Integer.valueOf(old.intValue()+1);
+			final Integer old = counts.get(key);
+			final Integer result = old == null ? 1 : old + 1;
 			counts.put(key, result);
 		}
 	}

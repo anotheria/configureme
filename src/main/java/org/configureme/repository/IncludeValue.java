@@ -22,7 +22,6 @@ public class IncludeValue implements Value {
 	 */
 	private String configurationName;
 
-	/** {@inheritDoc} */
 	@Override
 	public Object getRaw() {
 		return new PlainValue(attributeName+"->"+configurationName);
@@ -65,13 +64,11 @@ public class IncludeValue implements Value {
 		this.configurationName = configurationName;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return attributeName+"->"+configurationName;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
@@ -85,7 +82,6 @@ public class IncludeValue implements Value {
 
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
 		int result = attributeName != null ? attributeName.hashCode() : 0;

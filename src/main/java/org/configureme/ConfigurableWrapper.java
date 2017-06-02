@@ -15,16 +15,16 @@ public class ConfigurableWrapper implements ConfigurationSourceListener{
 	/**
 	 * The wrapped configurable object.
 	 */
-	private Object configurable;
+	private final Object configurable;
 	/**
 	 * The environment in which the object was configured (stored for reconfiguration).
 	 */
-	private Environment environment;
+	private final Environment environment;
 	
 	/**
 	 * The key of objects configuration.
 	 */
-	private ConfigurationSourceKey key;
+	private final ConfigurationSourceKey key;
 
 	/**
 	 * Creates a new wrapper object.
@@ -66,8 +66,8 @@ public class ConfigurableWrapper implements ConfigurationSourceListener{
 		return environment;
 	}
 
-	/** {@inheritDoc} */
-	@Override public String toString(){
+	@Override
+	public String toString(){
         return key +", "+ configurable;
 	}
 
@@ -77,20 +77,19 @@ public class ConfigurableWrapper implements ConfigurationSourceListener{
 	 * This method is called by the ConfigurationSourceRegistry if watched source has been updated.
 	 */
 	@Override
-	public void configurationSourceUpdated(ConfigurationSource source) {
+	public void configurationSourceUpdated(final ConfigurationSource source) {
 		ConfigurationManager.INSTANCE.reconfigure(key, configurable, environment);
 	}
 	
-	/** {@inheritDoc} */
 	@Override public boolean equals(Object anotherObject){
 		if (!(anotherObject instanceof ConfigurableWrapper ))
 			return false;
-		ConfigurableWrapper w = (ConfigurableWrapper)anotherObject;
+		final ConfigurableWrapper w = (ConfigurableWrapper)anotherObject;
         return key.equals(w.key) && configurable.equals(w.configurable) && environment.equals(w.environment);
 	}
 	
-	/** {@inheritDoc} */
-	@Override public int hashCode(){
+	@Override
+	public int hashCode(){
 		return key == null ? 42 : key.hashCode();
 	}
 }

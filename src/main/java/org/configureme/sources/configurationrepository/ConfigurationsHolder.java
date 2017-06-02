@@ -16,10 +16,12 @@ import java.util.Map;
  * @version $Id: $Id
  */
 public enum ConfigurationsHolder {
+
     /**
-     * The configurationsholder is a singleton.
+     * The configurations holder is a singleton.
      */
     INSTANCE;
+
     /**
      * Logger.
      */
@@ -29,7 +31,7 @@ public enum ConfigurationsHolder {
      * key - configuration name
      * value - configuration context
      */
-    private Map<String, Configuration> configurations = new HashMap<>();
+    private final Map<String, Configuration> configurations = new HashMap<>();
 
     /**
      * <p>getConfigurationByname.</p>
@@ -57,17 +59,17 @@ public enum ConfigurationsHolder {
      * @param name a {@link java.lang.String} object.
      * @return a {@link java.lang.String} object.
      */
-    public String deleteConfigurationWithName(String name) {
+    public String deleteConfigurationWithName(final String name) {
         Configuration removedConfiguration = configurations.remove(name);
         return removedConfiguration != null ? removedConfiguration.getContent() : "";
     }
 
-    private String mapObjectToString(Object toMap) {
-        ObjectMapper mapper = new ObjectMapper();
+    private String mapObjectToString(final Object toMap) {
+        final ObjectMapper mapper = new ObjectMapper();
         String resultString = null;
         try {
             resultString = mapper.writeValueAsString(toMap);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             log.error("Json parsing exception: ", e);
         }
         return resultString;
@@ -94,8 +96,8 @@ public enum ConfigurationsHolder {
     }
 
     private class Configuration {
-        private long timestamp;
-        private String content;
+        private final long timestamp;
+        private final String content;
 
         public Configuration(long timestamp, String content) {
             this.timestamp = timestamp;

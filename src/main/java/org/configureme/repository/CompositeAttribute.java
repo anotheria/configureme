@@ -13,7 +13,7 @@ public class CompositeAttribute {
     /**
      * The name of the attribute.
      */
-    private String name;
+    private final String name;
 
     /**
      * The container for attribute values.
@@ -40,7 +40,7 @@ public class CompositeAttribute {
 
 
     /**
-     * <p>Getter for the field <code>attributeList</code>.</p>
+     * <p>Getter for the field {@code attributeList}.</p>
      *
      * @return a {@link java.util.List} object.
      */
@@ -49,7 +49,7 @@ public class CompositeAttribute {
     }
 
     /**
-     * <p>Setter for the field <code>attributeList</code>.</p>
+     * <p>Setter for the field {@code attributeList}.</p>
      *
      * @param attributeList a {@link java.util.List} object.
      */
@@ -67,7 +67,6 @@ public class CompositeAttribute {
         attributeList.add(attribute);
     }
 
-    /** {@inheritDoc} */
     @Override
     public String toString() {
         return name + '=' + attributeList;

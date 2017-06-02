@@ -16,40 +16,35 @@ import org.configureme.util.StringUtils;
  */
 public class PropertiesParser implements ConfigurationParser {
 
-	/** {@inheritDoc} */
-	@Override
-	public ParsedConfiguration parseConfiguration(String name, String content)
-			throws ConfigurationParserException {
+    @Override
+    public ParsedConfiguration parseConfiguration(final String name, final String content)
+            throws ConfigurationParserException {
 
-		content = StringUtils.removeBashComments(content);
+        final String filteredContent = StringUtils.removeBashComments(content);
+        final String[] lines = StringUtils.tokenize(filteredContent, '\n');
+        final ParsedConfiguration configuration = new ParsedConfiguration(name);
 
-		String[] lines = StringUtils.tokenize(content, '\n');
+        for (final String line : lines) {
+            if (line == null || line.trim().isEmpty())
+                continue;
+            final String[] tokensQL = StringUtils.tokenize(line, '=');
+            if (tokensQL.length != 2)
+                throw new IllegalArgumentException("Unparseable content, can't find = in line: " + line);
+            final String propertyNameLine = tokensQL[0];
+            final String[] tokensDot = StringUtils.tokenize(propertyNameLine, '.');
+            if (tokensDot.length == 0)
+                throw new IllegalArgumentException("Unparseable content, can't find property name in line: " + line);
+            final DynamicEnvironment env = new DynamicEnvironment();
+            final String propertyName = tokensDot[tokensDot.length - 1];
+            final String propertyValue = tokensQL[1];
+            for (int i = 0; i < tokensDot.length - 1; i++)
+                env.add(tokensDot[i]);
 
-		ParsedConfiguration configuration = new ParsedConfiguration(name);
+            final ParsedAttribute<?> pa = new PlainParsedAttribute(propertyName, env, propertyValue);
+            configuration.addAttribute(pa);
+        }
 
-		for (String line : lines){
-			if (line==null || line.trim().isEmpty())
-				continue;
-			String[] tokensQL =  StringUtils.tokenize(line, '=');
-			if (tokensQL.length!=2){
-				throw new IllegalArgumentException("Unparseable content, can't find = in line: "+line);
-			}
-			String propertyNameLine = tokensQL[0];
-			String[] tokensDot = StringUtils.tokenize(propertyNameLine, '.');
-			if (tokensDot.length==0){
-				throw new IllegalArgumentException("Unparseable content, can't find property name in line: "+line);
-			}
-			DynamicEnvironment env = new DynamicEnvironment();
-			String propertyName = tokensDot[tokensDot.length-1];
-			String propertyValue = tokensQL[1];
-			for (int i=0; i<tokensDot.length-1; i++)
-				env.add(tokensDot[i]);
-
-			ParsedAttribute<?> pa = new PlainParsedAttribute(propertyName, env, propertyValue);
-			configuration.addAttribute(pa);
-		}
-
-		return configuration;
-	}
+        return configuration;
+    }
 
 }

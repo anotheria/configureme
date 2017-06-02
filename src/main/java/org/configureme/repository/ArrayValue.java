@@ -35,23 +35,20 @@ public class ArrayValue implements Value {
 		return list;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public Object getRaw() {
-		Collection<Object> raw = new ArrayList<>(list.size());
-		for (Value val : list)
+		final Collection<Object> raw = new ArrayList<>(list.size());
+		for (final Value val : list)
 			raw.add(val.getRaw());
 
 		return raw;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return String.valueOf(list);
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -60,7 +57,6 @@ public class ArrayValue implements Value {
 		return result;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {

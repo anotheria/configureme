@@ -1,9 +1,9 @@
 package org.configureme.repository;
 
+import org.configureme.Configuration;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import org.configureme.Configuration;
 
 /**
  * Value of a composite attribute. Maps names of the child attributes to their values.
@@ -24,9 +24,9 @@ public class CompositeValue implements Value {
 	 * @param name name of the attribute
 	 * @param value map of name/value pairs of child attributes.
 	 */
-	public CompositeValue(String name, Map<String, Value> value) {
+	public CompositeValue(final String name, final Map<String, Value> value) {
 		config = new ConfigurationImpl(name);
-		for (Map.Entry<String, Value> attr : value.entrySet())
+		for (final Map.Entry<String, Value> attr : value.entrySet())
 			config.setAttribute(attr.getKey(), attr.getValue());
 	}
 
@@ -39,23 +39,20 @@ public class CompositeValue implements Value {
 		return config;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public Object getRaw() {
-		Map<String, Object> raw = new HashMap<>(config.getEntries().size());
-		for (Map.Entry<String, Value> entry : config.getEntries())
+		final Map<String, Object> raw = new HashMap<>(config.getEntries().size());
+		for (final Map.Entry<String, Value> entry : config.getEntries())
 			raw.put(entry.getKey(), entry.getValue().getRaw());
 
 		return raw;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return String.valueOf(config);
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -64,7 +61,6 @@ public class CompositeValue implements Value {
 		return result;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -86,6 +82,5 @@ public class CompositeValue implements Value {
 		}
 		return true;
 	}
-
 
 }

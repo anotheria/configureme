@@ -11,7 +11,7 @@ public class ConfigurationParserException extends Exception {
 	/**
 	 * Unneeded value.
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 2424976193145404622L;
 
 	/**
 	 * Creates a new ConfigurationParserException with the given message.
