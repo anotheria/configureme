@@ -17,9 +17,9 @@ import java.nio.charset.Charset;
 public class UnicodeReader extends Reader {
 	private static final int BOM_SIZE = 4;
 
-	private PushbackInputStream internalIn;
+	private final PushbackInputStream internalIn;
 	private InputStreamReader internalIn2 = null;
-	private Charset charset;
+	private final Charset charset;
 
 	/**
 	 * <p>Constructor for UnicodeReader.</p>
@@ -100,11 +100,7 @@ public class UnicodeReader extends Reader {
 			internalIn.unread(bom, (n - unread), unread);
 
 		// Use given encoding
-		if (preciseCharset == null) {
-			internalIn2 = new InputStreamReader(internalIn);
-		} else {
-			internalIn2 = new InputStreamReader(internalIn, preciseCharset);
-		}
+		internalIn2 = preciseCharset == null ? new InputStreamReader(internalIn) : new InputStreamReader(internalIn, preciseCharset);
 	}
 
 	/**
@@ -112,13 +108,14 @@ public class UnicodeReader extends Reader {
 	 *
 	 * @throws java.io.IOException if any.
 	 */
+	@Override
 	public void close() throws IOException {
 		init();
 		internalIn2.close();
 	}
 
-	/** {@inheritDoc} */
-	public int read(char[] cbuf, int off, int len) throws IOException {
+	@Override
+	public int read(final char[] cbuf, final int off, final int len) throws IOException {
 		init();
 		return internalIn2.read(cbuf, off, len);
 	}

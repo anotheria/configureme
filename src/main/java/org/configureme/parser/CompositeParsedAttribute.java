@@ -34,9 +34,9 @@ public class CompositeParsedAttribute extends ParsedAttribute<CompositeValue> {
 	 * @param value list of child attribute values of the attribute within the environment
 	 * @return internal representation of the composite attribute value
 	 */
-	private static CompositeValue createCompositeValue(String name, Collection<? extends ParsedAttribute<?>> value) {
-    	Map<String, Value> map = new HashMap<>(value.size());
-    	for (ParsedAttribute<?> attr : value) {
+	private static CompositeValue createCompositeValue(final String name, final Collection<? extends ParsedAttribute<?>> value) {
+		final Map<String, Value> map = new HashMap<>(value.size());
+    	for (final ParsedAttribute<?> attr : value) {
     		map.put(attr.getName(), attr.getValue());
     	}
 		return new CompositeValue(name, map);

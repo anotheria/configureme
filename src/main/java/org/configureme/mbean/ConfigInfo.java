@@ -26,7 +26,7 @@ public class ConfigInfo implements ConfigInfoMBean {
 	/**
 	 * Config name.
 	 */
-	private String configName;
+	private final String configName;
 
 	/**
 	 * Constructor.
@@ -37,25 +37,23 @@ public class ConfigInfo implements ConfigInfoMBean {
 		this.configName = configName;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public String getConfigName() {
 		return configName;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public String showContent() {
 		final Artefact artefact = ConfigurationRepository.INSTANCE.getArtefact(configName);
 		if (artefact == null)
 			throw new IllegalArgumentException("No such artefact: " + configName);
-		Map<Environment, Map<String, Object>> contentMap = artefact.getContent();
-		StringBuilder resultContent = new StringBuilder();
+		final Map<Environment, Map<String, Object>> contentMap = artefact.getContent();
+		final StringBuilder resultContent = new StringBuilder();
 		resultContent.append("{\n");
-		for (Map.Entry<Environment, Map<String, Object>> environmentMapEntry : contentMap.entrySet()) {
-			String env = environmentMapEntry.getKey().expandedStringForm();
+		for (final Map.Entry<Environment, Map<String, Object>> environmentMapEntry : contentMap.entrySet()) {
+			final String env = environmentMapEntry.getKey().expandedStringForm();
 			resultContent.append("   ").append(env.isEmpty() ? "" : env + ": ").append("{\n");
-			for (Map.Entry<String, Object> stringObjectEntry : environmentMapEntry.getValue().entrySet())
+			for (final Map.Entry<String, Object> stringObjectEntry : environmentMapEntry.getValue().entrySet())
 				resultContent.append("      ").append(stringObjectEntry.getKey()).append(" : ").append(stringObjectEntry.getValue()).append(",\n");
 			resultContent.append("   },\n");
 		}
@@ -63,21 +61,19 @@ public class ConfigInfo implements ConfigInfoMBean {
 		return resultContent.toString();
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public Map<String, Object> getAttributes() {
-		Map<String, Object> attributeMap = new HashMap<>();
+		final Map<String, Object> attributeMap = new HashMap<>();
 		final Environment defaultEnvironment = ConfigurationManager.INSTANCE.getDefaultEnvironment();
 		final Configuration configuration = ConfigurationRepository.INSTANCE.getConfiguration(configName, defaultEnvironment);
 
-		for (String attrName : configuration.getAttributeNames()) {
-			Value attrValue = configuration.getAttribute(attrName);
+		for (final String attrName : configuration.getAttributeNames()) {
+			final Value attrValue = configuration.getAttribute(attrName);
 			attributeMap.put(attrName, attrValue == null ? "" : attrValue.getRaw());
 		}
 		return attributeMap;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public void setAttributeValue(final String attrName, final String attrValue) throws JSONException {
 		if (StringUtils.isEmpty(attrName))
@@ -86,10 +82,10 @@ public class ConfigInfo implements ConfigInfoMBean {
 		final Artefact artefact = ConfigurationRepository.INSTANCE.getArtefact(configName);
 		if (artefact == null)
 			throw new IllegalArgumentException("No such artefact: " + configName);
-		List<? extends ParsedAttribute<?>> attList = JsonParser.parse(attrName, attrValue, dynamicEnvironment);
+		final List<? extends ParsedAttribute<?>> attList = JsonParser.parse(attrName, attrValue, dynamicEnvironment);
 		if (attList == null || attList.isEmpty())
 			throw new JSONException("Nothing to parse. Please fill out attribute name and value.");
-		ParsedAttribute<?> parsedAttribute = attList.get(0);
+		final ParsedAttribute<?> parsedAttribute = attList.get(0);
 		artefact.addAttributeValue(attrName, parsedAttribute.getValue(), dynamicEnvironment);
 		ConfigurationRepository.INSTANCE.updateArtefact(artefact);
 	}

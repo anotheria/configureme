@@ -25,7 +25,7 @@ public class IncludeConfig {
 	/**
 	 * Usually you don't need to store the environment, its made here, to make the debug messages more verbose.
 	 */
-	private Environment environment;
+	private final Environment environment;
 
 	public IncludeConfig(Environment anEnvironment) {
 		environment = anEnvironment;

@@ -17,7 +17,7 @@ public class LocaleBasedEnvironment implements Environment{
 	/**
 	 * The internal locale.
 	 */
-	private Locale locale;
+	private final Locale locale;
 	
 	/**
 	 * Creates a new environment from a given Locale.
@@ -31,7 +31,8 @@ public class LocaleBasedEnvironment implements Environment{
 	
 	/**
 	 * Creates a new LocaleBasedEnvironment from the Builder.
-	 * @param builder
+	 *
+	 * @param builder {@link Builder}
 	 */
 	private LocaleBasedEnvironment(Builder builder){
 		locale = new Locale(builder.language, builder.country, builder.variant);
@@ -66,7 +67,7 @@ public class LocaleBasedEnvironment implements Environment{
 
 		/**
 		 * Creates a new builder, preinitialized by the given locale.
-		 * @param aLocale
+		 * @param aLocale {@link Locale}
 		 */
 		public Builder(Locale aLocale){
 			language = aLocale.getLanguage();
@@ -107,30 +108,25 @@ public class LocaleBasedEnvironment implements Environment{
 		
 	}
 	
-	/** {@inheritDoc} */
 	@Override
 	public String toString(){
 		return locale.toString();
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public String expandedStringForm(){
 		return toString();
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public boolean isReduceable() {
 		return !isEmpty(locale.getLanguage());
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public Environment reduce() {
-		if (!isEmpty(locale.getVariant())){
+		if (!isEmpty(locale.getVariant()))
 			return new LocaleBasedEnvironment(new Locale(locale.getLanguage(), locale.getCountry(), reduceVariant(locale.getVariant())));
-		}
 		
 		if (!isEmpty(locale.getCountry()))
 			return new LocaleBasedEnvironment(new Locale(locale.getLanguage()));
@@ -147,7 +143,7 @@ public class LocaleBasedEnvironment implements Environment{
 	 * @param variant the variant to reduce
 	 * @return reduced variant
 	 */
-	private static String reduceVariant(String variant){
+	private static String reduceVariant(final String variant){
 		if (isEmpty(variant))
 			throw new AssertionError("Shouldn't happen, can't reduce non existent variant");
 		
@@ -176,8 +172,8 @@ public class LocaleBasedEnvironment implements Environment{
 		return o instanceof LocaleBasedEnvironment && ((LocaleBasedEnvironment)o).locale.equals(locale);
 	}
 	
-	/** {@inheritDoc} */
-	@Override public int hashCode(){
+	@Override
+	public int hashCode(){
 		return locale == null ? 42 : locale.hashCode();
 	}
 }

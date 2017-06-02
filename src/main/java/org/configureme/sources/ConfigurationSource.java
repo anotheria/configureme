@@ -19,21 +19,21 @@ public class ConfigurationSource {
 	/**
 	 * The key for the underlying source.
 	 */
-	private ConfigurationSourceKey key;
+	private final ConfigurationSourceKey key;
 	/**
 	 * A list of listeners.
 	 */
-	private List<ConfigurationSourceListener> listeners;
+	private final List<ConfigurationSourceListener> listeners;
 	/**
 	 * Last detected change timestamp.
 	 */
 	private long lastChangeTimestamp;
-	
+
 	/**
 	 * Logger.
 	 */
-	private static Logger log = LoggerFactory.getLogger(ConfigurationSource.class);
-	
+	private static final Logger log = LoggerFactory.getLogger(ConfigurationSource.class);
+
 	/**
 	 * Creates a new configuration source.
 	 *
@@ -45,13 +45,13 @@ public class ConfigurationSource {
 		lastChangeTimestamp = System.currentTimeMillis();
 		listeners.add(ConfigurationRepository.INSTANCE);
 	}
-	
+
 	/**
 	 * Adds a listener to this source.
 	 *
 	 * @param listener a listener to add
 	 */
-	public void addListener(ConfigurationSourceListener listener){
+	public void addListener(final ConfigurationSourceListener listener){
 		synchronized(listeners){
 			listeners.add(listener);
 		}
@@ -61,15 +61,13 @@ public class ConfigurationSource {
 	 *
 	 * @param listener a listener to remove
 	 */
-	public void removeListener(ConfigurationSourceListener listener){
+	public void removeListener(final ConfigurationSourceListener listener){
 		synchronized(listeners){
 			listeners.remove(listener);
 		}
 	}
-	
-	/** {@inheritDoc} */
-	@Override public String toString(){
 
+	@Override public String toString(){
         return "ConfigurationSource "+key+", listeners: "+listeners.size()+", "+ DateUtils.toISO8601String(lastChangeTimestamp);
 	}
 
@@ -80,7 +78,7 @@ public class ConfigurationSource {
 	 */
 	public long getLastChangeTimestamp() {
 		return lastChangeTimestamp;
-		
+
 	}
 
 	/**
@@ -91,7 +89,7 @@ public class ConfigurationSource {
 	public ConfigurationSourceKey getKey(){
 		return key;
 	}
-	
+
 	/**
 	 * Returns true if this source's change timestamp is older as the given timestamp.
 	 *
@@ -101,19 +99,19 @@ public class ConfigurationSource {
 	public boolean isOlderAs(long sourceChangeTimestamp){
 		return lastChangeTimestamp < sourceChangeTimestamp;
 	}
-	
+
 	/**
 	 * Called by the ConfigurationSourceRegistry if a change in the underlying source is detected.
 	 *
 	 * @param timestamp a long.
 	 */
-	public void fireUpdateEvent(long timestamp){
+	public void fireUpdateEvent(final long timestamp){
 		synchronized(listeners){
-			for (ConfigurationSourceListener listener : listeners){
+			for (final ConfigurationSourceListener listener : listeners){
 				try{
 					log.debug("Calling configurationSourceUpdated on "+listener);
 					listener.configurationSourceUpdated(this);
-				}catch(Exception e){
+				}catch(final Exception e){
 					log.error("Error in notifying configuration source listener:"+listener, e);
 				}
 			}

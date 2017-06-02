@@ -1,10 +1,10 @@
 package org.configureme.mbean;
 
-import org.configureme.sources.ConfigurationSourceKey;
-import org.configureme.sources.ConfigurationSourceRegistry;
-
 import java.util.HashSet;
 import java.util.Set;
+
+import org.configureme.sources.ConfigurationSourceKey;
+import org.configureme.sources.ConfigurationSourceRegistry;
 
 /**
  * MBean object which contains set of all watches project configuration names.
@@ -16,14 +16,13 @@ public class WatchedConfigFiles implements WatchedConfigFilesMBean {
 	/**
 	 * Configurations names.
 	 */
-	private Set<String> configNames = new HashSet<>();
+	private final Set<String> configNames = new HashSet<>();
 
 
-	/** {@inheritDoc} */
 	@Override
 	public Set<String> getConfigNames() {
-		Set<ConfigurationSourceKey> allSources = ConfigurationSourceRegistry.INSTANCE.getAllSourceKeys();
-		for (ConfigurationSourceKey sourceKey : allSources)
+		final Set<ConfigurationSourceKey> allSources = ConfigurationSourceRegistry.INSTANCE.getAllSourceKeys();
+		for (final ConfigurationSourceKey sourceKey : allSources)
 			configNames.add(sourceKey.getName());
 		return configNames;
 	}

@@ -20,21 +20,21 @@ public class Artefact {
 	/**
 	 * The name of the configuration and therefore the name of the artefact.
 	 */
-	private String name;
+	private final String name;
 	/**
 	 * The attribute map.
 	 */
-	private Map<String, Attribute> attributes;
+	private final Map<String, Attribute> attributes;
 	/**
 	 * Content map.
 	 */
-	private Map<Environment, Map<String, Object>> contentMap;
+	private final Map<Environment, Map<String, Object>> contentMap;
 
 	/**
 	 * External configurations that was included in current configuration
 	 * this field use for reconfiguration of the current configuration
 	 */
-	private List<ConfigurationSourceKey> externalConfigurations;
+	private final List<ConfigurationSourceKey> externalConfigurations;
 
 	/**
 	 * Creates a new Artefact with the given name.
@@ -49,7 +49,7 @@ public class Artefact {
 	}
 
 	/**
-	 * <p>Getter for the field <code>externalConfigurations</code>.</p>
+	 * <p>Getter for the field {@code externalConfigurations}.</p>
 	 *
 	 * @return a {@link java.util.List} object.
 	 */
@@ -74,8 +74,8 @@ public class Artefact {
 	 * @param attributeName a {@link java.lang.String} object.
 	 * @return the attribute with the given name
 	 */
-	public Attribute getAttribute(String attributeName) {
-		Attribute a = attributes.get(attributeName);
+	public Attribute getAttribute(final String attributeName) {
+		final Attribute a = attributes.get(attributeName);
 		if (a == null)
 			throw new IllegalArgumentException("Attribute " + attributeName + " doesn't exists");
 		return a;
@@ -88,7 +88,7 @@ public class Artefact {
 	 * @param attributeValue the value of the attribute in the given environment.
 	 * @param in             the environment in which the attribute value applies
 	 */
-	public void addAttributeValue(String attributeName, Value attributeValue, Environment in) {
+	public void addAttributeValue(final String attributeName, final Value attributeValue, Environment in) {
 		if (in == null)
 			in = GlobalEnvironment.INSTANCE;
 		Attribute attr = attributes.get(attributeName);
@@ -117,7 +117,6 @@ public class Artefact {
 		return this.contentMap;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return name + ": " + attributes;
@@ -138,7 +137,6 @@ public class Artefact {
 	 * @return names of the contained attributes
 	 */
 	public List<String> getAttributeNames() {
-		List<String> names = new ArrayList<>(attributes.keySet());
-		return names;
+		return new ArrayList<>(attributes.keySet());
 	}
 }

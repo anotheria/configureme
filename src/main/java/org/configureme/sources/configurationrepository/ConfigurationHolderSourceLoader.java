@@ -18,27 +18,24 @@ public class ConfigurationHolderSourceLoader implements SourceLoader {
     private static final Logger log = LoggerFactory.getLogger(ConfigurationHolderSourceLoader.class);
 
 
-    /** {@inheritDoc} */
     @Override
-    public boolean isAvailable(ConfigurationSourceKey key) {
+    public boolean isAvailable(final ConfigurationSourceKey key) {
         if (key == null) {
             throw new IllegalArgumentException("isAvailable(): ConfigurationSourceKey is null");
         }
         return ConfigurationsHolder.INSTANCE.isConfigurationWithNameExist(key.getName());
     }
 
-    /** {@inheritDoc} */
     @Override
-    public long getLastChangeTimestamp(ConfigurationSourceKey key) {
+    public long getLastChangeTimestamp(final ConfigurationSourceKey key) {
         if (key == null) {
             throw new IllegalArgumentException("getLastChangeTimestamp(): ConfigurationSourceKey is null");
         }
         return ConfigurationsHolder.INSTANCE.getConfigurationTimestamp(key.getName());
     }
 
-    /** {@inheritDoc} */
     @Override
-    public String getContent(ConfigurationSourceKey key) {
+    public String getContent(final ConfigurationSourceKey key) {
         if (key.getType() != ConfigurationSourceKey.Type.REPOSITORY) {
             throw new IllegalStateException("Can only get configuration for type: " + ConfigurationSourceKey.Type.REPOSITORY);
         }

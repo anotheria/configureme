@@ -96,7 +96,7 @@ public class ConfigurationSourceKey {
 	}
 
 	/**
-	 * <p>Getter for the field <code>type</code>.</p>
+	 * <p>Getter for the field {@code type}.</p>
 	 *
 	 * @return a {@link org.configureme.sources.ConfigurationSourceKey.Type} object.
 	 */
@@ -104,7 +104,7 @@ public class ConfigurationSourceKey {
 		return type;
 	}
 	/**
-	 * <p>Setter for the field <code>type</code>.</p>
+	 * <p>Setter for the field {@code type}.</p>
 	 *
 	 * @param type a {@link org.configureme.sources.ConfigurationSourceKey.Type} object.
 	 */
@@ -117,15 +117,11 @@ public class ConfigurationSourceKey {
 	 * @param defType a {@link org.configureme.sources.ConfigurationSourceKey.Type} object.
 	 * @param toChange a {@link org.configureme.sources.ConfigurationSourceKey.Type} object.
 	 */
-	public void setTypeIfNotDefault(Type defType, Type toChange){
-		if(defType != Type.FILE){
-            this.type = defType;
-        } else {
-            this.type = toChange;
-        }
+	public void setTypeIfNotDefault(final Type defType, final Type toChange){
+		this.type = defType != Type.FILE  ? defType : toChange;
 	}
 	/**
-	 * <p>Getter for the field <code>format</code>.</p>
+	 * <p>Getter for the field {@code format}.</p>
 	 *
 	 * @return a {@link org.configureme.sources.ConfigurationSourceKey.Format} object.
 	 */
@@ -133,7 +129,7 @@ public class ConfigurationSourceKey {
 		return format;
 	}
 	/**
-	 * <p>Setter for the field <code>format</code>.</p>
+	 * <p>Setter for the field {@code format}.</p>
 	 *
 	 * @param format a {@link org.configureme.sources.ConfigurationSourceKey.Format} object.
 	 */
@@ -141,7 +137,7 @@ public class ConfigurationSourceKey {
 		this.format = format;
 	}
 	/**
-	 * <p>Getter for the field <code>name</code>.</p>
+	 * <p>Getter for the field {@code name}.</p>
 	 *
 	 * @return a {@link java.lang.String} object.
 	 */
@@ -149,7 +145,7 @@ public class ConfigurationSourceKey {
 		return name;
 	}
 	/**
-	 * <p>Setter for the field <code>name</code>.</p>
+	 * <p>Setter for the field {@code name}.</p>
 	 *
 	 * @param name a {@link java.lang.String} object.
 	 */
@@ -157,7 +153,7 @@ public class ConfigurationSourceKey {
 		this.name = name;
 	}
 	/**
-	 * <p>Getter for the field <code>remoteConfigurationRepositoryUrl</code>.</p>
+	 * <p>Getter for the field {@code remoteConfigurationRepositoryUrl}.</p>
 	 *
 	 * @return a {@link java.lang.String} object.
 	 */
@@ -165,7 +161,7 @@ public class ConfigurationSourceKey {
 		return remoteConfigurationRepositoryUrl;
 	}
 	/**
-	 * <p>Setter for the field <code>remoteConfigurationRepositoryUrl</code>.</p>
+	 * <p>Setter for the field {@code remoteConfigurationRepositoryUrl}.</p>
 	 *
 	 * @param remoteConfigurationRepositoryUrl a {@link java.lang.String} object.
 	 */
@@ -173,13 +169,13 @@ public class ConfigurationSourceKey {
 		this.remoteConfigurationRepositoryUrl = remoteConfigurationRepositoryUrl;
 	}
 
-	/** {@inheritDoc} */
-	@Override public String toString(){
+	@Override
+	public String toString(){
         return type +"::"+ name +"::"+ format;
 	}
 	
-	/** {@inheritDoc} */
-	@Override public boolean equals(Object o){
+	@Override
+	public boolean equals(Object o){
 		return o instanceof ConfigurationSourceKey ? 
 				((ConfigurationSourceKey)o).type == type &&
 				((ConfigurationSourceKey)o).format == format &&
@@ -187,8 +183,8 @@ public class ConfigurationSourceKey {
 					false;
 	}
 	
-	/** {@inheritDoc} */
-	@Override public int hashCode(){
+	@Override
+	public int hashCode(){
 		int result = 17;
 		result = 31 * result + type.hashCode();
 		result = 31 * result + format.hashCode();
@@ -202,7 +198,7 @@ public class ConfigurationSourceKey {
 	 * @param name name of the property file.
 	 * @return a new configuration source key instance for property files
 	 */
-	public static final ConfigurationSourceKey propertyFile(String name){
+	public static final ConfigurationSourceKey propertyFile(final String name){
 		return new ConfigurationSourceKey(Type.FILE, Format.PROPERTIES, name);
 	}
 
@@ -212,7 +208,7 @@ public class ConfigurationSourceKey {
 	 * @param name name of the xml file.
 	 * @return a new configuration source key instance for xml files
 	 */
-	public static final ConfigurationSourceKey xmlFile(String name){
+	public static final ConfigurationSourceKey xmlFile(final String name){
 		return new ConfigurationSourceKey(Type.FILE, Format.XML, name);
 	}
 
@@ -222,7 +218,7 @@ public class ConfigurationSourceKey {
 	 * @param name name of the json file.
 	 * @return a new configuration source key instance for json files
 	 */
-	public static final ConfigurationSourceKey jsonFile(String name){
+	public static final ConfigurationSourceKey jsonFile(final String name){
 		return new ConfigurationSourceKey(Type.FILE, Format.JSON, name);
 	}
 

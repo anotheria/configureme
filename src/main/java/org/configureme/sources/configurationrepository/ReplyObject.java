@@ -26,20 +26,19 @@ public class ReplyObject {
     /**
      * Optional message in case call failed (exception message).
      */
-    @XmlElement(required = false, nillable = false)
+    @XmlElement
     private String message;
 
     /**
      * Map with results object.
      */
     @XmlElement
-    private Map<String, Object> results = new HashMap<>();
+    private final Map<String, Object> results = new HashMap<>();
 
     /**
      * Creates a new empty result object.
      */
     public ReplyObject() {
-
     }
 
     /**
@@ -69,8 +68,8 @@ public class ReplyObject {
      * @param result a {@link java.lang.Object} object.
      * @return a {@link org.configureme.sources.configurationrepository.ReplyObject} object.
      */
-    public static ReplyObject success(String name, Object result) {
-        ReplyObject ret = new ReplyObject(name, result);
+    public static ReplyObject success(final String name, final Object result) {
+        final ReplyObject ret = new ReplyObject(name, result);
         ret.success = true;
         return ret;
     }
@@ -81,7 +80,7 @@ public class ReplyObject {
      * @return a {@link org.configureme.sources.configurationrepository.ReplyObject} object.
      */
     public static ReplyObject success() {
-        ReplyObject ret = new ReplyObject();
+        final ReplyObject ret = new ReplyObject();
         ret.success = true;
         return ret;
     }
@@ -92,8 +91,8 @@ public class ReplyObject {
      * @param message a {@link java.lang.String} object.
      * @return a {@link org.configureme.sources.configurationrepository.ReplyObject} object.
      */
-    public static ReplyObject error(String message) {
-        ReplyObject ret = new ReplyObject();
+    public static ReplyObject error(final String message) {
+        final ReplyObject ret = new ReplyObject();
         ret.success = false;
         ret.message = message;
         return ret;
@@ -105,17 +104,16 @@ public class ReplyObject {
      * @param exc a {@link java.lang.Throwable} object.
      * @return a {@link org.configureme.sources.configurationrepository.ReplyObject} object.
      */
-    public static ReplyObject error(Throwable exc) {
-        ReplyObject ret = new ReplyObject();
+    public static ReplyObject error(final Throwable exc) {
+        final ReplyObject ret = new ReplyObject();
         ret.success = false;
         ret.message = exc.getClass().getSimpleName() + ": " + exc.getMessage();
         return ret;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String toString() {
-        StringBuilder ret = new StringBuilder("ReplyObject ");
+        final StringBuilder ret = new StringBuilder("ReplyObject ");
         ret.append("Success: ").append(success);
         if (message != null) {
             ret.append(", Message: ").append(message);
@@ -125,7 +123,7 @@ public class ReplyObject {
     }
 
     /**
-     * <p>Getter for the field <code>message</code>.</p>
+     * <p>Getter for the field {@code message}.</p>
      *
      * @return a {@link java.lang.String} object.
      */
@@ -143,7 +141,7 @@ public class ReplyObject {
     }
 
     /**
-     * <p>Setter for the field <code>success</code>.</p>
+     * <p>Setter for the field {@code success}.</p>
      *
      * @param success a boolean.
      */
@@ -152,13 +150,12 @@ public class ReplyObject {
     }
 
     /**
-     * <p>Getter for the field <code>results</code>.</p>
+     * <p>Getter for the field {@code results}.</p>
      *
      * @return a {@link java.util.Map} object.
      */
     public Map<String, Object> getResults() {
         return results;
     }
-
 
 }

@@ -26,22 +26,22 @@ public final class StringUtils {
 	}
 
 	/**
-	 * Is {@link java.lang.String} value <code>null</code> or empty (length is '0' after trim).
+	 * Is {@link java.lang.String} value {@code null} or empty (length is '0' after trim).
 	 *
 	 * @param value
 	 *            {@link java.lang.String} value
-	 * @return <code>true</code> if empty or <code>false</code>
+	 * @return {@code true} if empty or {@code false}
 	 */
 	public static boolean isEmpty(final String value) {
 		return value == null || value.trim().isEmpty();
 	}
 
 	/**
-	 * Is {@link java.lang.String} value not <code>null</code> and not empty (length not '0' after trim).
+	 * Is {@link java.lang.String} value not {@code null} and not empty (length not '0' after trim).
 	 *
 	 * @param value
 	 *            {@link java.lang.String} value
-	 * @return <code>true</code> if not empty or <code>false</code>
+	 * @return {@code true} if not empty or {@code false}
 	 */
 	public static boolean isNotEmpty(final String value) {
 		return !isEmpty(value);
@@ -57,24 +57,19 @@ public final class StringUtils {
 	 * @return {@link java.util.Vector} with {@link java.lang.String}
 	 */
 	public static Vector<String> tokenize2vector(final String source, final char delimiter) {
-		Vector<String> v;
-		v = new Vector<>();
+		final Vector<String> v = new Vector<>();
 		StringBuilder currentS = new StringBuilder();
 		char c;
 		for (int i = 0; i < source.length(); i++) {
 			c = source.charAt(i);
 			if (c == delimiter) {
-				if (currentS.length() > 0) {
-					v.addElement(currentS.toString());
-				} else {
-					v.addElement("");
-				}
-				currentS = new StringBuilder();
+				v.addElement(currentS.length() > 0 ? currentS.toString() : "");
+				currentS = new StringBuilder(); //TODO: should be use one SB and not create another one
 			} else {
 				currentS.append(c);
 			}
 		}
-		if (currentS != null && currentS.length() > 0)
+		if (currentS.length() > 0)
 			v.addElement(currentS.toString());
 		return v;
 	}
@@ -90,11 +85,10 @@ public final class StringUtils {
 	 * @return array of {@link java.lang.String}
 	 */
 	public static String[] tokenize(final String source, final char delimiter) {
-		String[] ret;
-		Vector<String> v = tokenize2vector(source, delimiter);
-		ret = new String[v.size()];
+		final Vector<String> v = tokenize2vector(source, delimiter);
+		final String[] ret = new String[v.size()];
 		for (int i = 0; i < v.size(); i++) {
-			ret[i] = (String) v.elementAt(i);
+			ret[i] = v.elementAt(i);
 		}
 		return ret;
 	}
@@ -111,7 +105,7 @@ public final class StringUtils {
 	 * @return {@link java.lang.String}
 	 */
 	public static String getStringBefore(final String src, final String toSearch, final int start) {
-		int ind = src.indexOf(toSearch, start);
+		final int ind = src.indexOf(toSearch, start);
 		if (ind == -1)
 			return "";
 
@@ -143,7 +137,7 @@ public final class StringUtils {
 	 * @return {@link java.lang.String}
 	 */
 	public static String getStringAfter(final String src, final String toSearch, final int start) {
-		int ind = src.indexOf(toSearch, start);
+		final int ind = src.indexOf(toSearch, start);
 		if (ind == -1)
 			return "";
 		return src.substring(ind + toSearch.length());
@@ -275,7 +269,7 @@ public final class StringUtils {
 	 * @return {@link java.util.List} of {@link java.lang.String}
 	 */
 	public static List<String> extractTags(final String source, final char tagStart, final char tagEnd) {
-		final ArrayList<String> ret = new ArrayList<>();
+		final List<String> ret = new ArrayList<>();
 		String currentTag = null;
 		boolean inTag = false;
 		char c;
@@ -311,7 +305,7 @@ public final class StringUtils {
 	 * @return {@link java.lang.String} after replacement
 	 */
 	public static String replaceOnce(final String src, final String toReplace, final String with) {
-		int index = src.indexOf(toReplace);
+		final int index = src.indexOf(toReplace);
 		if (index == -1)
 			return src;
 

@@ -1,5 +1,20 @@
 package org.configureme;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.configureme.annotations.AfterConfiguration;
 import org.configureme.annotations.AfterInitialConfiguration;
@@ -36,31 +51,17 @@ import org.configureme.sources.ConfigurationSourceKey.Format;
 import org.configureme.sources.ConfigurationSourceKey.Type;
 import org.configureme.sources.ConfigurationSourceRegistry;
 import org.configureme.util.ReflectionUtils;
+import org.configureme.util.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Array;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
-
 /**
  * Configuration manager (this is the one YOU must use) is a utility class for retrieval of configurations and automatical configurations of components.
  * Configured components are 'watched', any changes in the configuration source (file) lead to a reconfiguration.
  * The configuration manager also supports retrieval of the configurations in different environments. Its usually a good idea to specify a <b>defaultEnvironment</b>
- * by <code>-Dconfigureme.defaultEnvironment=a_b_c</code>...
+ * by {@code -Dconfigureme.defaultEnvironment=a_b_c}...
  *
  * @author lrosenberg
  * @version $Id: $Id
@@ -98,7 +99,7 @@ public enum ConfigurationManager {
 	/**
 	 * The format of the configuration file. At the moment only json is supported. The format of the configuration file decides which parser is used to parse the configuration.
 	 */
-	private ConfigurationSourceKey.Format defaultConfigurationSourceFormat = Format.JSON;
+	private final ConfigurationSourceKey.Format defaultConfigurationSourceFormat = Format.JSON;
     /**
      * Externally provided url for remote configuration repository.
      */
@@ -106,12 +107,12 @@ public enum ConfigurationManager {
 	/**
 	 * A map which contains configuration parser for different formats.
 	 */
-	private ConcurrentHashMap<ConfigurationSourceKey.Format, ConfigurationParser> parsers;
+	private final Map<Format, ConfigurationParser> parsers = new ConcurrentHashMap<>();
 
 	/**
 	 * Cache for object in oder to cover situation with loops in ConfigureAlso
 	 */
-	private ThreadLocal<Map<String, Map<Environment, Object>>> localCache = new ThreadLocal<>();
+	private final ThreadLocal<Map<String, Map<Environment, Object>>> localCache = new ThreadLocal<>();
 	/**
 	 * Annotations to call before initial configuration.
 	 */
@@ -160,14 +161,13 @@ public enum ConfigurationManager {
 	/**
 	 * Initializes the one and only instance of the ConfigurationManager.
 	 */
-	private ConfigurationManager() {
+	ConfigurationManager() {
 		MBeanRegisterUtil.regMBean(new WatchedConfigFiles());
-		String defEnvironmentAsString = System.getProperty(PROP_NAME_DEFAULT_ENVIRONMENT, "");
+		final String defEnvironmentAsString = System.getProperty(PROP_NAME_DEFAULT_ENVIRONMENT, "");
 		defaultEnvironment = DynamicEnvironment.parse(defEnvironmentAsString);
         setExternalConfigurationRepository();
 		setConfigurationRepository();
 
-		parsers = new ConcurrentHashMap<>();
 		parsers.put(Format.JSON, new JsonParser());
 		parsers.put(Format.PROPERTIES, new PropertiesParser());
 	}
@@ -181,9 +181,7 @@ public enum ConfigurationManager {
 	 * @return true if object is properly and can be configured
 	 */
 	public boolean isConfigurable(Object o) {
-
-		Class<?> clazz = o.getClass();
-		return clazz.isAnnotationPresent(ConfigureMe.class);
+		return o.getClass().isAnnotationPresent(ConfigureMe.class);
 	}
 
 	/**
@@ -201,7 +199,7 @@ public enum ConfigurationManager {
 	 * @param o object to configure
 	 * @param format a {@link org.configureme.sources.ConfigurationSourceKey.Format} object.
 	 */
-	public void configure(Object o, Format format) {
+	public void configure(final Object o, final Format format) {
 		configure(o, defaultEnvironment, format);
 	}
 
@@ -211,7 +209,7 @@ public enum ConfigurationManager {
 	 * @param o    object to configure
 	 * @param name configuration name
 	 */
-	public void configureAs(Object o, String name) {
+	public void configureAs(final Object o, final String name) {
 		configureAs(o, defaultEnvironment, name, defaultConfigurationSourceFormat);
 	}
 
@@ -221,7 +219,7 @@ public enum ConfigurationManager {
 	 * @param o    object to configure
 	 * @param name configuration name
 	 */
-	public void configureBeanAs(Object o, String name) {
+	public void configureBeanAs(final Object o, final String name) {
 		configurePojoAs(o, name);
 	}
 
@@ -232,7 +230,7 @@ public enum ConfigurationManager {
 	 * @param name configuration name
 	 * @param in   environment
 	 */
-	public void configureBeanAsIn(Object o, String name, final Environment in) {
+	public void configureBeanAsIn(final Object o, final String name, final Environment in) {
 		configurePojoAsIn(o, name, in);
 	}
 
@@ -283,7 +281,7 @@ public enum ConfigurationManager {
 			}
 		};
 
-		ConfigurationSourceKey configSourceKey = new ConfigurationSourceKey();
+		final ConfigurationSourceKey configSourceKey = new ConfigurationSourceKey();
 		configSourceKey.setFormat(Format.JSON);
 		configSourceKey.setTypeIfNotDefault(defaultConfigurationSourceType, ann.type());
 		configSourceKey.setName(name);
@@ -300,14 +298,14 @@ public enum ConfigurationManager {
 	 * @param configurationName name of the configuration.
 	 * @param format a {@link org.configureme.sources.ConfigurationSourceKey.Format} object.
 	 */
-	public void configureAs(Object o, Environment in, String configurationName, Format format) {
+	public void configureAs(final Object o, final Environment in, final String configurationName, final Format format) {
 		if (!isConfigurable(o))
 			throw new IllegalArgumentException("Class " + o.getClass() + " is not annotated as ConfigureMe, called with: " + o + ", class: " + o.getClass());
 
-		Class<?> clazz = o.getClass();
+		final Class<?> clazz = o.getClass();
 		ConfigureMe ann = clazz.getAnnotation(ConfigureMe.class);
 
-		ConfigurationSourceKey configSourceKey = new ConfigurationSourceKey();
+		final ConfigurationSourceKey configSourceKey = new ConfigurationSourceKey();
 		configSourceKey.setFormat(format);
 		configSourceKey.setTypeIfNotDefault(defaultConfigurationSourceType, ann.type());
 		configSourceKey.setName(configurationName);
@@ -323,12 +321,11 @@ public enum ConfigurationManager {
 	 * @param configSourceKey source definition.
 	 * @param in a {@link org.configureme.Environment} object.
 	 */
-	public void configureAs(Object o, Environment in, ConfigurationSourceKey configSourceKey) {
+	public void configureAs(final Object o, final Environment in, final ConfigurationSourceKey configSourceKey) {
 		if (!isConfigurable(o))
 			throw new IllegalArgumentException("Class " + o.getClass() + " is not annotated as ConfigureMe, called with: " + o + ", class: " + o.getClass());
 
-		Class<?> clazz = o.getClass();
-		ConfigureMe ann = clazz.getAnnotation(ConfigureMe.class);
+		ConfigureMe ann = o.getClass().getAnnotation(ConfigureMe.class);
 
 		configureInitially(configSourceKey, o, in, ann);
 	}
@@ -339,7 +336,7 @@ public enum ConfigurationManager {
 	 * @param o  object to configure
 	 * @param in environment
 	 */
-	public void configure(Object o, Environment in) {
+	public void configure(final Object o, final Environment in) {
 		configure(o, in, defaultConfigurationSourceFormat);
 	}
 
@@ -350,20 +347,13 @@ public enum ConfigurationManager {
 	 * @param in the environment for the configuration
 	 * @param format a {@link org.configureme.sources.ConfigurationSourceKey.Format} object.
 	 */
-	public void configure(Object o, Environment in, Format format) {
-
+	public void configure(final Object o, final Environment in, final Format format) {
 		if (!isConfigurable(o))
 			throw new IllegalArgumentException("Class " + o.getClass() + " is not annotated as ConfigureMe, called with: " + o + ", class: " + o.getClass());
 
-		Class<?> clazz = o.getClass();
-
-		String configurationName = "";
-		ConfigureMe ann = clazz.getAnnotation(ConfigureMe.class);
-		if (ann.name() == null || ann.name().isEmpty())
-			configurationName = extractConfigurationNameFromClassName(clazz);
-		else
-			configurationName = ann.name();
-
+		final Class<?> clazz = o.getClass();
+		final ConfigureMe ann = clazz.getAnnotation(ConfigureMe.class);
+		final String configurationName = StringUtils.isEmpty(ann.name()) ? extractConfigurationNameFromClassName(clazz) : ann.name();
 		configureAs(o, in, configurationName, format);
 	}
 
@@ -371,7 +361,7 @@ public enum ConfigurationManager {
      * This method is used to check and set an external configuration repository url for further processing.
      */
     private void setExternalConfigurationRepository() {
-        String rmtConfRepUrl = System.getProperty(PROP_NAME_CONFIGURATION_REPOSITORY);
+        final String rmtConfRepUrl = System.getProperty(PROP_NAME_CONFIGURATION_REPOSITORY);
 		if(rmtConfRepUrl != null){
             remoteConfigurationRepositoryUrl = rmtConfRepUrl;
             defaultConfigurationSourceType = Type.REST;
@@ -382,8 +372,9 @@ public enum ConfigurationManager {
 	 * Check and set if configureme used in configuration repository
 	 */
 	private void setConfigurationRepository() {
-		String usedForConfRep = System.getProperty(PROP_NAME_USED_IN_CONFIGURATION_REPOSITORY);
-		if(usedForConfRep != null) defaultConfigurationSourceType = Type.REPOSITORY;
+		final String usedForConfRep = System.getProperty(PROP_NAME_USED_IN_CONFIGURATION_REPOSITORY);
+		if(usedForConfRep != null)
+			defaultConfigurationSourceType = Type.REPOSITORY;
 	}
 
 	/**
@@ -394,12 +385,12 @@ public enum ConfigurationManager {
 	 * @param in  the environment
 	 * @param ann the configureme annotation instance with which o.getClass() was annotated.
 	 */
-	private void configureInitially(ConfigurationSourceKey key, Object o, Environment in, ConfigureMe ann) {
+	private void configureInitially(final ConfigurationSourceKey key, final Object o, final Environment in, final ConfigureMe ann) {
 
 		configure(key, o, in, CALL_BEFORE_INITIAL_CONFIGURATION, CALL_AFTER_INITIAL_CONFIGURATION, ann);
 
 		if (ann.watch()) {
-			ConfigurableWrapper wrapper = new ConfigurableWrapper(key, o, in);
+			final ConfigurableWrapper wrapper = new ConfigurableWrapper(key, o, in);
 			ConfigurationSourceRegistry.INSTANCE.addWatchedConfigurable(wrapper);
 			MBeanRegisterUtil.regMBean(new ConfigInfo(key.getName()), key.getName());
 		}
@@ -413,26 +404,26 @@ public enum ConfigurationManager {
 	 * @param methods
 	 * @param annotationClasses
 	 */
-	private void callAnnotations(Object configurable, Method[] methods, Class<? extends Annotation>[] annotationClasses) {
+	private void callAnnotations(final Object configurable, final Method[] methods, final Class<? extends Annotation>[] annotationClasses) {
 		//check for annotations to call and call 'before' annotations
-		for (Method m : methods) {
+		for (final Method m : methods) {
 			//System.out.println("Checking methid "+m);
-			for (Class<? extends Annotation> anAnnotationClass : annotationClasses) {
+			for (final Class<? extends Annotation> anAnnotationClass : annotationClasses) {
 				//System.out.println("\tChecking annotation "+anAnnotationClass);
-				Annotation anAnnotation = m.getAnnotation(anAnnotationClass);
+				final Annotation anAnnotation = m.getAnnotation(anAnnotationClass);
 				//System.out.println("\t\t-->"+anAnnotation);
-				if (anAnnotation != null) {
-					try {
-						m.invoke(configurable);
-					} catch (IllegalAccessException e) {
-						log.error("callAnnotations(" + Arrays.toString(methods) + ", " + Arrays.toString(annotationClasses) + ')', e);
-						throw new AssertionError("Error declaration in method " + m + ", wrong declaration (public void " + m.getName() + " expected)? - " + e.getMessage());
-					} catch (InvocationTargetException e) {
-						log.error("callAnnotations(Exception in annotated method: " + m + ')', e);
-						throw new RuntimeException("Exception in annotated method: " + e.getMessage(), e);
-					}
-				}
+				if (anAnnotation == null)
+					continue;
 
+				try {
+					m.invoke(configurable);
+				} catch (final IllegalAccessException e) {
+					log.error("callAnnotations(" + Arrays.toString(methods) + ", " + Arrays.toString(annotationClasses) + ')', e);
+					throw new AssertionError("Error declaration in method " + m + ", wrong declaration (public void " + m.getName() + " expected)? - " + e.getMessage());
+				} catch (final InvocationTargetException e) {
+					log.error("callAnnotations(Exception in annotated method: " + m + ')', e);
+					throw new RuntimeException("Exception in annotated method: " + e.getMessage(), e);
+				}
 			}
 		}
 	}
@@ -446,7 +437,7 @@ public enum ConfigurationManager {
 	 * @param callBefore annotations, methods annotated with those will be called prior to the configuration
 	 * @param callAfter  annotations, methods annotated with those will be called after the configuration
 	 */
-	private void configure(ConfigurationSourceKey key, Object o, Environment in, Class<? extends Annotation>[] callBefore, Class<? extends Annotation>[] callAfter, ConfigureMe ann) {
+	private void configure(final ConfigurationSourceKey key, final Object o, final Environment in, Class<? extends Annotation>[] callBefore, final Class<? extends Annotation>[] callAfter, ConfigureMe ann) {
 		Class<?> clazz = o.getClass();
 
 		if (ann == null)
@@ -454,9 +445,9 @@ public enum ConfigurationManager {
 		if (ann == null)
 			throw new AssertionError("An unannotated class shouldn't make it sofar, obj: " + o + " class " + o.getClass());
 
-		boolean configureAllFields = ann.allfields();
+		final boolean configureAllFields = ann.allfields();
 
-		Configuration configuration = getConfiguration(key, in);
+		final Configuration configuration = getConfiguration(key, in);
 		configure(configuration, o, callBefore, callAfter, configureAllFields, in);
 
 		// added all external configuration watchers
@@ -483,48 +474,48 @@ public enum ConfigurationManager {
 	 * @param callAfter          annotations, methods annotated with those will be called after the configuration
 	 * @param configureAllFields specifies whether to set all fields regardless if they are marked configured or not
 	 */
-	private void configure(Configuration config, Object o, Class<? extends Annotation>[] callBefore, Class<? extends Annotation>[] callAfter, boolean configureAllFields, Environment environment) {
+	private void configure(final Configuration config, final Object o, final Class<? extends Annotation>[] callBefore, final Class<? extends Annotation>[] callAfter, final boolean configureAllFields, final Environment environment) {
 		setCachedObject(config.getName(), environment, o);
-		Class<?> clazz = o.getClass();
-		Method[] methods = clazz.getDeclaredMethods();
+		final Class<?> clazz = o.getClass();
+		final Method[] methods = clazz.getDeclaredMethods();
 		callAnnotations(o, methods, callBefore);
 
 		//first set fields
-		List<Field> fields = ReflectionUtils.getAllFields(clazz);
-		for (Field f : fields) {
+		final List<Field> fields = ReflectionUtils.getAllFields(clazz);
+		for (final Field f : fields) {
 			if (f.isAnnotationPresent(ConfigureAlso.class)) {
 				Object externalConfig = null;
 				//TODO: check if constructor exist
 				try {
-					Class<?> externalConfigClass = f.getType();
+					final Class<?> externalConfigClass = f.getType();
 					externalConfig = externalConfigClass.newInstance();
 					if (!externalConfigClass.isAnnotationPresent(ConfigureMe.class))
 						continue;
-					ConfigureMe ann = externalConfigClass.getAnnotation(ConfigureMe.class);
-					Object cachedObject = getCachedObject(ann.name(), environment);
+					final ConfigureMe ann = externalConfigClass.getAnnotation(ConfigureMe.class);
+					final Object cachedObject = getCachedObject(ann.name(), environment);
 					if (cachedObject == null) {
 						ConfigurationManager.INSTANCE.configure(externalConfig, environment);
 						setCachedObject(ann.name(), environment, externalConfig);
 					} else {
 						externalConfig = cachedObject;
 					}
-				} catch (Exception e) {
+				} catch (final Exception e) {
 					log.error("Can't create external config task for class name=" + f.getType().getName());
 				}
 				if (Modifier.isPublic(f.getModifiers())) {
 					try {
 						f.set(o, externalConfig);
-					} catch (Exception e) {
+					} catch (final Exception e) {
 						log.warn(f + ".set(" + o + ", " + externalConfig + ')', e);
 					}
 				} else {
-					String methodName = "set" + f.getName().toUpperCase().charAt(0) + f.getName().substring(1);
+					final String methodName = "set" + f.getName().toUpperCase().charAt(0) + f.getName().substring(1);
 					try {
-						Method toSet = clazz.getMethod(methodName, f.getType());
+						final Method toSet = clazz.getMethod(methodName, f.getType());
 						toSet.invoke(o, externalConfig);
-					} catch (NoSuchMethodException e) {
+					} catch (final NoSuchMethodException e) {
 						log.error("can't find method " + methodName + " (" + f.getType() + ')');
-					} catch (Exception e) {
+					} catch (final Exception e) {
 						log.error("can't set " + f.getName() + " to " + externalConfig + ", because: ", e);
 					}
 				}
@@ -532,24 +523,24 @@ public enum ConfigurationManager {
 			}
 
 			if (f.isAnnotationPresent(Configure.class) || (configureAllFields && !f.isAnnotationPresent(DontConfigure.class))) {
-				String attributeName = f.getName();
-				Value attributeValue = config.getAttribute(attributeName);
+				final String attributeName = f.getName();
+				final Value attributeValue = config.getAttribute(attributeName);
 				if (attributeValue == null)
 					continue;
 				if (Modifier.isPublic(f.getModifiers())) {
 					try {
 						f.set(o, resolveValue(f.getType(), attributeValue, callBefore, callAfter, configureAllFields, environment));
-					} catch (Exception e) {
+					} catch (final Exception e) {
 						log.warn(f + ".set(" + o + ", " + attributeValue + ')', e);
 					}
 				} else {
-					String methodName = "set" + f.getName().toUpperCase().charAt(0) + f.getName().substring(1);
+					final String methodName = "set" + f.getName().toUpperCase().charAt(0) + f.getName().substring(1);
 					try {
-						Method toSet = clazz.getMethod(methodName, f.getType());
+						final Method toSet = clazz.getMethod(methodName, f.getType());
 						toSet.invoke(o, resolveValue(f.getType(), attributeValue, callBefore, callAfter, configureAllFields, environment));
-					} catch (NoSuchMethodException e) {
+					} catch (final NoSuchMethodException e) {
 						log.error("can't find method " + methodName + " (" + f.getType() + ')');
-					} catch (Exception e) {
+					} catch (final Exception e) {
 						log.error("can't set " + attributeName + " to " + attributeValue + ", because: ", e);
 					}
 				}
@@ -557,27 +548,27 @@ public enum ConfigurationManager {
 		}
 		//end set fields
 
-		for (Method method : methods) {
+		for (final Method method : methods) {
 			if (method.isAnnotationPresent(SetAll.class)) {
-				Collection<Entry<String, Value>> entries = config.getEntries();
+				final Collection<Entry<String, Value>> entries = config.getEntries();
 				log.debug("Calling method " + method + " with " + entries);
-				for (Entry<String, Value> entry : entries) {
+				for (final Entry<String, Value> entry : entries) {
 					try {
 						method.invoke(o, entry.getKey(), resolveValue(method.getParameterTypes()[1], entry.getValue(), callBefore, callAfter, configureAllFields, environment));
-					} catch (Exception e) {
+					} catch (final Exception e) {
 						log.warn(method.getName() + "invoke(" + o + ", " + entry.getKey() + ", " + entry.getValue() + ')', e);
 					}
 				}
 			}
 			if (method.isAnnotationPresent(SetIf.class)) {
-				Collection<Entry<String, Value>> entries = config.getEntries();
-				SetIf setIfAnnotation = method.getAnnotation(SetIf.class);
-				for (Entry<String, Value> entry : entries) {
+				final Collection<Entry<String, Value>> entries = config.getEntries();
+				final SetIf setIfAnnotation = method.getAnnotation(SetIf.class);
+				for (final Entry<String, Value> entry : entries) {
 					if (SetIf.ConditionChecker.satisfyCondition(setIfAnnotation, entry.getKey())) {
 						log.debug("Calling method " + method + " with parameters : \"" + entry.getKey() + "\", \"" + entry.getValue() + '"');
 						try {
 							method.invoke(o, entry.getKey(), resolveValue(method.getParameterTypes()[1], entry.getValue(), callBefore, callAfter, configureAllFields, environment));
-						} catch (Exception e) {
+						} catch (final Exception e) {
 							log.warn(method.getName() + "invoke(" + o + ", " + entry.getKey() + ", " + entry.getValue() + ')', e);
 						}
 					}
@@ -585,14 +576,14 @@ public enum ConfigurationManager {
 			}
 			if (method.isAnnotationPresent(Set.class)) {
 				log.debug("method " + method + " is annotated");
-				Set setAnnotation = method.getAnnotation(Set.class);
-				String attributeName = setAnnotation.value();
-				Value attributeValue = config.getAttribute(attributeName);
+				final Set setAnnotation = method.getAnnotation(Set.class);
+				final String attributeName = setAnnotation.value();
+				final Value attributeValue = config.getAttribute(attributeName);
 				if (attributeValue != null) {
 					log.debug("setting " + method.getName() + " to " + attributeValue + " configured by " + attributeName);
 					try {
 						method.invoke(o, resolveValue(method.getParameterTypes()[0], attributeValue, callBefore, callAfter, configureAllFields, environment));
-					} catch (Exception e) {
+					} catch (final Exception e) {
 						log.warn(method.getName() + "invoke(" + o + ", " + attributeValue + ')', e);
 					}
 				}
@@ -610,7 +601,7 @@ public enum ConfigurationManager {
 	 * @param o
 	 * @param in
 	 */
-	void reconfigure(ConfigurationSourceKey key, Object o, Environment in) {
+	void reconfigure(final ConfigurationSourceKey key, final Object o, final Environment in) {
 		configure(key, o, in, CALL_BEFORE_RE_CONFIGURATION, CALL_AFTER_RE_CONFIGURATION, null);
 	}
 
@@ -622,7 +613,7 @@ public enum ConfigurationManager {
 	 * @param configurationName the name of the configuration to check
 	 * @return a configuration snapshot for this configurationname in the global environment
 	 */
-	public Configuration getConfiguration(String configurationName) {
+	public Configuration getConfiguration(final String configurationName) {
 		return getConfiguration(configurationName, defaultEnvironment);
 	}
 
@@ -635,8 +626,8 @@ public enum ConfigurationManager {
 	 * @param in                the environment
 	 * @return a configuration snapshot for this configurationname in the given environment
 	 */
-	public Configuration getConfiguration(String configurationName, Environment in) {
-		ConfigurationSourceKey configSourceKey = new ConfigurationSourceKey();
+	public Configuration getConfiguration(final String configurationName, final Environment in) {
+		final ConfigurationSourceKey configSourceKey = new ConfigurationSourceKey();
 		configSourceKey.setFormat(defaultConfigurationSourceFormat);
 		configSourceKey.setType(defaultConfigurationSourceType);
 		configSourceKey.setName(configurationName);
@@ -651,43 +642,40 @@ public enum ConfigurationManager {
 	 * @param in
 	 * @return
 	 */
-	private Configuration getConfiguration(ConfigurationSourceKey configSourceKey, Environment in) {
+	private Configuration getConfiguration(final ConfigurationSourceKey configSourceKey, final Environment in) {
 
 		//for the first we will hardcode file as config source and json as config format.
-		String configurationName = configSourceKey.getName();
+		final String configurationName = configSourceKey.getName();
 		if (!ConfigurationRepository.INSTANCE.hasConfiguration(configurationName)) {
 			if (!ConfigurationSourceRegistry.INSTANCE.isConfigurationAvailable(configSourceKey)) {
 				throw new IllegalArgumentException("No such configuration: " + configurationName + " (" + configSourceKey + ')');
 			}
 			//reading config
-			String content = ConfigurationSourceRegistry.INSTANCE.readConfigurationSource(configSourceKey);
+			final String content = ConfigurationSourceRegistry.INSTANCE.readConfigurationSource(configSourceKey);
 
-			ConfigurationParser parser = parsers.get(configSourceKey.getFormat());
+			final ConfigurationParser parser = parsers.get(configSourceKey.getFormat());
 			if (parser == null)
 				throw new IllegalArgumentException("Format " + configSourceKey.getFormat() + " is not supported (yet).");
-			ParsedConfiguration pa = null;
+			ParsedConfiguration pa;
 			try {
 				pa = parser.parseConfiguration(configurationName, content);
-			} catch (ConfigurationParserException e) {
+			} catch (final ConfigurationParserException e) {
 				log.error("getConfiguration(" + configurationName + ", " + in + ')', e);
 				throw new IllegalArgumentException(configSourceKey + " is not parseable: " + e.getMessage(), e);
 			}
 			//System.out.println("Parsed "+pa);
-			List<? extends ParsedAttribute<?>> attributes = pa.getAttributes();
-			Artefact art = ConfigurationRepository.INSTANCE.createArtefact(configurationName);
+			final List<? extends ParsedAttribute<?>> attributes = pa.getAttributes();
+			final Artefact art = ConfigurationRepository.INSTANCE.createArtefact(configurationName);
 			// set external includes
-			for (String include : pa.getExternalConfigurations())
+			for (final String include : pa.getExternalConfigurations())
 				art.addExternalConfigurations(new ConfigurationSourceKey(defaultConfigurationSourceType, defaultConfigurationSourceFormat, include));
 
-			for (ParsedAttribute<?> a : attributes) {
+			for (final ParsedAttribute<?> a : attributes)
 				art.addAttributeValue(a.getName(), a.getValue(), a.getEnvironment());
-			}
+
 		}
 
-		Configuration config = null;
-
-		config = ConfigurationRepository.INSTANCE.getConfiguration(configurationName, in);
-		return config;
+		return ConfigurationRepository.INSTANCE.getConfiguration(configurationName, in);
 	}
 
 	/**
@@ -715,7 +703,7 @@ public enum ConfigurationManager {
 	 * @param targetClazz target class
 	 * @return default configuration artefact name for a given java class. For MyConfigurable it would be "myconfigurable"
 	 */
-	private static String extractConfigurationNameFromClassName(Class<?> targetClazz) {
+	private static String extractConfigurationNameFromClassName(final Class<?> targetClazz) {
 		return targetClazz.getName().substring(targetClazz.getName().lastIndexOf('.') + 1).toLowerCase();
 	}
 
@@ -728,7 +716,7 @@ public enum ConfigurationManager {
      * @param callAfter      annotations, methods annotated with those will be called after the configuration
      * @return an instance of the specified value class which is configured according to the specified attribute value.
      */
-    private Object resolveValue(Class<?> valueClass, Value attributeValue, Class<? extends Annotation>[] callBefore, Class<? extends Annotation>[] callAfter, boolean configureAllFields, Environment environment) throws InstantiationException, IllegalAccessException {
+    private Object resolveValue(final Class<?> valueClass, Value attributeValue, final Class<? extends Annotation>[] callBefore, Class<? extends Annotation>[] callAfter, final boolean configureAllFields, final Environment environment) throws InstantiationException, IllegalAccessException {
         while (true) {
             boolean isValueClassPlain = isPlain(valueClass);
             boolean isValueClassDummy = valueClass.equals(Object.class) || valueClass.equals(String.class);
@@ -754,13 +742,13 @@ public enum ConfigurationManager {
 	 * @param type the type to be checked
 	 * @return true if the type is plain, false otherwise
 	 */
-	private static boolean isPlain(Class<?> type) {
+	private static boolean isPlain(final Class<?> type) {
 		return (type.isArray())
 				? isPlain(type.getComponentType())
 				: PLAIN_TYPES.contains(type) || Enum.class.isAssignableFrom(type);
 	}
 
-	private static Object resolvePlainValue(Class<?> type, PlainValue value) {
+	private static Object resolvePlainValue(final Class<?> type, final PlainValue value) {
 		if (type == null)
 			throw new IllegalArgumentException("Checkstyle forced me to do this, apparently type is null which can't happen in resolveValue(null, " + value + ')');
 		if (type.equals(String.class) || type.equals(Object.class))
@@ -783,7 +771,7 @@ public enum ConfigurationManager {
 		if (Enum.class.isAssignableFrom(type))
 			try {
 				return type.cast(type.getMethod("valueOf", String.class).invoke(null, value.get()));
-			} catch (SecurityException | IllegalArgumentException | ClassCastException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+			} catch (final SecurityException | IllegalArgumentException | ClassCastException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
 				throw new IllegalArgumentException("Can not resolve '" + value + "' to " + type.getCanonicalName(), e);
 			}
 
@@ -799,13 +787,13 @@ public enum ConfigurationManager {
 	 * @param callAfter      annotations, methods annotated with those will be called after the configuration
 	 * @return an array instance of the specified value class which is configured according to the specified array attribute value.
 	 */
-	private Object resolveArrayValue(Class<?> valueClass, ArrayValue attributeValue, Class<? extends Annotation>[] callBefore, Class<? extends Annotation>[] callAfter, boolean configureAllFields, Environment environment) throws InstantiationException, IllegalAccessException {
+	private Object resolveArrayValue(final Class<?> valueClass, final ArrayValue attributeValue, final Class<? extends Annotation>[] callBefore, final Class<? extends Annotation>[] callAfter, final boolean configureAllFields, final Environment environment) throws InstantiationException, IllegalAccessException {
 		if (valueClass.equals(Object.class))
 			return attributeValue.getRaw();
 		if (valueClass.equals(String.class))
 			return new JSONArray((Collection<?>) attributeValue.getRaw()).toString();
 
-		Object resolvedValue = Array.newInstance(valueClass.getComponentType(), attributeValue.get().size());
+		final Object resolvedValue = Array.newInstance(valueClass.getComponentType(), attributeValue.get().size());
 		for (int i = 0; i < attributeValue.get().size(); ++i)
 			Array.set(resolvedValue, i, resolveValue(valueClass.getComponentType(), attributeValue.get().get(i), callBefore, callAfter, configureAllFields, environment));
 
@@ -821,13 +809,13 @@ public enum ConfigurationManager {
 	 * @param callAfter      annotations, methods annotated with those will be called after the configuration
 	 * @return an instance of the specified value class which is configured according to the specified composite attribute value.
 	 */
-	private Object resolveCompositeValue(Class<?> valueClass, CompositeValue attributeValue, Class<? extends Annotation>[] callBefore, Class<? extends Annotation>[] callAfter, boolean configureAllFields) throws InstantiationException, IllegalAccessException {
+	private Object resolveCompositeValue(final Class<?> valueClass, final CompositeValue attributeValue, final Class<? extends Annotation>[] callBefore, final Class<? extends Annotation>[] callAfter, final boolean configureAllFields) throws InstantiationException, IllegalAccessException {
 		if (valueClass.equals(Object.class))
 			return attributeValue.getRaw();
 		if (valueClass.equals(String.class))
 			return new JSONObject((Map<?, ?>) attributeValue.getRaw()).toString();
 
-		Object resolvedValue = valueClass.newInstance();
+		final Object resolvedValue = valueClass.newInstance();
 		configure(attributeValue.get(), resolvedValue, callBefore, callAfter, configureAllFields, defaultEnvironment);
 		return resolvedValue;
 	}
@@ -840,7 +828,7 @@ public enum ConfigurationManager {
 	 * @return instance of the already configures object
 	 */
 
-	private Object getCachedObject(String name, Environment environment) {
+	private Object getCachedObject(final String name, final Environment environment) {
 		Map<String, Map<Environment, Object>> globalCache = localCache.get();
 		if (globalCache == null) {
 			globalCache = new HashMap<>();
@@ -862,7 +850,7 @@ public enum ConfigurationManager {
 	 * @param environment environment
 	 * @param o           object to cache
 	 */
-	private void setCachedObject(String name, Environment environment, Object o) {
+	private void setCachedObject(final String name, final Environment environment, final Object o) {
 		Map<String, Map<Environment, Object>> globalCache = localCache.get();
 		if (globalCache == null) {
 			globalCache = new HashMap<>();

@@ -32,9 +32,9 @@ public class ArrayParsedAttribute extends ParsedAttribute<ArrayValue> {
 	 * @param value list of child attribute values of the attribute within the environment
 	 * @return internal representation of the composite attribute value
 	 */
-	private static ArrayValue createArrayValue(Collection<? extends ParsedAttribute<?>> value) {
-		List<Value> list = new ArrayList<>(value.size());
-		for (ParsedAttribute<?> parsed : value)
+	private static ArrayValue createArrayValue(final Collection<? extends ParsedAttribute<?>> value) {
+		final List<Value> list = new ArrayList<>(value.size());
+		for (final ParsedAttribute<?> parsed : value)
 			list.add(parsed.getValue());
 
 		return new ArrayValue(list);

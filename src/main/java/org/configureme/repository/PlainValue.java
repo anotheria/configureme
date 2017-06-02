@@ -31,19 +31,16 @@ public class PlainValue implements Value {
 		return str;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public Object getRaw() {
 		return str;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return String.valueOf(str);
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -52,7 +49,6 @@ public class PlainValue implements Value {
 		return result;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {

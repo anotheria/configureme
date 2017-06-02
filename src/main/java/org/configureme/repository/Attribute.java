@@ -15,16 +15,16 @@ public class Attribute {
 	/**
 	 * The logger.
 	 */
-	private static Logger log = LoggerFactory.getLogger(Attribute.class);
+	private static final Logger log = LoggerFactory.getLogger(Attribute.class);
 	/**
 	 * The name of the attribute.
 	 */
-	private String name;
+	private final String name;
 
 	/**
 	 * The container for attribute values.
 	 */
-	private AttributeValue attributeValue;
+	private final AttributeValue attributeValue;
 
 	/**
 	 * Creates a new attribute.
@@ -51,7 +51,7 @@ public class Attribute {
 	 * @param in the environment to look up
 	 * @return the value of the attribute in the given environment
 	 */
-	public Value getValue(Environment in){
+	public Value getValue(final Environment in){
 		log.debug("looking up value for "+name+" in "+in);
 		return attributeValue.get(in);
 
@@ -72,12 +72,12 @@ public class Attribute {
 	 * @param value the value to add
 	 * @param in the environment in which the value applies
 	 */
-	public void addValue(Value value, Environment in){
+	public void addValue(final Value value, final Environment in){
 		attributeValue.set(value, in);
 	}
 
-	/** {@inheritDoc} */
-	@Override public String toString(){
+	@Override
+	public String toString(){
         return name + '=' +attributeValue;
 	}
 }

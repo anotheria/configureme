@@ -34,7 +34,7 @@ public class FileLoader implements SourceLoader{
 	 * @param source configuration source key
 	 * @return the file name for the given source key
 	 */
-	public static final String getFileName(ConfigurationSourceKey source){
+	public static String getFileName(final ConfigurationSourceKey source){
 		//ensure an exception is thrown if we are not file.
 		if (source.getType()!=ConfigurationSourceKey.Type.FILE)
 			throw new AssertionError("Can only load configuration sources with type "+ConfigurationSourceKey.Type.FILE);
@@ -49,57 +49,46 @@ public class FileLoader implements SourceLoader{
 	 */
 	private final String externalConfigPath = System.getProperty(EXTERNAL_CONF_PATH, null);
 	
-	/** {@inheritDoc} */
 	@Override
-	public boolean isAvailable(ConfigurationSourceKey key){
+	public boolean isAvailable(final ConfigurationSourceKey key){
 		return getFile(key) != null;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public long getLastChangeTimestamp(ConfigurationSourceKey key){
-		File f = getFile(key);
-		if (f==null) {
+		final File f = getFile(key);
+		if (f==null)
 			throw new IllegalArgumentException("unable to find configuration with key : " + key);
-		}
-
-		if (log.isDebugEnabled()) {
+		if (log.isDebugEnabled())
 			log.debug("Checking timestamp for file: "+f.getAbsolutePath());
-		}
+
 		long ret =  f.lastModified();
-		if (log.isDebugEnabled()) {
+		if (log.isDebugEnabled())
 			log.debug("file "+f.getAbsolutePath()+" last modified is: "+ DateUtils.toISO8601String(ret));
-		}
 		return ret;
 	}
 	
-	/** {@inheritDoc} */
 	@Override
-	public String getContent(ConfigurationSourceKey key){
+	public String getContent(final ConfigurationSourceKey key){
 		final File f = getFile(key);
-		if (f == null) {
+		if (f == null)
 			throw new IllegalArgumentException("unable to find configuration with key : " + key);
-		}
-		
-		if (log.isInfoEnabled()) {
+		if (log.isInfoEnabled())
 			log.info("load configuration from file: " + f.getAbsolutePath());
-		}
-
 		try{
-			if (!f.exists()){
+			if (!f.exists())
 				return getContentFromJar(f.getName());
-			}
 			
 			return IOUtils.readFileBufferedAsString(f, "UTF-8");
-		}catch(IOException e){
+		}catch(final IOException e){
 			log.error("getContent("+key+ ')', e);
 			throw new RuntimeException("can't read source: "+key, e);
 		}
 	}
 	
-	private String getContentFromJar(String fileName) throws IOException{
-		ClassLoader myLoader = getClass().getClassLoader();
-		InputStream input = myLoader.getResourceAsStream(fileName);
+	private String getContentFromJar(final String fileName) throws IOException{
+		final ClassLoader myLoader = getClass().getClassLoader();
+		final InputStream input = myLoader.getResourceAsStream(fileName);
 		return IOUtils.readInputStreamBufferedAsString(input, "UTF-8");
 	}
 	
@@ -118,10 +107,8 @@ public class FileLoader implements SourceLoader{
 		final String fileName = getFileName(key);
 		if (externalConfigPath != null) {
 			final File f = new File(externalConfigPath, fileName);
-			if (f.exists()) {
-				// return overwritten configuration location
-				return f;
-			}
+			if (f.exists())
+				return f; // return overwritten configuration location
 		}
 		
 		// configuration-file was not overwritten, so read from class path

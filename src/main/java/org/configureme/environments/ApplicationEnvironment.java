@@ -2,6 +2,7 @@ package org.configureme.environments;
 
 import org.configureme.Environment;
 import org.configureme.GlobalEnvironment;
+import org.configureme.util.StringUtils;
 
 /**
  * This is a typical application environment. It contains of the system the application is running in (prod, test, dev, integration etc),
@@ -15,20 +16,20 @@ public class ApplicationEnvironment implements Environment{
 	/**
 	 * The system the application is running in, usually its something like prod, test, integration, dev etc.
 	 */
-	private String system;
+	private final String system;
 	/**
 	 * The 'kind' of application, usually its something like web/www, wap, xml, soa, admin etc.
 	 */
-	private String app;
+	private final String app;
 	/**
 	 * The concrete service inside the application, something like userservice, accountingservice etc.
 	 */
-	private String service;
+	private final String service;
 	/**
 	 * The host the application has been deployed too, gives you the possibility to configure differently for failover machines.
 	 */
-	private String host;
-	
+	private final String host;
+
 	/**
 	 * Creates a new ApplicationEnvironment with explicit parameters.
 	 *
@@ -43,10 +44,10 @@ public class ApplicationEnvironment implements Environment{
 		service = aService;
 		host = aHost;
 	}
-	
+
 	/**
 	 * Creates a new ApplicationEnvironment from an ApplicationEnvironment.Builder (pattern by Bloch, effective Java).
-	 * @param builder
+	 * @param builder {@link Builder}
 	 */
 	private ApplicationEnvironment(Builder builder){
 		system = builder.system;
@@ -54,20 +55,17 @@ public class ApplicationEnvironment implements Environment{
 		service = builder.service;
 		host = builder.host;
 	}
-	
-	/** {@inheritDoc} */
+
 	@Override
 	public String expandedStringForm() {
 		return toString();
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public boolean isReduceable() {
 		return system!=null && !system.isEmpty();
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public Environment reduce() {
 		if (host!=null && !host.isEmpty())
@@ -82,30 +80,30 @@ public class ApplicationEnvironment implements Environment{
 	}
 
 
-	/** {@inheritDoc} */
-	@Override public String toString(){
-		StringBuilder ret = new StringBuilder();
-		
-		if (system!=null && !system.isEmpty()){
-			ret.append(system);
-			if (app!=null && !app.isEmpty()){
-				ret.append('_').append(app);
-				if (service!=null && !service.isEmpty()){
-					ret.append('_').append(service);
-					if (host!=null && !host.isEmpty()){
-						ret.append('_').append(host);
-					}
-				}
-			}
-		}
-		
+	@Override
+	public String toString(){
+		final StringBuilder ret = new StringBuilder();
+
+		if (StringUtils.isEmpty(system))
+			return ret.toString();
+		ret.append(system);
+		if (StringUtils.isEmpty(app))
+			return ret.toString();
+		ret.append('_').append(app);
+		if (StringUtils.isEmpty(service))
+			return ret.toString();
+		ret.append('_').append(service);
+		if (StringUtils.isEmpty(host))
+			return ret.toString();
+		ret.append('_').append(host);
+
 		return ret.toString();
 	}
-	
-	
+
+
 	/**
 	 * The builder for the ApplicationEnvironment. See Bloch's Effective Java Sec. Edition for the pattern. Usage scenario:
-	 * ApplicationEnvironment env = new ApplicationEnvironment.Builder().system("live").app("xml").host("xml01").build(); 
+	 * ApplicationEnvironment env = new ApplicationEnvironment.Builder().system("live").app("xml").host("xml01").build();
 	 * @author lrosenberg
 	 */
 	public static class Builder{
@@ -125,7 +123,7 @@ public class ApplicationEnvironment implements Environment{
 		 * host.
 		 */
 		private String host;
-		
+
 		/**
 		 * Creates new builder.
 		 */
@@ -135,15 +133,15 @@ public class ApplicationEnvironment implements Environment{
 			service = "";
 			host = "";
 		}
-		
+
 		/**
-		 * Sets the property system. 
+		 * Sets the property system.
 		 * @return self for chaining
 		 */
 		public Builder system(String value){
 			system=value; return this;
 		}
-		
+
 		/**
 		 * Sets the property app.
 		 * @return self for chaining
@@ -151,7 +149,7 @@ public class ApplicationEnvironment implements Environment{
 		public Builder app(String value){
 			app=value; return this;
 		}
-		
+
 		/**
 		 * Sets the property service.
 		 * @return self for chaining
@@ -167,7 +165,7 @@ public class ApplicationEnvironment implements Environment{
 		public Builder host(String value){
 			host=value; return this;
 		}
-		
+
 		/**
 		 * Creates a new ApplicationEnvironment from this builder.
 		 * @return ApplicationEnvironment instance
@@ -212,19 +210,18 @@ public class ApplicationEnvironment implements Environment{
 	public String getHost() {
 		return host;
 	}
-	 
+
 	/**
 	 * Used internally to compare 2 strings for the purpose of the equals function. Return true if both strings are null or (not null and equal).
 	 * @param a
 	 * @param b
 	 * @return
 	 */
-	private static boolean stringEquals(String a, String b){
+	private static boolean stringEquals(final String a, final String b){
 		return a == b ||
 			(a!=null && b!=null && a.equals(b));
 	}
-	
-	/** {@inheritDoc} */
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -236,15 +233,14 @@ public class ApplicationEnvironment implements Environment{
 		return result;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public boolean equals(Object o){
 		if (!(o instanceof ApplicationEnvironment))
 			return false;
 		ApplicationEnvironment anotherEnvironment = (ApplicationEnvironment)o;
-		return stringEquals(system, anotherEnvironment.system) && 
-			stringEquals(app, anotherEnvironment.app) && 
-			stringEquals(host, anotherEnvironment.host) &&	
+		return stringEquals(system, anotherEnvironment.system) &&
+			stringEquals(app, anotherEnvironment.app) &&
+			stringEquals(host, anotherEnvironment.host) &&
 			stringEquals(service, anotherEnvironment.service);
 	}
 

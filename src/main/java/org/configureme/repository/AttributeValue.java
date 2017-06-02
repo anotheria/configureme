@@ -18,11 +18,11 @@ public class AttributeValue {
 	/**
 	 * The logger.
 	 */
-	private static Logger log = LoggerFactory.getLogger(AttributeValue.class);
+	private static final Logger log = LoggerFactory.getLogger(AttributeValue.class);
 	/**
 	 * Internal map of the values. The keys are the extendedStringFrom of the environment in which the attribute applies.
 	 */
-	private Map<String, Value> values;
+	private final Map<String, Value> values;
 
 	/**
 	 * Creates a new attribute values container.
@@ -42,7 +42,7 @@ public class AttributeValue {
         while (true) {
             if (log.isDebugEnabled())
                 log.debug("looking up in " + in + '(' + in.expandedStringForm() + ')');
-            Value retValue = values.get(in.expandedStringForm());
+			final Value retValue = values.get(in.expandedStringForm());
             if (retValue != null)
                 return retValue;
             if (!in.isReduceable())
@@ -61,8 +61,8 @@ public class AttributeValue {
 		values.put(in.expandedStringForm(), value);
 	}
 
-	/** {@inheritDoc} */
-	@Override public String toString(){
+	@Override
+	public String toString(){
 		return values.toString();
 	}
 }

@@ -19,12 +19,12 @@ public class ParsedConfiguration {
 	/**
 	 * Timestamp of the parse process.
 	 */
-	private long parseTimestamp;
+	private final long parseTimestamp;
 
 	/**
 	 * The name of the configuration.
 	 */
-	private String name;
+	private final String name;
 
 	/**
 	 * External configurations that was included in current configuration
@@ -111,8 +111,8 @@ public class ParsedConfiguration {
 		return name;
 	}
 
-	/** {@inheritDoc} */
-	@Override public String toString(){
+	@Override
+	public String toString(){
         return name +": "+ attributes;
 	}
 }

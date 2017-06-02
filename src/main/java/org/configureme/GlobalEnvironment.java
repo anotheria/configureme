@@ -13,25 +13,21 @@ public enum GlobalEnvironment implements Environment{
 	 */
 	INSTANCE;
 
-	/** {@inheritDoc} */
 	@Override
 	public boolean isReduceable() {
 		return false;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public Environment reduce() {
 		throw new AssertionError("Global Environment is not reduceable");
 	}
 	
-	/** {@inheritDoc} */
 	@Override
 	public String toString(){
 		return "global";
 	}
 	
-	/** {@inheritDoc} */
 	@Override
 	public String expandedStringForm(){
 		return "";
