@@ -1,10 +1,10 @@
 package org.configureme.external;
 
+import static org.junit.Assert.assertEquals;
+
 import org.configureme.ConfigurationManager;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * @author ivanbatura

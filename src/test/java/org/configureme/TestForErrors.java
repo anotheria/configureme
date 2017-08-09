@@ -148,7 +148,7 @@ public class TestForErrors {
 	private class ObjectWithUnsupportedPublicAttribute{
 
 		@Configure public int intValue = 0;
-		@Configure public int stringValue = 0;
+		@Configure public int stringValue = 0; //TODO Why here Int with String value in config?
 
 		public boolean isIntValueSet() {
 			return intValue!=0;
