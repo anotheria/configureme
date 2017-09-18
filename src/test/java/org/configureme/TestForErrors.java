@@ -145,7 +145,7 @@ public class TestForErrors {
 	}
 
 	@ConfigureMe(name="fixture")
-	private class ObjectWithUnsupportedPublicAttribute{
+	public class ObjectWithUnsupportedPublicAttribute{
 
 		@Configure public int intValue = 0;
 		@Configure public int stringValue = 0; //TODO Why here Int with String value in config?
