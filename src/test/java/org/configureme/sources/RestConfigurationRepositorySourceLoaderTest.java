@@ -1,25 +1,28 @@
 package org.configureme.sources;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import org.configureme.sources.configurationrepository.RestConfigurationRepositorySourceLoader;
-import org.configureme.sources.configurationrepository.ReplyObject;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.mortbay.log.Slf4jLog;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import org.configureme.sources.configurationrepository.ReplyObject;
+import org.configureme.sources.configurationrepository.RestConfigurationRepositorySourceLoader;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class RestConfigurationRepositorySourceLoaderTest {
-    private static final Logger log = LoggerFactory.getLogger(Slf4jLog.class);
+    private static final Logger log = LoggerFactory.getLogger(RestConfigurationRepositorySourceLoaderTest.class);
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(8080);
+    public WireMockRule wireMockRule = new WireMockRule(8889);
     private RestConfigurationRepositorySourceLoader loader = new RestConfigurationRepositorySourceLoader();
 
     @Before
@@ -63,7 +66,7 @@ public class RestConfigurationRepositorySourceLoaderTest {
         key.setName("Test");
         key.setType(ConfigurationSourceKey.Type.REST);
         key.setFormat(ConfigurationSourceKey.Format.JSON);
-        key.setRemoteConfigurationRepositoryUrl("http://localhost:8080");
+        key.setRemoteConfigurationRepositoryUrl("http://localhost:8889");
         return key;
     }
 
