@@ -13,7 +13,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.configureme.annotations.AfterConfiguration;
@@ -35,10 +34,9 @@ import org.configureme.mbean.WatchedConfigFiles;
 import org.configureme.mbean.util.MBeanRegisterUtil;
 import org.configureme.parser.ConfigurationParser;
 import org.configureme.parser.ConfigurationParserException;
+import org.configureme.parser.ConfigurationParserManager;
 import org.configureme.parser.ParsedAttribute;
 import org.configureme.parser.ParsedConfiguration;
-import org.configureme.parser.json.JsonParser;
-import org.configureme.parser.properties.PropertiesParser;
 import org.configureme.repository.ArrayValue;
 import org.configureme.repository.Artefact;
 import org.configureme.repository.CompositeValue;
@@ -105,10 +103,11 @@ public enum ConfigurationManager {
      * Externally provided url for remote configuration repository.
      */
     private String remoteConfigurationRepositoryUrl = "";
+
 	/**
-	 * A map which contains configuration parser for different formats.
+	 * {@link ConfigurationParserManager}.
 	 */
-	private final Map<Format, ConfigurationParser> parsers = new ConcurrentHashMap<>();
+	private final ConfigurationParserManager parserManager = ConfigurationParserManager.instance();
 
 	/**
 	 * Cache for object in oder to cover situation with loops in ConfigureAlso
@@ -168,9 +167,6 @@ public enum ConfigurationManager {
 		defaultEnvironment = DynamicEnvironment.parse(defEnvironmentAsString);
         setExternalConfigurationRepository();
 		setConfigurationRepository();
-
-		parsers.put(Format.JSON, new JsonParser());
-		parsers.put(Format.PROPERTIES, new PropertiesParser());
 	}
 
 
@@ -629,9 +625,7 @@ public enum ConfigurationManager {
         //reading config
         final String content = ConfigurationSourceRegistry.INSTANCE.readConfigurationSource(configSourceKey);
 
-        final ConfigurationParser parser = parsers.get(configSourceKey.getFormat());
-        if (parser == null)
-            throw new IllegalArgumentException("Format " + configSourceKey.getFormat() + " is not supported (yet).");
+        final ConfigurationParser parser = parserManager.get(configSourceKey.getFormat());
         ParsedConfiguration pa;
         try {
             pa = parser.parseConfiguration(configurationName, content);
@@ -695,8 +689,8 @@ public enum ConfigurationManager {
     	final Class<?> valueClass = parameterized ? ((ParameterizedTypeImpl)valueType).getRawType() : (Class<?>)valueType;
 		final java.lang.reflect.Type paramClass = parameterized ? ((ParameterizedTypeImpl) valueType).getActualTypeArguments()[0] : null;
         while (true) {
-            boolean isValueClassPlain = isPlain(valueClass);
-            boolean isValueClassDummy = valueClass.equals(Object.class) || valueClass.equals(String.class);
+			final boolean isValueClassPlain = isPlain(valueClass);
+			final boolean isValueClassDummy = valueClass.equals(Object.class) || valueClass.equals(String.class);
 
             if (attributeValue instanceof PlainValue && !valueClass.isArray() && (isValueClassPlain || isValueClassDummy))
                 return resolvePlainValue(valueClass, (PlainValue) attributeValue);

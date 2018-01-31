@@ -38,7 +38,6 @@ public class CompositeAttribute {
         return name;
     }
 
-
     /**
      * <p>Getter for the field {@code attributeList}.</p>
      *
@@ -56,7 +55,6 @@ public class CompositeAttribute {
     public void setAttributeList(List<Attribute> attributeList) {
         this.attributeList = attributeList;
     }
-
 
     /**
      * <p>addAttributeList.</p>

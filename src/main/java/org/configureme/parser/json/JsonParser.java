@@ -111,6 +111,11 @@ public class JsonParser implements ConfigurationParser {
 		}
 	}
 
+	@Override
+	public ConfigurationSourceKey.Format getFormat() {
+		return ConfigurationSourceKey.Format.JSON;
+	}
+
 	private String includeExternalFiles(final String content, final Collection<String> configurationNames) throws ConfigurationParserException {
 		final List<String> includes = StringUtils.extractTags(content, '$', '>');
 		String result = content;
