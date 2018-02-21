@@ -479,89 +479,107 @@ public enum ConfigurationManager {
 		final List<Field> fields = ReflectionUtils.getAllFields(clazz);
 		for (final Field f : fields) {
 			if (f.isAnnotationPresent(ConfigureAlso.class)) {
-				Object externalConfig = null;
-				try {
-					final Class<?> externalConfigClass = f.getType();
-					if (!externalConfigClass.isAnnotationPresent(ConfigureMe.class))
-						continue;
-					if(!ReflectionUtils.hasParameterlessPublicConstructor(externalConfigClass)) {
-                        log.error("Can't instantiate external config for class name=" + f.getType().getName() + ", as there is no default constructor for class = " + externalConfigClass);
-                        continue;
-                    }
-					externalConfig = externalConfigClass.newInstance();
-					final ConfigureMe ann = externalConfigClass.getAnnotation(ConfigureMe.class);
-					final Object cachedObject = getCachedObject(ann.name(), environment);
-					if (cachedObject == null) {
-						ConfigurationManager.INSTANCE.configure(externalConfig, environment);
-						setCachedObject(ann.name(), environment, externalConfig);
-					} else {
-						externalConfig = cachedObject;
-					}
-				} catch (final Exception e) {
-					log.error("Can't create external config task for class name=" + f.getType().getName());
-				}
-				ReflectionUtils.invokeSetter(f, clazz, o, externalConfig);
+				configureFieldAlso(o, environment, clazz, f);
 				continue;
 			}
 
 			if (f.isAnnotationPresent(Configure.class) || (configureAllFields && !f.isAnnotationPresent(DontConfigure.class))) {
-				final String attributeName = f.getName();
-				final Value attributeValue = config.getAttribute(attributeName);
-				if (attributeValue == null)
-					continue;
-                try {
-                    ReflectionUtils.invokeSetter(f, clazz, o, resolveValue(f.getGenericType(), attributeValue, callBefore, callAfter, configureAllFields, environment));
-                } catch (final Exception e) {
-                    log.error("can't set " + attributeName + " to " + attributeValue + ", because: ", e);
-                }
+				configureField(config, o, callBefore, callAfter, configureAllFields, environment, clazz, f);
 			}
 		}
 		//end set fields
 
 		for (final Method method : methods) {
-			if (method.isAnnotationPresent(SetAll.class)) {
-				final Collection<Entry<String, Value>> entries = config.getEntries();
-				log.debug("Calling method " + method + " with " + entries);
-				for (final Entry<String, Value> entry : entries) {
-					try {
-						method.invoke(o, entry.getKey(), resolveValue(method.getParameterTypes()[1], entry.getValue(), callBefore, callAfter, configureAllFields, environment));
-					} catch (final Exception e) {
-						log.warn(method.getName() + "invoke(" + o + ", " + entry.getKey() + ", " + entry.getValue() + ')', e);
-					}
-				}
-			}
-			if (method.isAnnotationPresent(SetIf.class)) {
-				final Collection<Entry<String, Value>> entries = config.getEntries();
-				final SetIf setIfAnnotation = method.getAnnotation(SetIf.class);
-				for (final Entry<String, Value> entry : entries) {
-					if (SetIf.ConditionChecker.satisfyCondition(setIfAnnotation, entry.getKey())) {
-						log.debug("Calling method " + method + " with parameters : \"" + entry.getKey() + "\", \"" + entry.getValue() + '"');
-						try {
-							method.invoke(o, entry.getKey(), resolveValue(method.getParameterTypes()[1], entry.getValue(), callBefore, callAfter, configureAllFields, environment));
-						} catch (final Exception e) {
-							log.warn(method.getName() + "invoke(" + o + ", " + entry.getKey() + ", " + entry.getValue() + ')', e);
-						}
-					}
-				}
-			}
-			if (method.isAnnotationPresent(Set.class)) {
-				log.debug("method " + method + " is annotated");
-				final Set setAnnotation = method.getAnnotation(Set.class);
-				final String attributeName = setAnnotation.value();
-				final Value attributeValue = config.getAttribute(attributeName);
-				if (attributeValue != null) {
-					log.debug("setting " + method.getName() + " to " + attributeValue + " configured by " + attributeName);
-					try {
-						method.invoke(o, resolveValue(method.getParameterTypes()[0], attributeValue, callBefore, callAfter, configureAllFields, environment));
-					} catch (final Exception e) {
-						log.warn(method.getName() + "invoke(" + o + ", " + attributeValue + ')', e);
-					}
-				}
-
-			}
+			if (method.isAnnotationPresent(SetAll.class))
+				invokeSetAll(config, o, callBefore, callAfter, configureAllFields, environment, method);
+			if (method.isAnnotationPresent(SetIf.class))
+				invokeSetIf(config, o, callBefore, callAfter, configureAllFields, environment, method);
+			if (method.isAnnotationPresent(Set.class))
+				invokeSet(config, o, callBefore, callAfter, configureAllFields, environment, method);
 		}
 
 		callAnnotations(o, methods, callAfter);
+	}
+
+	private void invokeSet(final Configuration config, final Object o, Class<? extends Annotation>[] callBefore, final Class<? extends Annotation>[] callAfter, final boolean configureAllFields, final Environment environment, final Method method) {
+		log.debug("method " + method + " is annotated");
+		final Set setAnnotation = method.getAnnotation(Set.class);
+		final String attributeName = setAnnotation.value();
+		final Value attributeValue = config.getAttribute(attributeName);
+		if (attributeValue != null) {
+            log.debug("setting " + method.getName() + " to " + attributeValue + " configured by " + attributeName);
+            try {
+                method.invoke(o, resolveValue(method.getParameterTypes()[0], attributeValue, callBefore, callAfter, configureAllFields, environment));
+            } catch (final Exception e) {
+                log.warn(method.getName() + "invoke(" + o + ", " + attributeValue + ')', e);
+            }
+        }
+	}
+
+	private void invokeSetIf(final Configuration config, Object o, final Class<? extends Annotation>[] callBefore, final Class<? extends Annotation>[] callAfter, final boolean configureAllFields, final Environment environment, final Method method) {
+		final Collection<Entry<String, Value>> entries = config.getEntries();
+		final SetIf setIfAnnotation = method.getAnnotation(SetIf.class);
+		for (final Entry<String, Value> entry : entries) {
+			if (!SetIf.ConditionChecker.satisfyCondition(setIfAnnotation, entry.getKey()))
+				continue;
+
+			log.debug("Calling method " + method + " with parameters : \"" + entry.getKey() + "\", \"" + entry.getValue() + '"');
+			try {
+				method.invoke(o, entry.getKey(), resolveValue(method.getParameterTypes()[1], entry.getValue(), callBefore, callAfter, configureAllFields, environment));
+			} catch (final Exception e) {
+				log.warn(method.getName() + "invoke(" + o + ", " + entry.getKey() + ", " + entry.getValue() + ')', e);
+			}
+
+		}
+	}
+
+	private void invokeSetAll(final Configuration config, Object o, final Class<? extends Annotation>[] callBefore, Class<? extends Annotation>[] callAfter, final boolean configureAllFields, final Environment environment, final Method method) {
+		final Collection<Entry<String, Value>> entries = config.getEntries();
+		log.debug("Calling method " + method + " with " + entries);
+		for (final Entry<String, Value> entry : entries) {
+            try {
+                method.invoke(o, entry.getKey(), resolveValue(method.getParameterTypes()[1], entry.getValue(), callBefore, callAfter, configureAllFields, environment));
+            } catch (final Exception e) {
+                log.warn(method.getName() + "invoke(" + o + ", " + entry.getKey() + ", " + entry.getValue() + ')', e);
+            }
+        }
+	}
+
+	private void configureField(final Configuration config, final Object o, Class<? extends Annotation>[] callBefore, Class<? extends Annotation>[] callAfter, final boolean configureAllFields, final Environment environment, Class<?> clazz, final Field f) {
+		final String attributeName = f.getName();
+		final Value attributeValue = config.getAttribute(attributeName);
+		if (attributeValue == null)
+			return;
+		try {
+            ReflectionUtils.invokeSetter(f, clazz, o, resolveValue(f.getGenericType(), attributeValue, callBefore, callAfter, configureAllFields, environment));
+        } catch (final Exception e) {
+            log.error("can't set " + attributeName + " to " + attributeValue + ", because: ", e);
+        }
+	}
+
+	private void configureFieldAlso(final Object o, final Environment environment, final Class<?> clazz, final Field f) {
+		Object externalConfig = null;
+		try {
+			final Class<?> externalConfigClass = f.getType();
+			if (!externalConfigClass.isAnnotationPresent(ConfigureMe.class))
+				return;
+			if (!ReflectionUtils.hasParameterlessPublicConstructor(externalConfigClass)) {
+				log.error("Can't instantiate external config for class name=" + f.getType().getName() + ", as there is no default constructor for class = " + externalConfigClass);
+				return;
+			}
+			externalConfig = externalConfigClass.newInstance();
+			final ConfigureMe ann = externalConfigClass.getAnnotation(ConfigureMe.class);
+			final Object cachedObject = getCachedObject(ann.name(), environment);
+			if (cachedObject == null) {
+				ConfigurationManager.INSTANCE.configure(externalConfig, environment);
+				setCachedObject(ann.name(), environment, externalConfig);
+			} else {
+				externalConfig = cachedObject;
+			}
+		} catch (final Exception e) {
+			log.error("Can't create external config task for class name=" + f.getType().getName());
+		}
+		ReflectionUtils.invokeSetter(f, clazz, o, externalConfig);
 	}
 
 	/**
@@ -609,11 +627,10 @@ public enum ConfigurationManager {
 	 * Internal method for configuration retrieval.
 	 *
 	 * @param configSourceKey
-	 * @param in
+	 * @param in the environment
 	 * @return
 	 */
 	private Configuration getConfiguration(final ConfigurationSourceKey configSourceKey, final Environment in) {
-
 		//for the first we will hardcode file as config source and json as config format.
 		final String configurationName = configSourceKey.getName();
 		if (ConfigurationRepository.INSTANCE.hasConfiguration(configurationName))

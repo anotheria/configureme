@@ -64,6 +64,9 @@ public class ConfigurationParserManager {
      *         if the is no parser configuration
      */
     public ConfigurationParser get(final ConfigurationSourceKey.Format format){
+        if (format == null)
+            throw new IllegalArgumentException("Parameter format is NULL.");
+
         final ConfigurationParser result = parsers.get(format);
         if (result == null)
             throw new IllegalArgumentException("Format " + format + " is not supported (yet).");
