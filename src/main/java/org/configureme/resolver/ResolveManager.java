@@ -10,8 +10,8 @@ import java.util.HashSet;
 import java.util.Map;
 
 import org.configureme.Configuration;
+import org.configureme.ConfigurationManager;
 import org.configureme.Environment;
-import org.configureme.environments.DynamicEnvironment;
 import org.configureme.parser.ConfigurationParserManager;
 import org.configureme.repository.ArrayValue;
 import org.configureme.repository.CompositeValue;
@@ -237,8 +237,7 @@ public class ResolveManager {
             return new JSONObject((Map<?, ?>) attributeValue.getRaw()).toString();
 
         final Object resolvedValue = valueClass.newInstance();
-        final Environment defaultEnvironment = new DynamicEnvironment();
-        resolveCallback.configure(attributeValue.get(), resolvedValue, callBefore, callAfter, configureAllFields, defaultEnvironment);
+        resolveCallback.configure(attributeValue.get(), resolvedValue, callBefore, callAfter, configureAllFields, ConfigurationManager.INSTANCE.getDefaultEnvironment());
         return resolvedValue;
     }
 
