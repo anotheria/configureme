@@ -22,7 +22,7 @@
 ### *@AbortedConfiguration*
 Called if the configuration has been aborted due to a casting or parsing error, for example trying to set an int field with a unparseble string value.
 Example:
-```
+```java
 @AbortedConfiguration public void callIfAborted(){
     System.out.println("Configuration has been aborted");
 }
@@ -31,7 +31,7 @@ Example:
 ### *@AfterConfiguration*
 Called after each successful configuration.
 Example:
-```
+```java
 @AfterConfiguration public void callAfterEachConfiguration(){
     System.out.println(this+" has been configured");
 }
@@ -41,7 +41,7 @@ Example:
 ### *@AfterInitialConfiguration*
 Called after first successful configuration.
 Example:
-```
+```java
 @AfterInitialConfiguration public void callAfterInitialConfigurationOnly(){
     System.out.println(this+" has been INITIALY-configured");
 }
