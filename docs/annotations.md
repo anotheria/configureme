@@ -100,8 +100,8 @@ public void setGreeting(String greeting) {
 ### *@ConfigureMe*
 Marks a class as configurable.
 
-| Parameter | default | Description | 
-| ----- | ----- | ----- |
+| Parameter | default | Description |
+| - | - | - |
 | name |  | Configuration name. If skipped the class name (without package) is used.|
 | watch |true | If true the configuration for the artefact will be watched and the artefact reconfigured as soon as the config changes. It implicitely means that the instance to the artefact will be stored in the configuration management. Don't use on objects which are supposed to die soon after usage (at the end of a request or similar cause it could lead to memory leaks. |
 | type | Type.File |  Type of configuration source. Currently supported are File and Fixture. |
