@@ -51,7 +51,7 @@ Example:
 ### *@AfterReConfiguration*
 Called after each successful re-configuration.
 Example:
-```
+```java
 @AfterReConfiguration public void callAfterReConfigurationOnly(){
     System.out.println(this+" has been RE-configured");
 }
@@ -61,7 +61,7 @@ Example:
 ### *@BeforeConfiguration*
 Called before each configuration attempt.
 Example:
-```
+```java
 @BeforeConfiguration public void callBeforeEachConfiguration(){
     System.out.println(this+" will be configured now");
 }
@@ -71,7 +71,7 @@ Example:
 ### *@BeforeInitialConfiguration*
 Called before first configuration attempt.
 Example:
-```
+```java
 @BeforeInitialConfiguration public void callBeforeInitialConfigurationOnly(){
     System.out.println(this+" will be INITIALY configured now");
 }
@@ -80,7 +80,7 @@ Example:
 ### *@BeforeReConfiguration*
 Called before each configuration attempt except first.
 Example:
-```
+```java
 @BeforeReConfiguration public void callBeforeReConfigurationOnly(){
     System.out.println(this+" will be RE-configured now");
 }
@@ -90,7 +90,7 @@ Example:
 Marks a field configureable. The field must be either public or have a setter (recommended).
 Example:
 @Configure private String greeting;
- ```
+ ```java
 public void setGreeting(String greeting) {
     this.greeting = greeting;
 }
@@ -101,18 +101,18 @@ public void setGreeting(String greeting) {
 Marks a class as configurable.
 
 | Parameter | default | Description | 
-|----- |-----|-----|
+| ----- | ----- | ----- |
 | name |  | Configuration name. If skipped the class name (without package) is used.|
 | watch |true | If true the configuration for the artefact will be watched and the artefact reconfigured as soon as the config changes. It implicitely means that the instance to the artefact will be stored in the configuration management. Don't use on objects which are supposed to die soon after usage (at the end of a request or similar cause it could lead to memory leaks. |
 | type | Type.File |  Type of configuration source. Currently supported are File and Fixture. |
 | allfields | false | If true all fields are set from configuration regardless whether they are annotated Configure or not. Only fields which are marked DontConfigure are ignored. |
 
 Example:
-```
+```java
 @ConfigureMe(name="fixture", type=ConfigurationSourceKey.Type.FIXTURE, watch=false)
 public class TestConfigurable {
 ```
-```
+```java
 @ConfigureMe(allfields=true)
 public class HelloWorld {
 ```
@@ -132,7 +132,7 @@ Calls the method with the value of the configuration property specified by the v
 |value| |Name of the attribute in the configuration object|
 
 Example:
-```
+```java
 @ConfigureMe(name="helloworld", watch=false)
 public class LanguageResearcher {
     @Set("greeting")
@@ -146,7 +146,7 @@ public class LanguageResearcher {
 ### *@SetAll*
 Calls the method with each name, value pair in the configuration object. Requires the target method to have two string parameters.
 Example:
-```
+```java
 @SetAll
 public void debug(String name, String value){
     System.out.println(""+name+" is configured as "+value);
@@ -167,7 +167,7 @@ All of conditions are checked by calling the String methods of the same name on 
 | condition | SetIfCondition.matches | Condition, which regulates the configuration properties to be passed to the annotated method|
 
 Example:
-```
+```java
 @ConfigureMe(name="serverRegistry", watch=false)
 public class ServerRegistry {
     @SetIf(value="server", condition=SetIfCondition.startsWith)
