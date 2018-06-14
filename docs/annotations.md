@@ -2,7 +2,8 @@
 
 ## List of supported annotatiosn
 
-| Annotation | Target |  Parameters
+| Annotation | Target |  Parameters |
+| ------------- | ------------- | ----- |
 | AbortedConfiguration | Method|  | 
 | AfterConfiguration | Method | 
 | AfterInitialConfiguration | Method
@@ -18,74 +19,85 @@
 | SetIf| Method| value,condition
 
 ## Details
-### AbortedConfiguration
+### *@AbortedConfiguration*
 Called if the configuration has been aborted due to a casting or parsing error, for example trying to set an int field with a unparseble string value.
 Example:
+```
 @AbortedConfiguration public void callIfAborted(){
     System.out.println("Configuration has been aborted");
 }
+```
 
-
-AfterConfiguration
+### *@AfterConfiguration*
 Called after each successful configuration.
 Example:
+```
 @AfterConfiguration public void callAfterEachConfiguration(){
     System.out.println(this+" has been configured");
 }
+```
 
 
 AfterInitialConfiguration
 Called after first successful configuration.
 Example:
+```
 @AfterInitialConfiguration public void callAfterInitialConfigurationOnly(){
     System.out.println(this+" has been INITIALY-configured");
 }
+```
 
 
 AfterReConfiguration
 Called after each successful re-configuration.
 Example:
+```
 @AfterReConfiguration public void callAfterReConfigurationOnly(){
     System.out.println(this+" has been RE-configured");
 }
+```
 
 
 BeforeConfiguration
 Called before each configuration attempt.
 Example:
+```
 @BeforeConfiguration public void callBeforeEachConfiguration(){
     System.out.println(this+" will be configured now");
 }
+```
 
 
 BeforeInitialConfiguration
 Called before first configuration attempt.
 Example:
+```
 @BeforeInitialConfiguration public void callBeforeInitialConfigurationOnly(){
     System.out.println(this+" will be INITIALY configured now");
 }
-
+```
 
 BeforeReConfiguration
 Called before each configuration attempt except first.
 Example:
+```
 @BeforeReConfiguration public void callBeforeReConfigurationOnly(){
     System.out.println(this+" will be RE-configured now");
 }
-
+```
 
 Configure
 Marks a field configureable. The field must be either public or have a setter (recommended).
 Example:
 @Configure private String greeting;
- 
+ ```
 public void setGreeting(String greeting) {
     this.greeting = greeting;
 }
 @Configure public String greeting;
+```
 
-
-ConfigureMe
+## ConfigureMe
 Marks a class as configurable.
 Parameter
 default
@@ -129,6 +141,7 @@ value
 Name of the attribute in the configuration object
 
 Example:
+```
 @ConfigureMe(name="helloworld", watch=false)
 public class LanguageResearcher {
     @Set("greeting")
@@ -136,15 +149,18 @@ public class LanguageResearcher {
         System.out.println("\tI found out that here people are greeting with \""+greeting+"\"");
     }
 }
+```
 
 
 SetAll
 Calls the method with each name, value pair in the configuration object. Requires the target method to have two string parameters.
 Example:
+```
 @SetAll
 public void debug(String name, String value){
     System.out.println(""+name+" is configured as "+value);
 }
+```
 
 
 SetIf
@@ -165,11 +181,13 @@ SetIfCondition.matches
 Condition, which regulates the configuration properties to be passed to the annotated method
 
 Example:
+```
 @ConfigureMe(name="serverRegistry", watch=false)
 public class ServerRegistry {
     @SetIf(value="server", condition=SetIfCondition.startsWith)
     public void addServer(String serverName, String serverUrl){
         System.out.println("\tAdded server to registry - \""+serverName +" : "+serverUrl+"\"");
-    }
+   }
 }
+```
 While processing SetIf annotation in the previous peace of code, the method will be called with all of the configuration properties, which have names starting with "server". 
