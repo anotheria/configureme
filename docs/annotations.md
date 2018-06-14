@@ -99,6 +99,7 @@ public void setGreeting(String greeting) {
 
 ### *@ConfigureMe*
 Marks a class as configurable.
+
 | Parameter | default | Description | 
 | ----- | ----- | ----- |
 | name | | Configuration name. If skipped the class name (without package) is used.|
