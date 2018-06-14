@@ -6,17 +6,17 @@
 | ------------- | ------------- | ----- |
 | AbortedConfiguration | Method|  | 
 | AfterConfiguration | Method | 
-| AfterInitialConfiguration | Method
-| AfterReConfiguration | Method
-| BeforeConfiguration | Method
-| BeforeInitialConfiguration | Method
-| BeforeReConfiguration | Method
-| Configure | Field
-| ConfigureMe | Class| name,watch,type,allfields
-| DontConfigure | Field
+| AfterInitialConfiguration | Method  |
+| AfterReConfiguration | Method  |
+| BeforeConfiguration | Method  |
+| BeforeInitialConfiguration | Method  |
+| BeforeReConfiguration | Method |
+| Configure | Field |
+| ConfigureMe | Class| name,watch,type,allfields |
+| DontConfigure | Field |
 | Set | Method| value| 
-| SetAll| Method
-| SetIf| Method| value,condition
+| SetAll| Method  |
+| SetIf| Method| value,condition  |
 
 ## Details
 ### *@AbortedConfiguration*
@@ -58,7 +58,7 @@ Example:
 ```
 
 
-BeforeConfiguration
+### *@BeforeConfiguration*
 Called before each configuration attempt.
 Example:
 ```
@@ -68,7 +68,7 @@ Example:
 ```
 
 
-BeforeInitialConfiguration
+### *@BeforeInitialConfiguration*
 Called before first configuration attempt.
 Example:
 ```
@@ -77,7 +77,7 @@ Example:
 }
 ```
 
-BeforeReConfiguration
+### *@BeforeReConfiguration*
 Called before each configuration attempt except first.
 Example:
 ```
@@ -86,7 +86,7 @@ Example:
 }
 ```
 
-Configure
+### *@Configure*
 Marks a field configureable. The field must be either public or have a setter (recommended).
 Example:
 @Configure private String greeting;
@@ -97,34 +97,25 @@ public void setGreeting(String greeting) {
 @Configure public String greeting;
 ```
 
-## ConfigureMe
+### *@ConfigureMe*
 Marks a class as configurable.
-Parameter
-default
-Description
-name
- 
-Configuration name. If skipped the class name (without package) is used.
-watch
-true
-If true the configuration for the artefact will be watched and the artefact reconfigured as soon as the config changes. It implicitely means that the instance to the artefact will be stored in the configuration management. Don't use on objects which are supposed to die soon after usage (at the end of a request or similar cause it could lead to memory leaks.
-type
-Type.File
-Type of configuration source. Currently supported are File and Fixture.
-allfields
-false
-If true all fields are set from configuration regardless whether they are annotated Configure or not.
- 
- 
-Only fields which are marked DontConfigure are ignored.
+| Parameter | default | Description | 
+| ----- | ----- | ----- |
+| name | | Configuration name. If skipped the class name (without package) is used.|
+| watch |true | If true the configuration for the artefact will be watched and the artefact reconfigured as soon as the config changes. It implicitely means that the instance to the artefact will be stored in the configuration management. Don't use on objects which are supposed to die soon after usage (at the end of a request or similar cause it could lead to memory leaks. |
+| type | Type.File |  Type of configuration source. Currently supported are File and Fixture. |
+| allfields | false | If true all fields are set from configuration regardless whether they are annotated Configure or not. Only fields which are marked DontConfigure are ignored. |
+
 Example:
+```
 @ConfigureMe(name="fixture", type=ConfigurationSourceKey.Type.FIXTURE, watch=false)
 public class TestConfigurable {
 @ConfigureMe(allfields=true)
 public class HelloWorld {
+```
 
 
-DontConfigure
+### *@DontConfigure*
 Marks a field not configureable. In case the class is annotated with ConfigureMe(allfields=true) this field will be ignored.
 Example:
 @DontConfigure private String myField;
@@ -152,7 +143,7 @@ public class LanguageResearcher {
 ```
 
 
-SetAll
+### *@SetAll*
 Calls the method with each name, value pair in the configuration object. Requires the target method to have two string parameters.
 Example:
 ```
@@ -163,7 +154,7 @@ public void debug(String name, String value){
 ```
 
 
-SetIf
+### *@SetIf*
 Calls the method with the name and the value of the configuration properties which match value and condition annotation parameters. Value is a string parameter, while condition is one of the SetIfCondition enum values. There are currently 3 of them :
 startsWith (does the key start with given annotation value)
 contains (does the key contain given annotation value)
