@@ -3,7 +3,7 @@ ConfigureMe
 
 ## What is ConfigureMe
 ConfigureMe is a configuration utility for really simple autoconfiguration of java objects. ConfigureMe focuses on different configuration of the same object in different Environments during staging (dev, test, prod). ConfigureMe configures POJOs based on annotations.
-ConfigureMe is free and distributed under the MIT license.
+ConfigureMe is free and distributed under the [MIT license](http://www.opensource.org/licenses/mit-license.php).
 
 ## Features
 * Automatic type safe configuration via annotations
@@ -28,3 +28,5 @@ Just add your maven/ivy/gradle dependency:
   <version>2.3.4</version>
 </dependency>
 ```
+## Further documentation
+* [Supported annotations](docs/annotations.md)
