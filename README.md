@@ -29,5 +29,5 @@ Just add your maven/ivy/gradle dependency:
 </dependency>
 ```
 ## Further documentation
-* [Supported annotations](docs/annotations.md)
-* [Examples](docs/examples.md)
+* [Supported annotations](wiki/Annotations)
+* [Examples](wiki/Examples)
