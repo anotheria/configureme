@@ -38,7 +38,7 @@ Example:
 ```
 
 
-AfterInitialConfiguration
+### *@AfterInitialConfiguration*
 Called after first successful configuration.
 Example:
 ```
@@ -48,7 +48,7 @@ Example:
 ```
 
 
-AfterReConfiguration
+### *@AfterReConfiguration*
 Called after each successful re-configuration.
 Example:
 ```
@@ -110,6 +110,8 @@ Example:
 ```
 @ConfigureMe(name="fixture", type=ConfigurationSourceKey.Type.FIXTURE, watch=false)
 public class TestConfigurable {
+```
+```
 @ConfigureMe(allfields=true)
 public class HelloWorld {
 ```
@@ -121,15 +123,12 @@ Example:
 @DontConfigure private String myField;
 
 
-Set
+### *@Set*
 Calls the method with the value of the configuration property specified by the value (noname) attribute. 
 
-Parameter
-default
-Description
-value
- 
-Name of the attribute in the configuration object
+| Parameter | default | Description |
+| - | - | - |
+|value| |Name of the attribute in the configuration object|
 
 Example:
 ```
@@ -156,20 +155,15 @@ public void debug(String name, String value){
 
 ### *@SetIf*
 Calls the method with the name and the value of the configuration properties which match value and condition annotation parameters. Value is a string parameter, while condition is one of the SetIfCondition enum values. There are currently 3 of them :
-startsWith (does the key start with given annotation value)
-contains (does the key contain given annotation value)
-matches (does the key match given annotation value)
+* startsWith (does the key start with given annotation value)
+* contains (does the key contain given annotation value)
+* matches (does the key match given annotation value)
 All of conditions are checked by calling the String methods of the same name on attribute name (so, the last condition supports regular expressions). 
 
-Parameter
-default
-Description
-value
- 
-Pattern of the attribute name in the configuration object
-condition
-SetIfCondition.matches
-Condition, which regulates the configuration properties to be passed to the annotated method
+| Parameter | default | Description |
+| - | - | - |
+| value |   | Pattern of the attribute name in the configuration object|
+| condition | SetIfCondition.matches | Condition, which regulates the configuration properties to be passed to the annotated method|
 
 Example:
 ```
