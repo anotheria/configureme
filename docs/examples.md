@@ -1,21 +1,21 @@
 # Examples
 
-## Example1: Simple configuration
+## Example 1: Simple configuration
 ### JSON Config
 *mailconfig.json*
 ```javascript
 {
-    host: "mailserver.net",
-    user: "defuser@mailserver.net",
-    password: "defpassword",
+    "host": "mailserver.net",
+    "user": "defuser@mailserver.net",
+    "password": "defpassword"
  
-    bob: {
-        user: "bob@mailserver.net",
-        password: "bobpass",
+    "bob": {
+        "user": "bob@mailserver.net",
+        "password": "bobpass"
     },
-    mark: {
-        user: "mark@mailserver.net",
-        password: "markpass",
+    "mark": {
+        "user": "mark@mailserver.net",
+        "password": "markpass"
     },
 }
 ```
@@ -76,17 +76,21 @@ String password = MailConfig.getInstance().getPassword();
 ```
 
 
-Example2: Using @SetAll
-@SetAll annotation allows have every property-value pair in the configuration. Annotated target method have two required string parameters.
-JSON Config
-setall-example-config.json
+## Example2: Using *@SetAll*
+*@SetAll* annotation allows have every property-value pair in the configuration. Annotated target method have two required string parameters.
+
+### JSON Config
+*setall-example-config.json*
+```json
 {
     propertyA: 123,
     propertyB: "valueC",
     propertyC: "valueC",
 }
-Configuration Class Implementation
-SetAllExampleConfig.java
+```
+### Configuration Class Implementation
+*SetAllExampleConfig.java*
+```java
 @ConfigureMe(name = "setall-example-config")
 public class SetAllExampleConfig {
  
@@ -112,29 +116,25 @@ public class SetAllExampleConfig {
         return propertiesMap;
     }
 }
-Using Code
-Using Code
+```
+### Usage
+```java
 Map<String, String> allProperties = SetAllExampleConfig.getInstance().getPropertiesMap();
 System.out.println(allProperties); // "{propertyC=valueC, propertyB=valueC, propertyA=123}"
-Example3: Using @SetIf
+```
+
+## Example 3: Using @SetIf
 This example shows how to use @SetIf annotation to configure lists and maps.
 @SetIf calls the method with the name and the value of the configuration properties which match value and condition annotation parameters.
 Value is a string parameter, while condition is one of the SetIfCondition enum values. There are currently 3 of them :
-startsWith (does the key start with given annotation value)
-contains (does the key contain given annotation value)
-matches (does the key match given annotation value)
+ * startsWith (does the key start with given annotation value)
+ * contains (does the key contain given annotation value)
+ * matches (does the key match given annotation value)
 All of conditions are checked by calling the String methods of the same name on attribute name (so, the last condition supports regular expressions).
-Parameter
-Default
-Description
-value
--
-Pattern of the attribute name in the configuration object
-condition
-SetIfCondition.matches
-Condition, which regulates the configuration properties to be passed to the annotated method
-JSON Config
-setif-example-config.json
+
+### JSON Config
+*setif-example-config.json*
+```javascript
 {
     url.1 = "http://buy.server.com",
     url.2 = "http://fun.server.com",
@@ -144,8 +144,11 @@ setif-example-config.json
     country.US = "USA",
     country.IT = "Italy",
 }
-Configuration Class Implementation
-SetIfExampleConfig.java
+```
+
+### Configuration Class Implementation
+*SetIfExampleConfig.java*
+```java
 @ConfigureMe(name = "setif-example-config")
 public class SetIfExampleConfig {
  
@@ -191,17 +194,23 @@ public class SetIfExampleConfig {
         return countryCodesToName;
     }
 }
-Using Code
-Using Code
+```
+
+### Usage 
+```java
 List<String> urls = SetIfExampleConfig.getInstance().getUrls();
 System.out.println(urls); // "[http://dev.server.com, http://buy.server.com, http://fun.server.com]"
  
 Map<String, String> countryCodeToName = SetIfExampleConfig.getInstance().getCountryCodesToName();
 System.out.println(countryCodeToName); // "{US=USA, UK=United Kingdom, IT=Italy}"
-Example4: Using Arrays
+```
+
+
+## Example 4: Using Arrays
 Supported array types: String[], boolean[], short[], int[], long[], byte[], float[], double[]
-JSON Config
-arrays-example-config.json
+### JSON Config
+*arrays-example-config.json*
+```json
 {
     stringArrayValue    : "str1,str2,str3",
     stringArray : ["sa1.1 " , "sa2.1,sa2.2" , "sa3"],
@@ -209,8 +218,11 @@ arrays-example-config.json
     floatArray  : [2.3, 3],
     booleanArray    : [true, false, true],
 }
-Configuration Class Implementation
-ArraysExampleConfig.java
+```
+
+### Configuration Class Implementation
+*ArraysExampleConfig.java*
+```java
 @ConfigureMe(name="arrays-example-config")
 public class ArraysExampleConfig {
  
@@ -238,8 +250,9 @@ public class ArraysExampleConfig {
     ...
  
 }
-Using Code
-Using Code
+```
+### Usage
+```
 System.out.println(Arrays.toString(ArraysExampleConfig.getInstance().getStringArrayValue()));
 System.out.println(Arrays.toString(ArraysExampleConfig.getInstance().getStringArray()));
 System.out.println(Arrays.toString(ArraysExampleConfig.getInstance().getFloatArrayValue()));
@@ -251,34 +264,45 @@ System.out.println(Arrays.toString(ArraysExampleConfig.getInstance().getBooleanA
 // [1.2, 2.3, 3.0]
 // [2.3, 3.0]
 // [true, false, true]
-Example5: Using variables
+
+```
+
+## Example 5: Using variables
 Shows the opportunity to use environment (system) property in config file
-JSON Config
-variables.json
+### JSON Config
+*variables.json*
+```json
 {
-    live:{
-        variable: "${testVariable}"
+    "live":{
+        "variable": "${testVariable}"
     },
-    test:{
-        variable: "simple value"
+    "test":{
+        "variable": "simple value"
     },
 }
-Configuration Class Implementation
-VariableConfig.class
+```
+### Configuration Class Implementation 
+*VariableConfig.class*
+```
 @ConfigureMe(name = "variables")
 public class VariableConfig {
     @Configure
     private String variable;
    ...
 }
-Using Code
+```
+### Usage
+```java
 System.setProperty("testVariable", "environment value") ;
 System.out.println(variableConfig.getVariable());
 //environment value
-Example6: Using include
+```
+
+## Example 6: Using include
 Shows the opportunity to include one configure file to the another one. In order to be able to use repeated parts in one file and include it to the files that need them
-Main JSON Config
-include.json
+## Main JSON Config
+*include.json*
+```json
 {
     live:{
         $<includedfile1>
@@ -290,17 +314,21 @@ include.json
 }
 First included JSON Config
 includefile1.json
-{
+```json{
     country: "Spain",
     $<includedfile2>
 }
+```
 Second included JSON Config
 includefile2.json
-{
+```json{
     city: "Barcelona",
 }
-Configuration Class Implementation
-IncludeConfig.class
+```
+
+### Configuration Class Implementation
+*IncludeConfig.class*
+```java
 @ConfigureMe(name = "include")
 public class IncludeConfig {
     @Configure
@@ -309,10 +337,13 @@ public class IncludeConfig {
     private String city;
     ...
 }
-Example7: Using links
+```
+
+## Example7: Using links
 Shows the opportunity to use links in file A to attribute, that localed in file B.
-Main JSON Config
-links.json
+### Main JSON Config
+*links.json*
+```json
 {
     inner:$<linkedattributes.innerOne>,
     live:{
@@ -324,8 +355,11 @@ links.json
         blockNumbers: $<linkedattributes.numbers>,
     },
 }
-JSON Config with linked attributes
-linkedattributes.json
+```
+
+### JSON Config with linked attributes
+*linkedattributes.json*
+```json
 {
     live:{
         street: "Live included street",
@@ -339,8 +373,11 @@ linkedattributes.json
         numbers: [ 1, 2, 3],
     },
 }
-Configuration Class Implementation
-LinksConfig.class
+```
+
+### Configuration Class Implementation
+*LinksConfig.class*
+```java
 @ConfigureMe(name = "links")
 public class LinksConfig {
     @Configure
@@ -351,10 +388,13 @@ public class LinksConfig {
     private int[] blockNumbers;
     ...
 }
-Example8: Using ConfigureAlso attribute
+```
+
+## Example8: Using ConfigureAlso attribute
 Shows the opportunity to use config A in the config B, without visibly (formal) configuration of config A
-Main JSON Config
-configurealso.json
+## Main JSON Config
+*configurealso.json*
+```json
 {
     simple: "global simple",
     live:{
@@ -364,8 +404,11 @@ configurealso.json
         simple: "test simple"
     },
 }
-JSON Config for internal config
-externalConfig.json
+```
+
+## JSON Config for internal config
+*externalConfig.json*
+```json
 {
     externalAttribute: "external",
     live:{
@@ -375,8 +418,10 @@ externalConfig.json
         externalAttribute: "external test",
     },
 }
-Configuration Class Implementation
-ConfigureAlsoConfig.class
+```
+### Configuration Class Implementation
+*ConfigureAlsoConfig.class*
+```java
 @ConfigureMe(name = "configurealso")
 public class ConfigureAlsoConfig {
     @Configure
@@ -385,3 +430,5 @@ public class ConfigureAlsoConfig {
     private InnerConfig also;
     ...
 }
+```
+
