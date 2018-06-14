@@ -30,3 +30,4 @@ Just add your maven/ivy/gradle dependency:
 ```
 ## Further documentation
 * [Supported annotations](docs/annotations.md)
+* [Examples](docs/examples.md)
