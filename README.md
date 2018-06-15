@@ -31,3 +31,4 @@ Just add your maven/ivy/gradle dependency:
 ## Further documentation
 * [Supported annotations](https://github.com/anotheria/configureme/wiki/Annotations)
 * [Examples](https://github.com/anotheria/configureme/wiki/Examples)
+* [What are environments](https://github.com/anotheria/configureme/wiki/Environments)
