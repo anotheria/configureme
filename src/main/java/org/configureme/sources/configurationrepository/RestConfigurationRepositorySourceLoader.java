@@ -1,19 +1,18 @@
 package org.configureme.sources.configurationrepository;
 
 
+
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.util.Map;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.config.ClientConfig;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
-import com.sun.jersey.api.json.JSONConfiguration;
-import org.codehaus.jackson.jaxrs.JacksonJaxbJsonProvider;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.configureme.sources.ConfigurationSourceKey;
 import org.configureme.sources.SourceLoader;
+import org.glassfish.jersey.jackson.JacksonFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,15 +82,14 @@ public class RestConfigurationRepositorySourceLoader implements SourceLoader {
         if (key.getRemoteConfigurationRepositoryUrl() == null) {
             throw new IllegalArgumentException("Target url unknown");
         }
-        final Client client = Client.create(getClientConfig());
-        final WebResource resource = client.resource(key.getRemoteConfigurationRepositoryUrl()).path(additionalPath).path(key.getName());
-        return resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).get(ReplyObject.class);
+        final Client client = getClientConfig().build();
+        final WebTarget resource = client.target(key.getRemoteConfigurationRepositoryUrl()).path(additionalPath).path(key.getName());
+        return resource.request( MediaType.APPLICATION_JSON).header("Content-type", MediaType.APPLICATION_JSON).get(ReplyObject.class);
     }
 
-    private ClientConfig getClientConfig() {
-        final ClientConfig clientConfig = new DefaultClientConfig();
-        clientConfig.getClasses().add(JacksonJaxbJsonProvider.class);
-        clientConfig.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
+    private ClientBuilder getClientConfig() {
+        final ClientBuilder clientConfig = ClientBuilder.newBuilder();
+        clientConfig.register(JacksonFeature.class);
         return clientConfig;
     }
 }
