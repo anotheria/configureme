@@ -5,10 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import org.configureme.sources.configurationrepository.RestConfigurationRepositorySourceLoader;
 import org.configureme.sources.configurationrepository.ReplyObject;
+import org.eclipse.jetty.util.log.Slf4jLog;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.mortbay.log.Slf4jLog;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
