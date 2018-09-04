@@ -49,7 +49,7 @@ public class RestConfigurationRepositorySourceLoader implements SourceLoader {
         if (key == null) {
             throw new IllegalArgumentException("getLastChangeTimestamp(): ConfigurationSourceKey is null");
         }
-        final ReplyObject replyObject = getConfigurationReplyObject(key, PATH_LAST_CHANGE_TIMESTAMP);
+        final ReplyObject replyObject = this.getConfigurationReplyObject(key, PATH_LAST_CHANGE_TIMESTAMP);
         final Map<String, Object> result = replyObject.getResults();
         return ((long) result.get(key.getName()));
     }
@@ -59,8 +59,8 @@ public class RestConfigurationRepositorySourceLoader implements SourceLoader {
         if (key.getType() != ConfigurationSourceKey.Type.REST) {
             throw new IllegalStateException("Can only get configuration for type: " + ConfigurationSourceKey.Type.REST);
         }
-        final Map<String, Object> result = getConfigurationReplyObject(key, PATH_CONFIGURATION).getResults();
-        return mapObjectToString(result.get(key.getName()), key.getName());
+        final Map<String, Object> result = this.getConfigurationReplyObject(key, PATH_CONFIGURATION).getResults();
+        return this.mapObjectToString(result.get(key.getName()), key.getName());
     }
 
     private String mapObjectToString(final Object toMap, final String configName) {
@@ -84,12 +84,30 @@ public class RestConfigurationRepositorySourceLoader implements SourceLoader {
         }
         final Client client = getClientConfig().build();
         final WebTarget resource = client.target(key.getRemoteConfigurationRepositoryUrl()).path(additionalPath).path(key.getName());
-        return resource.request( MediaType.APPLICATION_JSON).header("Content-type", MediaType.APPLICATION_JSON).get(ReplyObject.class);
+        return resource.request(MediaType.APPLICATION_JSON).header("Content-type", MediaType.APPLICATION_JSON).get(ReplyObject.class);
     }
 
     private ClientBuilder getClientConfig() {
-        final ClientBuilder clientConfig = ClientBuilder.newBuilder();
-        clientConfig.register(JacksonFeature.class);
+        ClientBuilder clientConfig;
+
+        try {
+            clientConfig = ClientBuilder.newBuilder();
+            Class clazz = Class.forName("org.glassfish.jersey.jackson.JacksonFeature");
+            clientConfig.register(clazz);
+        } catch (ClassNotFoundException e) {
+            try {
+                Class clazz = Class.forName("org.jboss.resteasy.spi.ResteasyProviderFactory");
+                Method factoryMethod = clazz.getDeclaredMethod("getInstance");
+                Object singleton = factoryMethod.invoke(null, null);
+
+                Class clazz2 = Class.forName(" org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder");
+                final Constructor constructor = clazz2.getConstructor(clazz);
+                clientConfig = (ClientBuilder) constructor.newInstance(singleton);
+            } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e1) {
+                throw new IllegalStateException("No Jackson provider available");
+            }
+        }
+
         return clientConfig;
     }
 }
