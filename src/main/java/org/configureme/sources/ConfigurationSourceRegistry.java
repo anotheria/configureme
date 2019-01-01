@@ -214,6 +214,10 @@ public enum ConfigurationSourceRegistry {
 		initLoaders();
 	}
 
+	/**
+	 * Stops the watcher thread in case the application need a proper shutdown and cleanup of resources, for example in
+	 * case of a reload.
+	 */
 	public void shutdown() {
 		watcherThread.interrupt();
 	}
