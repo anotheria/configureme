@@ -20,7 +20,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class RestConfigurationRepositorySourceLoaderTest {
     private static final Logger log = LoggerFactory.getLogger(Slf4jLog.class);
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(8080);
+    public WireMockRule wireMockRule = new WireMockRule(10088);
     private RestConfigurationRepositorySourceLoader loader = new RestConfigurationRepositorySourceLoader();
 
     @Before
