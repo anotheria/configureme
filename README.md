@@ -10,14 +10,14 @@ ConfigureMe is a configuration utility for really simple autoconfiguration of ja
 ConfigureMe is free and distributed under the [MIT license](http://www.opensource.org/licenses/mit-license.php).
 
 ## Features
-* Automatic type safe configuration via annotations
-* Support for cascading environments
-* Automatic re-configuration of the configurables upon configuration (file) change
-* One on one relation between a configuration and a configurable object
-* Overview of all configuration options for a given configurable object at a glance
-* Low load time, low memory footprint
+* Automatic type safe configuration via annotations.
+* Support for cascading environments.
+* Automatic re-configuration of the configurables upon configuration (file) change.
+* One on one relation between a configuration and a configurable object.
+* Overview of all configuration options for a given configurable object at a glance.
+* Low load time, low memory footprint.
 * Support for system properties in config files.
-* Includes for configuration files
+* Includes for configuration files.
 * Handling of simple and complex properies (objects).
 
 ## Getting started
