@@ -168,6 +168,7 @@ public enum ConfigurationSourceRegistry {
 	 */
 	private final class WatcherThread extends Thread {
 		private WatcherThread() {
+			super("ConfigurationSourceRegistry.WatcherThread");
 			setDaemon(true);
 		}
 
