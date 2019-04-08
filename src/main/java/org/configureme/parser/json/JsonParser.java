@@ -36,186 +36,203 @@ import org.slf4j.LoggerFactory;
  */
 public class JsonParser implements ConfigurationParser {
 
-	/**
-	 * The prefix string distinguishing names of environment JSON objects from composite JSON objects.
-	 * The names of last ones shall starts with this prefix.
-	 */
-	private static final String COMPOSITE_ATTR_PREFIX = "@";
-	/**
-	 * The prefix string for attribute inclusion.
-	 */
-	private static final String INCLUDE_ATTR_PREFIX = "$<";
+    /**
+     * The prefix string distinguishing names of environment JSON objects from composite JSON objects.
+     * The names of last ones shall starts with this prefix.
+     */
+    private static final String COMPOSITE_ATTR_PREFIX = "@";
+    /**
+     * The prefix string for attribute inclusion.
+     */
+    private static final String INCLUDE_ATTR_PREFIX = "$<";
 
-	/**
-	 * Parsed includes.
-	 */
-	private static final Map<String, Set<String>> includes = new HashMap<>();
+    /**
+     * Parsed includes.
+     */
+    private static final Map<String, Set<String>> includes = new HashMap<>();
 
-	/**
-	 * Logger.
-	 */
-	private static final Logger log = LoggerFactory.getLogger(JsonParser.class);
+    /**
+     * Logger.
+     */
+    private static final Logger log = LoggerFactory.getLogger(JsonParser.class);
 
-	@Override
-	public ParsedConfiguration parseConfiguration(final String name, final String content) throws ConfigurationParserException {
-		String filteredContent = StringUtils.removeCComments(content);
-		filteredContent = StringUtils.removeCPPComments(filteredContent);
-		Set<String> include = includes.get(name);
-		if (include == null)
-			include = new HashSet<>();
-		include.clear();
-		include.add(name);
-		//parse file includes, should be first than parsing tags
-		filteredContent = includeExternalFiles(filteredContent, include);
+    @Override
+    public ParsedConfiguration parseConfiguration(final String name, final String content) throws ConfigurationParserException {
+        String filteredContent = StringUtils.removeCComments(content);
+        filteredContent = StringUtils.removeCPPComments(filteredContent);
+        Set<String> include = includes.get(name);
+        if (include == null)
+            include = new HashSet<>();
+        include.clear();
+        include.add(name);
+        //parse file includes, should be first than parsing tags
+        filteredContent = includeExternalFiles(filteredContent, include);
 
-		final List<String> tags = StringUtils.extractTags(filteredContent, '$', '}');
-		//parse tags
-		for (final String tag : tags) {
-			//ensure wrong format is skipped
-			if (tag.charAt(1) != '{')
-				continue;
-			try {
-				final String propertyName = tag.substring(2, tag.length() - 1);
-				final String propertyValue = System.getProperty(propertyName);
-				if (propertyValue == null) {
-					continue;
-				}
-				filteredContent = StringUtils.replaceOnce(filteredContent, tag, propertyValue);
-			} catch (final Exception e) {
-				log.warn("parseConfiguration: tag=" + tag + " can't be parsed", e);
-			}
-		}
+        final List<String> tags = StringUtils.extractTags(filteredContent, '$', '}');
+        //parse tags
+        for (final String tag : tags) {
+            //ensure wrong format is skipped
+            if (tag.charAt(1) != '{')
+                continue;
+            try {
+                final String propertyValue = getSystemProperty(tag.substring(2, tag.length() - 1));
+                if (propertyValue == null) {
+                    continue;
+                }
+                filteredContent = StringUtils.replaceOnce(filteredContent, tag, propertyValue);
+            } catch (final Exception e) {
+                log.warn("parseConfiguration: tag=" + tag + " can't be parsed", e);
+            }
+        }
 
-		try {
-			final JSONObject j = new JSONObject(filteredContent);
-			final ParsedConfiguration pa = new ParsedConfiguration(name);
+        try {
+            final JSONObject j = new JSONObject(filteredContent);
+            final ParsedConfiguration pa = new ParsedConfiguration(name);
 
-			final DynamicEnvironment env = new DynamicEnvironment();
+            final DynamicEnvironment env = new DynamicEnvironment();
 
-			final String[] names = JSONObject.getNames(j);
-			if (names != null){
-				for (final String key : names) {
-					final List<? extends ParsedAttribute<?>> attList = parse(key, j.get(key), env);
-					for (final ParsedAttribute<?> att : attList)
-						pa.addAttribute(att);
-				}
-			}
-			//remove current configuration from the externals
-			include.remove(name);
-			pa.setExternalConfigurations(include);
-			includes.put(name, include);
-			return pa;
+            final String[] names = JSONObject.getNames(j);
+            if (names != null) {
+                for (final String key : names) {
+                    final List<? extends ParsedAttribute<?>> attList = parse(key, j.get(key), env);
+                    for (final ParsedAttribute<?> att : attList)
+                        pa.addAttribute(att);
+                }
+            }
+            //remove current configuration from the externals
+            include.remove(name);
+            pa.setExternalConfigurations(include);
+            includes.put(name, include);
+            return pa;
 
-		} catch (final JSONException e) {
-			throw new ConfigurationParserException("JSON Error", e);
-		}
-	}
+        } catch (final JSONException e) {
+            throw new ConfigurationParserException("JSON Error", e);
+        }
+    }
 
-	private String includeExternalFiles(final String content, final Collection<String> configurationNames) throws ConfigurationParserException {
-		final List<String> includes = StringUtils.extractTags(content, '$', '>');
-		String result = content;
-		for (final String include : includes) {
-			//ensure wrong format is skipped
-			if (include.charAt(1) != '<')
-				continue;
-			if (include.charAt(include.length() - 1) != '>')
-				continue;
+    private String getSystemProperty(final String name) {
+        String[] parts = name.split(":", 2);
+        String propertyName = parts[0];
+        String defaultValue = null;
 
-			// skip circles in includes
-			final String includeName = include.substring(2, include.length() - 1);
-			if (configurationNames.contains(includeName))
-				throw new ConfigurationParserException("Circle detected: configuration=" + includeName + " was already included");
-			// skip links to attributes
-			if (include.contains("."))
-				continue;
-			try {
-				//reading config
-				configurationNames.add(includeName);
-				final String includedContent = includeExternalFiles(readIncludedContent(includeName), configurationNames);
-				result = StringUtils.replaceOnce(result, include, includedContent);
-			} catch (final Exception e) {
-				log.warn("includeExternalFiles: include=" + include + " can't be parsed", e);
-			}
-		}
-		return result;
-	}
+        if (parts.length == 2) {
+            defaultValue = parts[1];
+        }
 
-	private String readIncludedContent(final String includeName) {
-		final ConfigurationSourceKey configurationSourceKey = new ConfigurationSourceKey(ConfigurationSourceKey.Type.FILE, ConfigurationSourceKey.Format.JSON, includeName);
-		String result = ConfigurationSourceRegistry.INSTANCE.readConfigurationSource(configurationSourceKey);
-		result = result.substring(1, result.length()-1);		
-		return result;
-	}
+        String value = System.getProperty(propertyName);
 
-	/**
-	 * <p>parse.</p>
-	 *
-	 * @param key a {@link java.lang.String} object.
-	 * @param value a {@link java.lang.Object} object.
-	 * @param environment a {@link org.configureme.environments.DynamicEnvironment} object.
-	 * @return a {@link java.util.List} object.
-	 * @throws org.json.JSONException if any.
-	 */
-	public static List<? extends ParsedAttribute<?>> parse(final String key, final Object value, final DynamicEnvironment environment) throws JSONException {
-		// an object value means a change in environment, let's see what it is
-		if (value instanceof JSONObject && key.startsWith(COMPOSITE_ATTR_PREFIX))
-			return Collections.singletonList(parseComposite(key, (JSONObject) value, environment));
-		if (value instanceof JSONArray && key.startsWith(COMPOSITE_ATTR_PREFIX))
-			return Collections.singletonList(parseArray(key, (JSONArray) value, environment));
-		if (value instanceof String && ((String) value).startsWith(INCLUDE_ATTR_PREFIX))
-			return Collections.singletonList(parseInclude(key, (String) value, environment));
-		if (value instanceof JSONObject)
-			return parseObject(key, (JSONObject) value, environment);
-		if (value instanceof JSONArray)
-			return Collections.singletonList(parseArray(key, (JSONArray) value, environment));
+        if (null == value) {
+            return defaultValue;
+        }
 
-		return Collections.singletonList(new PlainParsedAttribute(key, (Environment) environment.clone(), JSONObject.NULL.equals(value) ? null : value.toString()));
-	}
+        return value;
+    }
 
-	private static IncludeParsedAttribute parseInclude(final String key, final String value, final DynamicEnvironment environment) throws JSONException {
-		return new IncludeParsedAttribute(key, (Environment) environment.clone(), value);
-	}
+    private String includeExternalFiles(final String content, final Collection<String> configurationNames) throws ConfigurationParserException {
+        final List<String> includes = StringUtils.extractTags(content, '$', '>');
+        String result = content;
+        for (final String include : includes) {
+            //ensure wrong format is skipped
+            if (include.charAt(1) != '<')
+                continue;
+            if (include.charAt(include.length() - 1) != '>')
+                continue;
 
-	private static List<ParsedAttribute<?>> parseObject(final String key, final JSONObject value, final DynamicEnvironment environment) throws JSONException {
-		final List<ParsedAttribute<?>> parsed = new ArrayList<>();
+            // skip circles in includes
+            final String includeName = include.substring(2, include.length() - 1);
+            if (configurationNames.contains(includeName))
+                throw new ConfigurationParserException("Circle detected: configuration=" + includeName + " was already included");
+            // skip links to attributes
+            if (include.contains("."))
+                continue;
+            try {
+                //reading config
+                configurationNames.add(includeName);
+                final String includedContent = includeExternalFiles(readIncludedContent(includeName), configurationNames);
+                result = StringUtils.replaceOnce(result, include, includedContent);
+            } catch (final Exception e) {
+                log.warn("includeExternalFiles: include=" + include + " can't be parsed", e);
+            }
+        }
+        return result;
+    }
 
-		environment.extendThis(key);
-		try {
-			final String[] names = JSONObject.getNames(value);
-			if (names != null)
-				for (String subKey : names)
-					parsed.addAll(parse(subKey, value.get(subKey), environment));
-		} finally {
-			environment.reduceThis();
-		}
+    private String readIncludedContent(final String includeName) {
+        final ConfigurationSourceKey configurationSourceKey = new ConfigurationSourceKey(ConfigurationSourceKey.Type.FILE, ConfigurationSourceKey.Format.JSON, includeName);
+        String result = ConfigurationSourceRegistry.INSTANCE.readConfigurationSource(configurationSourceKey);
+        result = result.substring(1, result.length() - 1);
+        return result;
+    }
 
-		return parsed;
-	}
+    /**
+     * <p>parse.</p>
+     *
+     * @param key         a {@link java.lang.String} object.
+     * @param value       a {@link java.lang.Object} object.
+     * @param environment a {@link org.configureme.environments.DynamicEnvironment} object.
+     * @return a {@link java.util.List} object.
+     * @throws org.json.JSONException if any.
+     */
+    public static List<? extends ParsedAttribute<?>> parse(final String key, final Object value, final DynamicEnvironment environment) throws JSONException {
+        // an object value means a change in environment, let's see what it is
+        if (value instanceof JSONObject && key.startsWith(COMPOSITE_ATTR_PREFIX))
+            return Collections.singletonList(parseComposite(key, (JSONObject) value, environment));
+        if (value instanceof JSONArray && key.startsWith(COMPOSITE_ATTR_PREFIX))
+            return Collections.singletonList(parseArray(key, (JSONArray) value, environment));
+        if (value instanceof String && ((String) value).startsWith(INCLUDE_ATTR_PREFIX))
+            return Collections.singletonList(parseInclude(key, (String) value, environment));
+        if (value instanceof JSONObject)
+            return parseObject(key, (JSONObject) value, environment);
+        if (value instanceof JSONArray)
+            return Collections.singletonList(parseArray(key, (JSONArray) value, environment));
 
-	private static CompositeParsedAttribute parseComposite(final String key, final JSONObject value, final DynamicEnvironment environment) throws JSONException {
-		final String[] names = JSONObject.getNames(value);
-		if (names == null)
-			return new CompositeParsedAttribute(stripKey(key), (Environment) environment.clone(), Collections.<ParsedAttribute<?>>emptyList());
+        return Collections.singletonList(new PlainParsedAttribute(key, (Environment) environment.clone(), JSONObject.NULL.equals(value) ? null : value.toString()));
+    }
 
-		final List<ParsedAttribute<?>> leafAttr = new ArrayList<>();
-		for (final String subKey : names)
-			leafAttr.addAll(parse(subKey, value.get(subKey), environment));
+    private static IncludeParsedAttribute parseInclude(final String key, final String value, final DynamicEnvironment environment) throws JSONException {
+        return new IncludeParsedAttribute(key, (Environment) environment.clone(), value);
+    }
 
-		return new CompositeParsedAttribute(stripKey(key), (Environment) environment.clone(), leafAttr);
-	}
+    private static List<ParsedAttribute<?>> parseObject(final String key, final JSONObject value, final DynamicEnvironment environment) throws JSONException {
+        final List<ParsedAttribute<?>> parsed = new ArrayList<>();
 
-	private static ArrayParsedAttribute parseArray(final String key, final JSONArray value, final DynamicEnvironment environment) throws JSONException {
-		final List<ParsedAttribute<?>> parsed = new ArrayList<>(value.length());
-		for (int index = 0; index < value.length(); index++){
-			parsed.addAll(parse(key, value.get(index), environment));
-		}
+        environment.extendThis(key);
+        try {
+            final String[] names = JSONObject.getNames(value);
+            if (names != null)
+                for (String subKey : names)
+                    parsed.addAll(parse(subKey, value.get(subKey), environment));
+        } finally {
+            environment.reduceThis();
+        }
 
-		return new ArrayParsedAttribute(stripKey(key), (Environment) environment.clone(), parsed);
-	}
+        return parsed;
+    }
 
-	private static String stripKey(final String key) {
-		return key.startsWith(COMPOSITE_ATTR_PREFIX)
-				? key.substring(COMPOSITE_ATTR_PREFIX.length())
-				: key;
-	}
+    private static CompositeParsedAttribute parseComposite(final String key, final JSONObject value, final DynamicEnvironment environment) throws JSONException {
+        final String[] names = JSONObject.getNames(value);
+        if (names == null)
+            return new CompositeParsedAttribute(stripKey(key), (Environment) environment.clone(), Collections.<ParsedAttribute<?>>emptyList());
+
+        final List<ParsedAttribute<?>> leafAttr = new ArrayList<>();
+        for (final String subKey : names)
+            leafAttr.addAll(parse(subKey, value.get(subKey), environment));
+
+        return new CompositeParsedAttribute(stripKey(key), (Environment) environment.clone(), leafAttr);
+    }
+
+    private static ArrayParsedAttribute parseArray(final String key, final JSONArray value, final DynamicEnvironment environment) throws JSONException {
+        final List<ParsedAttribute<?>> parsed = new ArrayList<>(value.length());
+        for (int index = 0; index < value.length(); index++) {
+            parsed.addAll(parse(key, value.get(index), environment));
+        }
+
+        return new ArrayParsedAttribute(stripKey(key), (Environment) environment.clone(), parsed);
+    }
+
+    private static String stripKey(final String key) {
+        return key.startsWith(COMPOSITE_ATTR_PREFIX)
+                ? key.substring(COMPOSITE_ATTR_PREFIX.length())
+                : key;
+    }
 }
