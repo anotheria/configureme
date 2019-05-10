@@ -17,14 +17,17 @@ import org.configureme.util.StringUtils;
 public class PropertiesParser implements ConfigurationParser {
 
     @Override
-    public ParsedConfiguration parseConfiguration(final String name, final String content)
+    public ParsedConfiguration parseConfiguration(final String name, String content)
             throws ConfigurationParserException {
 
-        final String filteredContent = StringUtils.removeBashComments(content);
-        final String[] lines = StringUtils.tokenize(filteredContent, '\n');
+    	content = StringUtils.removeChar(content, '\r');
+    	final String[] lines = StringUtils.tokenize(content, '\n');
         final ParsedConfiguration configuration = new ParsedConfiguration(name);
 
+
         for (final String line : lines) {
+        	if (line.startsWith("#"))
+        		continue;
             if (line == null || line.trim().isEmpty())
                 continue;
             final String[] tokensQL = StringUtils.tokenize(line, '=');
