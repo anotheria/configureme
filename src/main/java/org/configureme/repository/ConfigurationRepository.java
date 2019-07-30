@@ -7,6 +7,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.configureme.Configuration;
 import org.configureme.Environment;
 import org.configureme.GlobalEnvironment;
+import org.configureme.parser.ParsedAttribute;
+import org.configureme.parser.ParsedConfiguration;
 import org.configureme.sources.ConfigurationSource;
 import org.configureme.sources.ConfigurationSourceKey;
 import org.configureme.sources.ConfigurationSourceListener;
@@ -103,6 +105,19 @@ public enum ConfigurationRepository implements ConfigurationSourceListener {
 				configurationImpl.setAttribute(attributeName, attributeValue);
 		}
 		return configurationImpl;
+	}
+
+	public Configuration createConfiguration(final ParsedConfiguration pa, final String configurationName, final Environment in, final ConfigurationSourceKey.Type type, final ConfigurationSourceKey.Format format) {
+		final List<? extends ParsedAttribute<?>> attributes = pa.getAttributes();
+		final Artefact artefact = createArtefact(configurationName);
+		// set external includes
+		for (final String include : pa.getExternalConfigurations())
+			artefact.addExternalConfigurations(new ConfigurationSourceKey(type, format, include));
+
+		for (final ParsedAttribute<?> a : attributes)
+			artefact.addAttributeValue(a.getName(), a.getValue(), a.getEnvironment());
+
+		return getConfiguration(configurationName, in);
 	}
 
 	@Override

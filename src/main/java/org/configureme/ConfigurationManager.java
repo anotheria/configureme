@@ -1,70 +1,18 @@
 package org.configureme;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Array;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.configureme.annotations.AfterConfiguration;
-import org.configureme.annotations.AfterInitialConfiguration;
-import org.configureme.annotations.AfterReConfiguration;
-import org.configureme.annotations.BeforeConfiguration;
-import org.configureme.annotations.BeforeInitialConfiguration;
-import org.configureme.annotations.BeforeReConfiguration;
-import org.configureme.annotations.Configure;
-import org.configureme.annotations.ConfigureAlso;
 import org.configureme.annotations.ConfigureMe;
-import org.configureme.annotations.DontConfigure;
-import org.configureme.annotations.Set;
-import org.configureme.annotations.SetAll;
-import org.configureme.annotations.SetIf;
 import org.configureme.environments.DynamicEnvironment;
-import org.configureme.mbean.ConfigInfo;
 import org.configureme.mbean.WatchedConfigFiles;
 import org.configureme.mbean.util.MBeanRegisterUtil;
-import org.configureme.parser.ConfigurationParser;
-import org.configureme.parser.ConfigurationParserException;
-import org.configureme.parser.ConfigurationParserManager;
-import org.configureme.parser.ParsedAttribute;
-import org.configureme.parser.ParsedConfiguration;
-import org.configureme.repository.Artefact;
-import org.configureme.repository.ConfigurationRepository;
-import org.configureme.repository.Value;
-import org.configureme.resolver.ResolveManager;
 import org.configureme.sources.ConfigurationSourceKey;
 import org.configureme.sources.ConfigurationSourceKey.Format;
 import org.configureme.sources.ConfigurationSourceKey.Type;
 import org.configureme.sources.ConfigurationSourceRegistry;
-import org.configureme.util.ReflectionUtils;
+import org.configureme.util.ConfigUtils;
 import org.configureme.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Array;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Configuration manager (this is the one YOU must use) is a utility class for retrieval of configurations and automatical configurations of components.
@@ -76,671 +24,341 @@ import java.util.concurrent.ConcurrentHashMap;
  * @version $Id: $Id
  */
 public enum ConfigurationManager {
-	/**
-	 * The configuration manager is a singleton.
-	 */
-	INSTANCE;
+    /**
+     * The configuration manager is a singleton.
+     */
+    INSTANCE;
 
-	/**
-	 * The default environment for configuration.
-	 */
-	private Environment defaultEnvironment = null;
+    /**
+     * The default environment for configuration.
+     */
+    private Environment defaultEnvironment = null;
 
-	/**
-	 * Default configuration source type (file is default, but fixture is also supported for junit tests and configserver may be supported in the near future).
-	 */
-	private ConfigurationSourceKey.Type defaultConfigurationSourceType = Type.FILE;
-	/**
-	 * The format of the configuration file. At the moment only json is supported. The format of the configuration file decides which parser is used to parse the configuration.
-	 */
-	private final ConfigurationSourceKey.Format defaultConfigurationSourceFormat = Format.JSON;
+    /**
+     * Default configuration source type (file is default, but fixture is also supported for junit tests and configserver may be supported in the near future).
+     */
+    private ConfigurationSourceKey.Type defaultConfigurationSourceType = Type.DEFAULT;
+    /**
+     * The format of the configuration file. At the moment only json is supported. The format of the configuration file decides which parser is used to parse the configuration.
+     */
+    private final ConfigurationSourceKey.Format defaultConfigurationSourceFormat = Format.DEFAULT;
     /**
      * Externally provided url for remote configuration repository.
      */
     private String remoteConfigurationRepositoryUrl = "";
 
-	/**
-	 * {@link ConfigurationParserManager}.
-	 */
-	private final ConfigurationParserManager parserManager = ConfigurationParserManager.instance();
-
-	/**
-	 * Cache for object in oder to cover situation with loops in ConfigureAlso
-	 */
-	private final ThreadLocal<Map<String, Map<Environment, Object>>> localCache = new ThreadLocal<>();
-	/**
-	 * Annotations to call before initial configuration.
-	 */
-	private static final Class<? extends Annotation>[] CALL_BEFORE_INITIAL_CONFIGURATION = (Class<? extends Annotation>[]) new Class<?>[]{
-			BeforeInitialConfiguration.class, BeforeConfiguration.class
-	};
-
-	/**
-	 * Annotations to call after initial configuration.
-	 */
-	private static final Class<? extends Annotation>[] CALL_AFTER_INITIAL_CONFIGURATION = (Class<? extends Annotation>[]) new Class<?>[]{
-			AfterConfiguration.class, AfterInitialConfiguration.class
-	};
-
-	/**
-	 * Annotations to call before reconfiguration.
-	 */
-	private static final Class<? extends Annotation>[] CALL_BEFORE_RE_CONFIGURATION = (Class<? extends Annotation>[]) new Class<?>[]{
-			BeforeReConfiguration.class, BeforeConfiguration.class
-	};
-
-	/**
-	 * Annotations to call before after reconfiguration.
-	 */
-	private static final Class<? extends Annotation>[] CALL_AFTER_RE_CONFIGURATION = (Class<? extends Annotation>[]) new Class<?>[]{
-			AfterConfiguration.class, AfterReConfiguration.class
-	};
-
-	private final ResolveManager.ResolveCallback resolveCallback = new ResolveManager.ResolveCallback() {
-        @Override
-        public void configure(Configuration config, Object o, Class<? extends Annotation>[] callBefore, Class<? extends Annotation>[] callAfter, boolean configureAllFields, Environment environment) {
-            ConfigurationManager.this.configure(config, o, callBefore, callAfter, configureAllFields, defaultEnvironment);
-        }
-    };
-
-	/**
-	 * Property name for the system property which ConfigurationManager checks to set its defaultEnvironment with at startup.
-	 */
-	public static final String PROP_NAME_DEFAULT_ENVIRONMENT = "configureme.defaultEnvironment";
+    /**
+     * Property name for the system property which ConfigurationManager checks to set its defaultEnvironment with at startup.
+     */
+    public static final String PROP_NAME_DEFAULT_ENVIRONMENT = "configureme.defaultEnvironment";
     /**
      * Property name for the system property which ConfigurationManager checks to set its remote configuration repository url with at startup.
      */
     public static final String PROP_NAME_CONFIGURATION_REPOSITORY = "configurationRepository";
-	/**
-	 * Property name for the system property which ConfigurationManager checks to set its remote configuration repository url with at startup.
-	 */
-	public static final String PROP_NAME_USED_IN_CONFIGURATION_REPOSITORY = "usedInConfigurationRepository";
     /**
-	 * Logger.
-	 */
-	private static final Logger log = LoggerFactory.getLogger(ConfigurationManager.class);
+     * Property name for the system property which ConfigurationManager checks to set its remote configuration repository url with at startup.
+     */
+    public static final String PROP_NAME_USED_IN_CONFIGURATION_REPOSITORY = "usedInConfigurationRepository";
 
-	/**
-	 * Initializes the one and only instance of the ConfigurationManager.
-	 */
-	ConfigurationManager() {
-		MBeanRegisterUtil.regMBean(new WatchedConfigFiles());
-		final String defEnvironmentAsString = System.getProperty(PROP_NAME_DEFAULT_ENVIRONMENT, "");
-		defaultEnvironment = DynamicEnvironment.parse(defEnvironmentAsString);
+    /**
+     * Initializes the one and only instance of the ConfigurationManager.
+     */
+    ConfigurationManager() {
+        MBeanRegisterUtil.regMBean(new WatchedConfigFiles());
+        final String defEnvironmentAsString = System.getProperty(PROP_NAME_DEFAULT_ENVIRONMENT, "");
+        defaultEnvironment = DynamicEnvironment.parse(defEnvironmentAsString);
         setExternalConfigurationRepository();
-		setConfigurationRepository();
-	}
-
-
-	/**
-	 * Returns true if the object is properly annotated and can be configured by the configuration manager. Calling configure with an Object o as parameter, where isConfigurable(o) will result in an
-	 * Error.
-	 *
-	 * @param o object to check
-	 * @return true if object is properly and can be configured
-	 */
-	public boolean isConfigurable(Object o) {
-		return o.getClass().isAnnotationPresent(ConfigureMe.class);
-	}
-
-	/**
-	 * Configures a configurable component in the default environment. The object must be annotated with ConfigureMe and the configuration source must be present.
-	 *
-	 * @param o object to configure
-	 */
-	public void configure(Object o) {
-		configure(o, defaultEnvironment);
-	}
-
-	/**
-	 * Configures a configurable component in the default environment. The object must be annotated with ConfigureMe and the configuration source must be present.
-	 *
-	 * @param o object to configure
-	 * @param format a {@link org.configureme.sources.ConfigurationSourceKey.Format} object.
-	 */
-	public void configure(final Object o, final Format format) {
-		configure(o, defaultEnvironment, format);
-	}
-
-	/**
-	 * Configures a configurable component in the default environment. The object must be annotated with ConfigureMe and the configuration source must be present.
-	 *
-	 * @param o    object to configure
-	 * @param name configuration name
-	 */
-	public void configureAs(final Object o, final String name) {
-		configureAs(o, defaultEnvironment, name, defaultConfigurationSourceFormat);
-	}
-
-	/**
-	 * Configures java bean in the default environment.
-	 *
-	 * @param o    object to configure
-	 * @param name configuration name
-	 */
-	public void configureBeanAs(final Object o, final String name) {
-		configurePojoAs(o, name);
-	}
-
-	/**
-	 * Configures java bean in the given environment.
-	 *
-	 * @param o    object to configure
-	 * @param name configuration name
-	 * @param in   environment
-	 */
-	public void configureBeanAsIn(final Object o, final String name, final Environment in) {
-		configurePojoAsIn(o, name, in);
-	}
-
-	/**
-	 * Configures pojo object in the default environment.
-	 *
-	 * @param o    object to configure
-	 * @param name configuration name
-	 */
-	public void configurePojoAs(final Object o, final String name) {
-		configurePojoAsIn(o, name, defaultEnvironment);
-	}
-
-	/**
-	 * Configures pojo object in the given environment.
-	 *
-	 * @param o    object to configure
-	 * @param name configuration name
-	 * @param in   environment
-	 */
-	public void configurePojoAsIn(final Object o, final String name, final Environment in) {
-		final ConfigureMe ann = new ConfigureMe() {
-
-			@Override
-			public Class<? extends Annotation> annotationType() {
-				return ConfigureMe.class;
-			}
-
-			@Override
-			public boolean watch() {
-				return false;
-			}
-
-			@Override
-			public Type type() {
-				return Type.FILE;
-			}
-
-			@Override
-			public String name() {
-				return name;
-			}
-
-			@Override
-			public boolean allfields() {
-				return true;
-			}
-		};
-
-		final ConfigurationSourceKey configSourceKey = new ConfigurationSourceKey();
-		configSourceKey.setFormat(Format.JSON);
-		configSourceKey.setTypeIfNotDefault(defaultConfigurationSourceType, ann.type());
-		configSourceKey.setName(name);
-		configSourceKey.setRemoteConfigurationRepositoryUrl(remoteConfigurationRepositoryUrl);
-
-		configureInitially(configSourceKey, o, in, ann);
-	}
-
-	/**
-	 * Configures a configurable component in the given environment. The object must be annotated with ConfigureMe and the configuration must be present.
-	 *
-	 * @param o                 object to configure.
-	 * @param in                the environment for the configuration.
-	 * @param configurationName name of the configuration.
-	 * @param format a {@link org.configureme.sources.ConfigurationSourceKey.Format} object.
-	 */
-	public void configureAs(final Object o, final Environment in, final String configurationName, final Format format) {
-		if (!isConfigurable(o))
-			throw new IllegalArgumentException("Class " + o.getClass() + " is not annotated as ConfigureMe, called with: " + o + ", class: " + o.getClass());
-
-		final Class<?> clazz = o.getClass();
-		final ConfigureMe ann = clazz.getAnnotation(ConfigureMe.class);
-
-		final ConfigurationSourceKey configSourceKey = new ConfigurationSourceKey();
-		configSourceKey.setFormat(format);
-		configSourceKey.setTypeIfNotDefault(defaultConfigurationSourceType, ann.type());
-		configSourceKey.setName(configurationName);
-		configSourceKey.setRemoteConfigurationRepositoryUrl(remoteConfigurationRepositoryUrl);
-
-		configureAs(o, in, configSourceKey);
-	}
-
-	/**
-	 * Configures a configurable component in the given environment. The object must be annotated with ConfigureMe and the configuration must be present.
-	 *
-	 * @param o               object to configure.
-	 * @param configSourceKey source definition.
-	 * @param in a {@link org.configureme.Environment} object.
-	 */
-	public void configureAs(final Object o, final Environment in, final ConfigurationSourceKey configSourceKey) {
-		if (!isConfigurable(o))
-			throw new IllegalArgumentException("Class " + o.getClass() + " is not annotated as ConfigureMe, called with: " + o + ", class: " + o.getClass());
-
-		final ConfigureMe ann = o.getClass().getAnnotation(ConfigureMe.class);
-		configureInitially(configSourceKey, o, in, ann);
-	}
-
-	/**
-	 * Configure object in the given environment.
-	 *
-	 * @param o  object to configure
-	 * @param in environment
-	 */
-	public void configure(final Object o, final Environment in) {
-		configure(o, in, defaultConfigurationSourceFormat);
-	}
-
-	/**
-	 * Configures a configurable component in the givent environment. The object must be annotated with ConfigureMe and the configuration must be present.
-	 *
-	 * @param o  object to configure
-	 * @param in the environment for the configuration
-	 * @param format a {@link org.configureme.sources.ConfigurationSourceKey.Format} object.
-	 */
-	public void configure(final Object o, final Environment in, final Format format) {
-		if (!isConfigurable(o))
-			throw new IllegalArgumentException("Class " + o.getClass() + " is not annotated as ConfigureMe, called with: " + o + ", class: " + o.getClass());
-
-		final Class<?> clazz = o.getClass();
-		final ConfigureMe ann = clazz.getAnnotation(ConfigureMe.class);
-		final String configurationName = StringUtils.isEmpty(ann.name()) ? extractConfigurationNameFromClassName(clazz) : ann.name();
-		configureAs(o, in, configurationName, format);
-	}
+        setConfigurationRepository();
+    }
 
     /**
      * This method is used to check and set an external configuration repository url for further processing.
      */
     private void setExternalConfigurationRepository() {
         final String rmtConfRepUrl = System.getProperty(PROP_NAME_CONFIGURATION_REPOSITORY);
-		if(rmtConfRepUrl != null){
+        if (rmtConfRepUrl != null) {
             remoteConfigurationRepositoryUrl = rmtConfRepUrl;
             defaultConfigurationSourceType = Type.REST;
         }
     }
 
-	/**
-	 * Check and set if configureme used in configuration repository
-	 */
-	private void setConfigurationRepository() {
-		final String usedForConfRep = System.getProperty(PROP_NAME_USED_IN_CONFIGURATION_REPOSITORY);
-		if(usedForConfRep != null)
-			defaultConfigurationSourceType = Type.REPOSITORY;
-	}
-
-	/**
-	 * Internal method used at initial, user triggered configuration.
-	 *
-	 * @param key the source key
-	 * @param o   the object to configure
-	 * @param in  the environment
-	 * @param ann the configureme annotation instance with which o.getClass() was annotated.
-	 */
-	private void configureInitially(final ConfigurationSourceKey key, final Object o, final Environment in, final ConfigureMe ann) {
-
-		configure(key, o, in, CALL_BEFORE_INITIAL_CONFIGURATION, CALL_AFTER_INITIAL_CONFIGURATION, ann);
-
-		if (ann.watch()) {
-			final ConfigurableWrapper wrapper = new ConfigurableWrapper(key, o, in);
-			ConfigurationSourceRegistry.INSTANCE.addWatchedConfigurable(wrapper);
-			MBeanRegisterUtil.regMBean(new ConfigInfo(key.getName()), key.getName());
-		}
-
-	}
-
-	/**
-	 * This method is used internally for calls to annotations at the start and the end of each configuration.
-	 *
-	 * @param configurable object that is configuring
-	 * @param methods methods to call
-	 * @param annotationClasses annotations of the configurable class
-	 */
-	private void callAnnotations(final Object configurable, final Method[] methods, final Class<? extends Annotation>[] annotationClasses) {
-		//check for annotations to call and call 'before' annotations
-		for (final Method m : methods) {
-			//System.out.println("Checking methid "+m);
-			for (final Class<? extends Annotation> anAnnotationClass : annotationClasses) {
-				//System.out.println("\tChecking annotation "+anAnnotationClass);
-				final Annotation anAnnotation = m.getAnnotation(anAnnotationClass);
-				//System.out.println("\t\t-->"+anAnnotation);
-				if (anAnnotation == null)
-					continue;
-
-				try {
-					m.invoke(configurable);
-				} catch (final IllegalAccessException e) {
-					log.error("callAnnotations(" + Arrays.toString(methods) + ", " + Arrays.toString(annotationClasses) + ')', e);
-					throw new AssertionError("Error declaration in method " + m + ", wrong declaration (public void " + m.getName() + " expected)? - " + e.getMessage());
-				} catch (final InvocationTargetException e) {
-					log.error("callAnnotations(Exception in annotated method: " + m + ')', e);
-					throw new RuntimeException("Exception in annotated method: " + e.getMessage(), e);
-				}
-			}
-		}
-	}
-
-	/**
-	 * This method executes the configuration.
-	 *
-	 * @param key        the key for the configuration source
-	 * @param o          the object to configure
-	 * @param in         environment in which the object runs
-	 * @param callBefore annotations, methods annotated with those will be called prior to the configuration
-	 * @param callAfter  annotations, methods annotated with those will be called after the configuration
-	 */
-	private void configure(final ConfigurationSourceKey key, final Object o, final Environment in, final Class<? extends Annotation>[] callBefore, final Class<? extends Annotation>[] callAfter, ConfigureMe ann) {
-		final Class<?> clazz = o.getClass();
-		final ConfigureMe annInternal = ann != null ? ann : clazz.getAnnotation(ConfigureMe.class);
-		if (annInternal == null)
-			throw new AssertionError("An unannotated class shouldn't make it sofar, obj: " + o + " class " + o.getClass());
-
-		final boolean configureAllFields = annInternal.allfields();
-
-		final Configuration configuration = getConfiguration(key, in);
-		configure(configuration, o, callBefore, callAfter, configureAllFields, in);
-
-		// added all external configuration watchers
-		if (annInternal.watch()) {
-			for (ConfigurationSourceKey sourceKey : configuration.getExternalConfigurations()) {
-				ConfigurableWrapper wrapper = new ConfigurableWrapper(sourceKey, o, in);
-				ConfigurationSourceRegistry.INSTANCE.addWatchedConfigurable(wrapper);
-				MBeanRegisterUtil.regMBean(new ConfigInfo(sourceKey.getName()), sourceKey.getName());
-			}
-		}
-
-		if (log != null && log.isDebugEnabled()) {
-			log.debug("Finished configuration of " + o + " as " + key);
-		}
-	}
+    /**
+     * Check and set if configureme used in configuration repository
+     */
+    private void setConfigurationRepository() {
+        final String usedForConfRep = System.getProperty(PROP_NAME_USED_IN_CONFIGURATION_REPOSITORY);
+        if (usedForConfRep != null)
+            defaultConfigurationSourceType = Type.REPOSITORY;
+    }
 
 
-	/**
-	 * Applies specified configuration to specified object.
-	 *
-	 * @param config             the configuration to be applied
-	 * @param o                  the object to be configured
-	 * @param callBefore         annotations, methods annotated with those will be called prior to the configuration
-	 * @param callAfter          annotations, methods annotated with those will be called after the configuration
-	 * @param configureAllFields specifies whether to set all fields regardless if they are marked configured or not
-	 */
-	private void configure(final Configuration config, final Object o, final Class<? extends Annotation>[] callBefore, final Class<? extends Annotation>[] callAfter, final boolean configureAllFields, final Environment environment) {
-		setCachedObject(config.getName(), environment, o);
-		final Class<?> clazz = o.getClass();
-		final Method[] methods = clazz.getDeclaredMethods();
-		callAnnotations(o, methods, callBefore);
+    /**
+     * Returns true if the object is properly annotated and can be configured by the configuration manager.
+     * Calling configure with an Object o as parameter, where isConfigurable(o) will result in an Error.
+     *
+     * @param o
+     *         object to check
+     * @return true if object is properly and can be configured
+     */
+    public boolean isConfigurable(Object o) {
+        return o.getClass().isAnnotationPresent(ConfigureMe.class);
+    }
 
-		//first set fields
-		final List<Field> fields = ReflectionUtils.getAllFields(clazz);
-		for (final Field f : fields) {
-			if (f.isAnnotationPresent(ConfigureAlso.class)) {
-				configureFieldAlso(o, environment, clazz, f);
-				continue;
-			}
+    /**
+     * Configures a configurable component in the default environment. The object must be annotated with ConfigureMe and the configuration source must be present.
+     *
+     * @param o
+     *         object to configure
+     */
+    public void configure(Object o) {
+        configure(o, defaultEnvironment);
+    }
 
-			if (f.isAnnotationPresent(Configure.class) || (configureAllFields && !f.isAnnotationPresent(DontConfigure.class))) {
-				configureField(config, o, callBefore, callAfter, configureAllFields, environment, clazz, f);
-			}
-		}
-		//end set fields
+    /**
+     * Configures a configurable component in the default environment. The object must be annotated with ConfigureMe and the configuration source must be present.
+     *
+     * @param o
+     *         object to configure
+     * @param format
+     *         a {@link org.configureme.sources.ConfigurationSourceKey.Format} object.
+     */
+    public void configure(final Object o, final Format format) {
+        configure(o, defaultEnvironment, format);
+    }
 
-		for (final Method method : methods) {
-			if (method.isAnnotationPresent(SetAll.class))
-				invokeSetAll(config, o, callBefore, callAfter, configureAllFields, environment, method);
-			if (method.isAnnotationPresent(SetIf.class))
-				invokeSetIf(config, o, callBefore, callAfter, configureAllFields, environment, method);
-			if (method.isAnnotationPresent(Set.class))
-				invokeSet(config, o, callBefore, callAfter, configureAllFields, environment, method);
-		}
+    /**
+     * Configures a configurable component in the default environment. The object must be annotated with ConfigureMe and the configuration source must be present.
+     *
+     * @param o
+     *         object to configure
+     * @param name
+     *         configuration name
+     */
+    public void configureAs(final Object o, final String name) {
+        configureAs(o, defaultEnvironment, name, defaultConfigurationSourceFormat);
+    }
 
-		callAnnotations(o, methods, callAfter);
-	}
+    /**
+     * Configures java bean in the default environment.
+     *
+     * @param o
+     *         object to configure
+     * @param name
+     *         configuration name
+     */
+    public void configureBeanAs(final Object o, final String name) {
+        configurePojoAs(o, name);
+    }
 
-	private void invokeSet(final Configuration config, final Object o, Class<? extends Annotation>[] callBefore, final Class<? extends Annotation>[] callAfter, final boolean configureAllFields, final Environment environment, final Method method) {
-		log.debug("method " + method + " is annotated");
-		final Set setAnnotation = method.getAnnotation(Set.class);
-		final String attributeName = setAnnotation.value();
-		final Value attributeValue = config.getAttribute(attributeName);
-		if (attributeValue != null) {
-            log.debug("setting " + method.getName() + " to " + attributeValue + " configured by " + attributeName);
-            try {
-                method.invoke(o, ResolveManager.instance().resolveValue(method.getParameterTypes()[0], attributeValue, callBefore, callAfter, configureAllFields, environment, resolveCallback));
-            } catch (final Exception e) {
-                log.warn(method.getName() + "invoke(" + o + ", " + attributeValue + ')', e);
+    /**
+     * Configures java bean in the given environment.
+     *
+     * @param o
+     *         object to configure
+     * @param name
+     *         configuration name
+     * @param in
+     *         environment
+     */
+    public void configureBeanAsIn(final Object o, final String name, final Environment in) {
+        configurePojoAsIn(o, name, in);
+    }
+
+    /**
+     * Configures pojo object in the default environment.
+     *
+     * @param o
+     *         object to configure
+     * @param name
+     *         configuration name
+     */
+    public void configurePojoAs(final Object o, final String name) {
+        configurePojoAsIn(o, name, defaultEnvironment);
+    }
+
+    /**
+     * Configures pojo object in the given environment.
+     *
+     * @param o
+     *         object to configure
+     * @param name
+     *         configuration name
+     * @param in
+     *         environment
+     */
+    public void configurePojoAsIn(final Object o, final String name, final Environment in) {
+        final ConfigureMe ann = new ConfigureMe() {
+
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return ConfigureMe.class;
             }
-        }
-	}
 
-	private void invokeSetIf(final Configuration config, Object o, final Class<? extends Annotation>[] callBefore, final Class<? extends Annotation>[] callAfter, final boolean configureAllFields, final Environment environment, final Method method) {
-		final Collection<Entry<String, Value>> entries = config.getEntries();
-		final SetIf setIfAnnotation = method.getAnnotation(SetIf.class);
-		for (final Entry<String, Value> entry : entries) {
-			if (!SetIf.ConditionChecker.satisfyCondition(setIfAnnotation, entry.getKey()))
-				continue;
-
-			log.debug("Calling method " + method + " with parameters : \"" + entry.getKey() + "\", \"" + entry.getValue() + '"');
-			try {
-				method.invoke(o, entry.getKey(), ResolveManager.instance().resolveValue(method.getParameterTypes()[1], entry.getValue(), callBefore, callAfter, configureAllFields, environment, resolveCallback));
-			} catch (final Exception e) {
-				log.warn(method.getName() + "invoke(" + o + ", " + entry.getKey() + ", " + entry.getValue() + ')', e);
-			}
-
-		}
-	}
-
-	private void invokeSetAll(final Configuration config, Object o, final Class<? extends Annotation>[] callBefore, Class<? extends Annotation>[] callAfter, final boolean configureAllFields, final Environment environment, final Method method) {
-		final Collection<Entry<String, Value>> entries = config.getEntries();
-		log.debug("Calling method " + method + " with " + entries);
-		for (final Entry<String, Value> entry : entries) {
-            try {
-                method.invoke(o, entry.getKey(), ResolveManager.instance().resolveValue(method.getParameterTypes()[1], entry.getValue(), callBefore, callAfter, configureAllFields, environment, resolveCallback));
-            } catch (final Exception e) {
-                log.warn(method.getName() + "invoke(" + o + ", " + entry.getKey() + ", " + entry.getValue() + ')', e);
+            @Override
+            public boolean watch() {
+                return false;
             }
-        }
-	}
 
-	private void configureField(final Configuration config, final Object o, Class<? extends Annotation>[] callBefore, Class<? extends Annotation>[] callAfter, final boolean configureAllFields, final Environment environment, Class<?> clazz, final Field f) {
-		final String attributeName = f.getName();
-		final Value attributeValue = config.getAttribute(attributeName);
-		if (attributeValue == null)
-			return;
-		try {
-            ReflectionUtils.invokeSetter(f, clazz, o, ResolveManager.instance().resolveValue(f.getGenericType(), attributeValue, callBefore, callAfter, configureAllFields, environment, resolveCallback));
-        } catch (final Exception e) {
-            log.error("can't set " + attributeName + " to " + attributeValue + ", because: ", e);
-        }
-	}
+            @Override
+            public Type type() {
+                return Type.FILE;
+            }
 
-	private void configureFieldAlso(final Object o, final Environment environment, final Class<?> clazz, final Field f) {
-		Object externalConfig = null;
-		try {
-			final Class<?> externalConfigClass = f.getType();
-			if (!externalConfigClass.isAnnotationPresent(ConfigureMe.class))
-				return;
-			if (!ReflectionUtils.hasParameterlessPublicConstructor(externalConfigClass)) {
-				log.error("Can't instantiate external config for class name=" + f.getType().getName() + ", as there is no default constructor for class = " + externalConfigClass);
-				return;
-			}
-			externalConfig = externalConfigClass.newInstance();
-			final ConfigureMe ann = externalConfigClass.getAnnotation(ConfigureMe.class);
-			final Object cachedObject = getCachedObject(ann.name(), environment);
-			if (cachedObject == null) {
-				ConfigurationManager.INSTANCE.configure(externalConfig, environment);
-				setCachedObject(ann.name(), environment, externalConfig);
-			} else {
-				externalConfig = cachedObject;
-			}
-		} catch (final Exception e) {
-			log.error("Can't create external config task for class name=" + f.getType().getName());
-		}
-		ReflectionUtils.invokeSetter(f, clazz, o, externalConfig);
-	}
+            @Override
+            public String name() {
+                return name;
+            }
 
-	/**
-	 * Called by ConfigurationSource monitors/listeners to trigger a reconfiguration of a component.
-	 *
-	 * @param key {@link ConfigurationSourceKey}
-	 * @param o object to configure
-	 * @param in {@link Environment}
-	 */
-	void reconfigure(final ConfigurationSourceKey key, final Object o, final Environment in) {
-		configure(key, o, in, CALL_BEFORE_RE_CONFIGURATION, CALL_AFTER_RE_CONFIGURATION, null);
-	}
+            @Override
+            public boolean allfields() {
+                return true;
+            }
+        };
 
+        final ConfigurationSourceKey configSourceKey = new ConfigurationSourceKey();
+        configSourceKey.setFormat(Format.JSON);
+        configSourceKey.setTypeIfNotDefault(defaultConfigurationSourceType, ann.type());
+        configSourceKey.setName(name);
+        configSourceKey.setRemoteConfigurationRepositoryUrl(remoteConfigurationRepositoryUrl);
 
-	/**
-	 * Returns a configuration snapshot for this configurationname in the global environment. Snapshot means that only the part of the
-	 * configuration which is valid now and only for global environment is returned.
-	 *
-	 * @param configurationName the name of the configuration to check
-	 * @return a configuration snapshot for this configurationname in the global environment
-	 */
-	public Configuration getConfiguration(final String configurationName) {
-		return getConfiguration(configurationName, defaultEnvironment);
-	}
+        ConfigurationProcessor.instance().configureInitially(configSourceKey, o, in, ann);
+    }
 
-	/**
-	 * Returns a configuration snapshot for this configurationname in the given environment. Snapshot means that only the part of the
-	 * configuration which is valid now and only for the given environment is returned.
-	 * defaultConfigurationSourceFormat and defaultConfigurationSourceType are used for format and type. At the moment its JSON and File.
-	 *
-	 * @param configurationName the name of the configuration source.
-	 * @param in                the environment
-	 * @return a configuration snapshot for this configurationname in the given environment
-	 */
-	public Configuration getConfiguration(final String configurationName, final Environment in) {
-		final ConfigurationSourceKey configSourceKey = new ConfigurationSourceKey();
-		configSourceKey.setFormat(defaultConfigurationSourceFormat);
-		configSourceKey.setType(defaultConfigurationSourceType);
-		configSourceKey.setName(configurationName);
+    /**
+     * Configures a configurable component in the given environment. The object must be annotated with ConfigureMe and the configuration must be present.
+     *
+     * @param o
+     *         object to configure.
+     * @param in
+     *         the environment for the configuration.
+     * @param configurationName
+     *         name of the configuration.
+     * @param format
+     *         a {@link org.configureme.sources.ConfigurationSourceKey.Format} object.
+     */
+    public void configureAs(final Object o, final Environment in, final String configurationName, final Format format) {
+        if (!isConfigurable(o))
+            throw new IllegalArgumentException("Class " + o.getClass() + " is not annotated as ConfigureMe, called with: " + o + ", class: " + o.getClass());
 
-		return getConfiguration(configSourceKey, in);
-	}
+        final Class<?> clazz = o.getClass();
+        final ConfigureMe ann = clazz.getAnnotation(ConfigureMe.class);
 
-	/**
-	 * Internal method for configuration retrieval.
-	 *
-	 * @param configSourceKey {@link ConfigurationSourceKey}
-	 * @param in the environment
-	 * @return {@link Configuration}
-	 */
-	private Configuration getConfiguration(final ConfigurationSourceKey configSourceKey, final Environment in) {
-		//for the first we will hardcode file as config source and json as config format.
-		final String configurationName = configSourceKey.getName();
-		if (ConfigurationRepository.INSTANCE.hasConfiguration(configurationName))
-            return ConfigurationRepository.INSTANCE.getConfiguration(configurationName, in);
+        final ConfigurationSourceKey configSourceKey = new ConfigurationSourceKey();
+        configSourceKey.setFormat(format);
+        configSourceKey.setTypeIfNotDefault(defaultConfigurationSourceType, ann.type());
+        configSourceKey.setName(configurationName);
+        configSourceKey.setRemoteConfigurationRepositoryUrl(remoteConfigurationRepositoryUrl);
 
-        if (!ConfigurationSourceRegistry.INSTANCE.isConfigurationAvailable(configSourceKey))
-            throw new IllegalArgumentException("No such configuration: " + configurationName + " (" + configSourceKey + ')');
+        configureAs(o, in, configSourceKey);
+    }
 
-        //reading config
-        final String content = ConfigurationSourceRegistry.INSTANCE.readConfigurationSource(configSourceKey);
+    /**
+     * Configures a configurable component in the given environment. The object must be annotated with ConfigureMe and the configuration must be present.
+     *
+     * @param o
+     *         object to configure.
+     * @param configSourceKey
+     *         source definition.
+     * @param in
+     *         a {@link org.configureme.Environment} object.
+     */
+    public void configureAs(final Object o, final Environment in, final ConfigurationSourceKey configSourceKey) {
+        if (!isConfigurable(o))
+            throw new IllegalArgumentException("Class " + o.getClass() + " is not annotated as ConfigureMe, called with: " + o + ", class: " + o.getClass());
 
-        final ConfigurationParser parser = parserManager.get(configSourceKey.getFormat());
-        ParsedConfiguration pa;
-        try {
-            pa = parser.parseConfiguration(configurationName, content);
-        } catch (final ConfigurationParserException e) {
-            log.error("getConfiguration(" + configurationName + ", " + in + ')', e);
-            throw new IllegalArgumentException(configSourceKey + " is not parseable: " + e.getMessage(), e);
-        }
-        //System.out.println("Parsed "+pa);
-        final List<? extends ParsedAttribute<?>> attributes = pa.getAttributes();
-        final Artefact art = ConfigurationRepository.INSTANCE.createArtefact(configurationName);
-        // set external includes
-        for (final String include : pa.getExternalConfigurations())
-            art.addExternalConfigurations(new ConfigurationSourceKey(defaultConfigurationSourceType, defaultConfigurationSourceFormat, include));
+        final ConfigureMe ann = o.getClass().getAnnotation(ConfigureMe.class);
+        ConfigurationProcessor.instance().configureInitially(configSourceKey, o, in, ann);
+    }
 
-        for (final ParsedAttribute<?> a : attributes)
-            art.addAttributeValue(a.getName(), a.getValue(), a.getEnvironment());
+    /**
+     * Configure object in the given environment.
+     *
+     * @param o
+     *         object to configure
+     * @param in
+     *         environment
+     */
+    public void configure(final Object o, final Environment in) {
+        configure(o, in, defaultConfigurationSourceFormat);
+    }
 
-		return ConfigurationRepository.INSTANCE.getConfiguration(configurationName, in);
-	}
+    /**
+     * Configures a configurable component in the givent environment. The object must be annotated with ConfigureMe and the configuration must be present.
+     *
+     * @param o
+     *         object to configure
+     * @param in
+     *         the environment for the configuration
+     * @param format
+     *         a {@link org.configureme.sources.ConfigurationSourceKey.Format} object.
+     */
+    public void configure(final Object o, final Environment in, final Format format) {
+        if (!isConfigurable(o))
+            throw new IllegalArgumentException("Class " + o.getClass() + " is not annotated as ConfigureMe, called with: " + o + ", class: " + o.getClass());
 
-	/**
-	 * Sets the default environment. The default environment is used in methods configure(Object) and getConfiguration(String) which have no explicit Environemnt parameter.
-	 *
-	 * @param anEnvironment a {@link org.configureme.Environment} object.
-	 */
-	@SuppressFBWarnings("ME_ENUM_FIELD_SETTER")
-	public final void setDefaultEnvironment(Environment anEnvironment) {
-		defaultEnvironment = anEnvironment;
-	}
+        final Class<?> clazz = o.getClass();
+        final ConfigureMe ann = clazz.getAnnotation(ConfigureMe.class);
+        final String configurationName = StringUtils.isEmpty(ann.name()) ? ConfigUtils.extractConfigurationNameFromClassName(clazz) : ann.name();
+        configureAs(o, in, configurationName, format);
+    }
 
-	/**
-	 * Returns the previously set default Environment. If no environment has been set, either by method call, or by property, GlobalEnvironment.INSTANCE is returned.
-	 *
-	 * @return the previously set default Environment
-	 */
-	public final Environment getDefaultEnvironment() {
-		return defaultEnvironment;
-	}
+    /**
+     * Returns a configuration snapshot for this configurationname in the global environment. Snapshot means that only the part of the
+     * configuration which is valid now and only for global environment is returned.
+     *
+     * @param configurationName
+     *         the name of the configuration to check
+     * @return a configuration snapshot for this configurationname in the global environment
+     */
+    public Configuration getConfiguration(final String configurationName) {
+        return getConfiguration(configurationName, defaultEnvironment);
+    }
 
-	/**
-	 * Calculates default configuration artefact name for a java class.
-	 *
-	 * @param targetClazz target class
-	 * @return default configuration artefact name for a given java class. For MyConfigurable it would be "myconfigurable"
-	 */
-	private String extractConfigurationNameFromClassName(final Class<?> targetClazz) {
-		return targetClazz.getName().substring(targetClazz.getName().lastIndexOf('.') + 1).toLowerCase();
-	}
+    /**
+     * Returns a configuration snapshot for this configurationname in the given environment. Snapshot means that only the part of the
+     * configuration which is valid now and only for the given environment is returned.
+     * defaultConfigurationSourceFormat and defaultConfigurationSourceType are used for format and type. At the moment its JSON and File.
+     *
+     * @param configurationName
+     *         the name of the configuration source.
+     * @param in
+     *         the environment
+     * @return a configuration snapshot for this configurationname in the given environment
+     */
+    public Configuration getConfiguration(final String configurationName, final Environment in) {
+        final ConfigurationSourceKey configSourceKey = new ConfigurationSourceKey();
+        configSourceKey.setFormat(defaultConfigurationSourceFormat);
+        configSourceKey.setType(defaultConfigurationSourceType);
+        configSourceKey.setName(configurationName);
 
-	/**
-	 * Get cached object in order to handle situation with loop
-	 *
-	 * @param name        name of the config
-	 * @param environment environment
-	 * @return instance of the already configures object
-	 */
+        return ConfigurationProcessor.instance().getConfiguration(configSourceKey, in);
+    }
 
-	private Object getCachedObject(final String name, final Environment environment) {
-		Map<String, Map<Environment, Object>> globalCache = localCache.get();
-		if (globalCache == null) {
-			globalCache = new HashMap<>();
-			localCache.set(globalCache);
-		}
-		Map<Environment, Object> environmentCache = globalCache.get(name);
-		if (environmentCache == null) {
-			environmentCache = new HashMap<>();
-			globalCache.put(name, environmentCache);
-		}
+    /**
+     * Sets the default environment. The default environment is used in methods configure(Object) and getConfiguration(String) which have no explicit Environemnt parameter.
+     *
+     * @param anEnvironment
+     *         a {@link org.configureme.Environment} object.
+     */
+    @SuppressFBWarnings ("ME_ENUM_FIELD_SETTER")
+    public final void setDefaultEnvironment(Environment anEnvironment) {
+        defaultEnvironment = anEnvironment;
+    }
 
-		return environmentCache.get(environment);
-	}
+    /**
+     * Returns the previously set default Environment. If no environment has been set, either by method call, or by property, GlobalEnvironment.INSTANCE is returned.
+     *
+     * @return the previously set default Environment
+     */
+    public final Environment getDefaultEnvironment() {
+        return defaultEnvironment;
+    }
 
-	/**
-	 * Put configured object to the cache
-	 *
-	 * @param name        name of the config
-	 * @param environment environment
-	 * @param o           object to cache
-	 */
-	private void setCachedObject(final String name, final Environment environment, final Object o) {
-		Map<String, Map<Environment, Object>> globalCache = localCache.get();
-		if (globalCache == null) {
-			globalCache = new HashMap<>();
-			localCache.set(globalCache);
-		}
-		Map<Environment, Object> environmentCache = globalCache.get(name);
-		if (environmentCache == null) {
-			environmentCache = new HashMap<>();
-			globalCache.put(name, environmentCache);
-		}
-		environmentCache.put(environment, o);
-	}
-
-	/**
-	 * Used to shutdown the confirmation manager in a reloadable environment like tomcat or any other web container.
-	 * If you want to ensure cleanup on application stop, call ConfigurationManager.INSTANCE.shutdown();
-	 */
-	public void shutdown(){
-		ConfigurationSourceRegistry.INSTANCE.shutdown();
-	}
+    /**
+     * Used to shutdown the confirmation manager in a reloadable environment like tomcat or any other web container.
+     * If you want to ensure cleanup on application stop, call ConfigurationManager.INSTANCE.shutdown();
+     */
+    public void shutdown() {
+        ConfigurationSourceRegistry.INSTANCE.shutdown();
+    }
 }

@@ -28,7 +28,9 @@ public class ConfigurationSourceKey {
 		/**
 		 * Configuration comes from a repository.
 		 */
-		REPOSITORY
+		REPOSITORY;
+
+		public final static Type DEFAULT = FILE;
 	}
 
 	/**
@@ -49,8 +51,11 @@ public class ConfigurationSourceKey {
 		 */
 		XML;
 		
+		public final static Format DEFAULT = JSON;
+
 		/**
-		 * Returns the extension under which file would be stored. 
+		 * Returns the extension under which file would be stored.
+		 * 
 		 * @return the extension under which file would be stored
 		 */
 		public String getExtension(){
@@ -198,7 +203,7 @@ public class ConfigurationSourceKey {
 	 * @param name name of the property file.
 	 * @return a new configuration source key instance for property files
 	 */
-	public static final ConfigurationSourceKey propertyFile(final String name){
+	public static ConfigurationSourceKey propertyFile(final String name){
 		return new ConfigurationSourceKey(Type.FILE, Format.PROPERTIES, name);
 	}
 
@@ -208,7 +213,7 @@ public class ConfigurationSourceKey {
 	 * @param name name of the xml file.
 	 * @return a new configuration source key instance for xml files
 	 */
-	public static final ConfigurationSourceKey xmlFile(final String name){
+	public static ConfigurationSourceKey xmlFile(final String name){
 		return new ConfigurationSourceKey(Type.FILE, Format.XML, name);
 	}
 
@@ -218,7 +223,7 @@ public class ConfigurationSourceKey {
 	 * @param name name of the json file.
 	 * @return a new configuration source key instance for json files
 	 */
-	public static final ConfigurationSourceKey jsonFile(final String name){
+	public static ConfigurationSourceKey jsonFile(final String name){
 		return new ConfigurationSourceKey(Type.FILE, Format.JSON, name);
 	}
 

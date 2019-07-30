@@ -9,31 +9,22 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 
-import org.configureme.Configuration;
-import org.configureme.ConfigurationManager;
+import org.configureme.ConfigurationProcessor;
 import org.configureme.Environment;
-import org.configureme.parser.ConfigurationParserManager;
 import org.configureme.repository.ArrayValue;
 import org.configureme.repository.CompositeValue;
 import org.configureme.repository.IncludeValue;
 import org.configureme.repository.PlainValue;
 import org.configureme.repository.Value;
-import org.configureme.sources.ConfigurationSourceKey;
 import org.configureme.util.ReflectionUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 /**
  * @author Ivan Batura
  */
 public class ResolveManager {
-
-    @SuppressWarnings("unused")
-    private static final Logger LOGGER = LoggerFactory.getLogger(ResolveManager.class);
-
     /**
      * Set of classes specifying plain attribute types.
      * Allows quickly check whether an attribute is plain or not.
@@ -66,9 +57,9 @@ public class ResolveManager {
     }
 
     /**
-     * Get singleton instance of {@link ConfigurationParserManager}.
+     * Get singleton instance of {@link ResolveManager}.
      *
-     * @return {@link ConfigurationSourceKey}
+     * @return {@link ResolveManager}
      */
     public static ResolveManager instance() {
         if (instance != null)
@@ -95,8 +86,7 @@ public class ResolveManager {
                                final Class<? extends Annotation>[] callBefore,
                                final Class<? extends Annotation>[] callAfter,
                                final boolean configureAllFields,
-                               final Environment environment,
-                               final ResolveCallback resolveCallback) throws InstantiationException, IllegalAccessException {
+                               final Environment environment) throws InstantiationException, IllegalAccessException {
         final boolean parameterized = valueType instanceof ParameterizedType;
         final Class<?> valueClass = parameterized ? ((ParameterizedTypeImpl)valueType).getRawType() : (Class<?>)valueType;
         final java.lang.reflect.Type paramClass = parameterized ? ((ParameterizedType) valueType).getActualTypeArguments()[0] : null;
@@ -107,15 +97,15 @@ public class ResolveManager {
             if (attributeValue instanceof PlainValue && !valueClass.isArray() && (isValueClassPlain || isValueClassDummy))
                 return resolvePlainValue(valueClass, (PlainValue) attributeValue);
             if (attributeValue instanceof CompositeValue && !valueClass.isArray() && (!isValueClassPlain || isValueClassDummy))
-                return resolveCompositeValue(valueClass, (CompositeValue) attributeValue, callBefore, callAfter, configureAllFields, resolveCallback);
+                return resolveCompositeValue(valueClass, (CompositeValue) attributeValue, callBefore, callAfter, configureAllFields, environment);
             if (attributeValue instanceof ArrayValue && (valueClass.isArray() || isValueClassDummy))
-                return resolveArrayValue(valueClass, (ArrayValue) attributeValue, callBefore, callAfter, configureAllFields, environment, resolveCallback);
+                return resolveArrayValue(valueClass, (ArrayValue) attributeValue, callBefore, callAfter, configureAllFields, environment);
             if (attributeValue instanceof IncludeValue && (!valueClass.isArray() || !isValueClassDummy)) {
                 attributeValue = ((IncludeValue) attributeValue).getIncludedValue(environment);
                 continue;
             }
             if (attributeValue instanceof ArrayValue && Collection.class.isAssignableFrom(valueClass))
-                return resolveCollectionValue(valueClass, paramClass, (ArrayValue) attributeValue, callBefore, callAfter, configureAllFields, environment, resolveCallback);
+                return resolveCollectionValue(valueClass, paramClass, (ArrayValue) attributeValue, callBefore, callAfter, configureAllFields, environment);
 
             throw new IllegalArgumentException("Can't resolve attribute value " + attributeValue + " to type: " + valueClass.getCanonicalName());
         }
@@ -177,8 +167,7 @@ public class ResolveManager {
                                           final Class<? extends Annotation>[] callBefore,
                                           final Class<? extends Annotation>[] callAfter,
                                           final boolean configureAllFields,
-                                          final Environment environment,
-                                          final ResolveCallback resolveCallback) throws InstantiationException, IllegalAccessException {
+                                          final Environment environment) throws InstantiationException, IllegalAccessException {
         if (valueClass.equals(Object.class))
             return attributeValue.getRaw();
         if (valueClass.equals(String.class))
@@ -186,7 +175,7 @@ public class ResolveManager {
 
         final Collection<Object> resolvedValue = ReflectionUtils.newInstanceCollection(valueClass);
         for (int i = 0; i < attributeValue.get().size(); ++i)
-            resolvedValue.add(resolveValue(paramClass, attributeValue.get().get(i), callBefore, callAfter, configureAllFields, environment, resolveCallback));
+            resolvedValue.add(resolveValue(paramClass, attributeValue.get().get(i), callBefore, callAfter, configureAllFields, environment));
         return resolvedValue;
     }
 
@@ -203,8 +192,7 @@ public class ResolveManager {
                                      final Class<? extends Annotation>[] callBefore,
                                      final Class<? extends Annotation>[] callAfter,
                                      final boolean configureAllFields,
-                                     final Environment environment,
-                                     final ResolveCallback resolveCallback) throws InstantiationException, IllegalAccessException {
+                                     final Environment environment) throws InstantiationException, IllegalAccessException {
         if (valueClass.equals(Object.class))
             return attributeValue.getRaw();
         if (valueClass.equals(String.class))
@@ -212,7 +200,7 @@ public class ResolveManager {
 
         final Object resolvedValue = Array.newInstance(valueClass.getComponentType(), attributeValue.get().size());
         for (int i = 0; i < attributeValue.get().size(); ++i)
-            Array.set(resolvedValue, i, resolveValue(valueClass.getComponentType(), attributeValue.get().get(i), callBefore, callAfter, configureAllFields, environment, resolveCallback));
+            Array.set(resolvedValue, i, resolveValue(valueClass.getComponentType(), attributeValue.get().get(i), callBefore, callAfter, configureAllFields, environment));
 
         return resolvedValue;
     }
@@ -230,18 +218,14 @@ public class ResolveManager {
                                          final Class<? extends Annotation>[] callBefore,
                                          final Class<? extends Annotation>[] callAfter,
                                          final boolean configureAllFields,
-                                         final ResolveCallback resolveCallback) throws InstantiationException, IllegalAccessException {
+                                         final Environment environment) throws InstantiationException, IllegalAccessException {
         if (valueClass.equals(Object.class))
             return attributeValue.getRaw();
         if (valueClass.equals(String.class))
             return new JSONObject((Map<?, ?>) attributeValue.getRaw()).toString();
 
         final Object resolvedValue = valueClass.newInstance();
-        resolveCallback.configure(attributeValue.get(), resolvedValue, callBefore, callAfter, configureAllFields, ConfigurationManager.INSTANCE.getDefaultEnvironment());
+        ConfigurationProcessor.instance().configure(attributeValue.get(), resolvedValue, callBefore, callAfter, configureAllFields, environment);
         return resolvedValue;
-    }
-
-    public interface ResolveCallback{
-        void configure(final Configuration config, final Object o, final Class<? extends Annotation>[] callBefore, final Class<? extends Annotation>[] callAfter, final boolean configureAllFields, final Environment environment);
     }
 }

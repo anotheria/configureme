@@ -6,6 +6,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.configureme.parser.json.JsonParser;
 import org.configureme.parser.properties.PropertiesParser;
 import org.configureme.sources.ConfigurationSourceKey;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Configuration parser manger store and provide all parse configurations.
@@ -13,6 +15,8 @@ import org.configureme.sources.ConfigurationSourceKey;
  * @author Ivan Batura
  */
 public class ConfigurationParserManager {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationParserManager.class);
 
     /**
      * Lock object for singleton creation.
@@ -88,5 +92,24 @@ public class ConfigurationParserManager {
             throw new ConfigurationParserException("Parameter configuration.getFormat() is NULL.");
 
         parsers.put(configuration.getFormat(), configuration);
+    }
+
+    /**
+     *  Parse content.
+     *
+     * @param configSourceKey {@link ConfigurationSourceKey}
+     * @param content content to parse
+     * @return {@link ParsedConfiguration}
+     */
+    public ParsedConfiguration parse(final ConfigurationSourceKey configSourceKey, final String content){
+        final String configurationName = configSourceKey.getName();
+        final ConfigurationParser parser = get(configSourceKey.getFormat());
+        try {
+            return parser.parseConfiguration(configurationName, content);
+        } catch (final ConfigurationParserException e) {
+            LOGGER.error("parseConfiguration(" + configurationName + ", " + content + ')', e);
+            throw new IllegalArgumentException(configSourceKey + " is not parseable: " + e.getMessage(), e);
+        }
+
     }
 }

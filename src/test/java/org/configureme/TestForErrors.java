@@ -122,7 +122,7 @@ public class TestForErrors {
 	}
 
 	@ConfigureMe(name="fixture")
-	private class ObjectWithUnsupportedAttribute{
+	public class ObjectWithUnsupportedAttribute{
 
 		private boolean calledSetInt = false;;
 		private boolean calledSetObject = false;

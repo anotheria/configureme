@@ -1,14 +1,14 @@
 package org.configureme.repository;
 
-import org.configureme.Environment;
-import org.configureme.GlobalEnvironment;
-import org.configureme.sources.ConfigurationSourceKey;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.configureme.Environment;
+import org.configureme.GlobalEnvironment;
+import org.configureme.sources.ConfigurationSourceKey;
 
 /**
  * The artefact is the internal representation of a configuration.
@@ -103,7 +103,7 @@ public class Artefact {
 			valueMap = new HashMap<>();
 		valueMap.put(attributeName, attributeValue.getRaw());
 		contentMap.put(in, valueMap);
-		//TODO check for loops and process such situation
+		//TODO check for loops and processFields such situation
 		if (attributeValue instanceof IncludeValue)
 			externalConfigurations.add(((IncludeValue) attributeValue).getConfigName());
 	}
