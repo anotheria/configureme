@@ -315,4 +315,21 @@ public final class StringUtils {
 		return s;
 	}
 
+	/**
+	 * Returns a source String with all occurences of 'c' removed.
+	 * removeChar("ConfigureMe please", 'e') will return "ConfigurM plas".
+	 *
+	 * @param src a {@link java.lang.String} object.
+	 * @param c a char.
+	 * @return a {@link java.lang.String} object.
+	 */
+	public static String removeChar(String src, char c) {
+		StringBuilder ret = new StringBuilder(src.length());
+		for (int i = 0; i < src.length(); i++)
+			if (src.charAt(i) != c)
+				ret.append(src.charAt(i));
+		return ret.toString();
+	}
+
+
 }

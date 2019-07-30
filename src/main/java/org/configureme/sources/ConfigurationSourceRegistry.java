@@ -42,12 +42,18 @@ public enum ConfigurationSourceRegistry {
 	private final Map<ConfigurationSourceKey.Type, SourceLoader> loaders = new ConcurrentHashMap<>();
 
 	/**
+	 * Reference to the watcher thread.
+	 */
+	private WatcherThread watcherThread;
+
+	/**
 	 * Creates a new registry and starts the watcher thread.
 	 * This constructor also adds the FileLoader.
 	 */
 	ConfigurationSourceRegistry() {
 		initLoaders();
-		new WatcherThread().start();
+		watcherThread = new WatcherThread();
+		watcherThread.start();
 	}
 
 	private void initLoaders() {
@@ -162,6 +168,7 @@ public enum ConfigurationSourceRegistry {
 	 */
 	private final class WatcherThread extends Thread {
 		private WatcherThread() {
+			super("ConfigurationSourceRegistry.WatcherThread");
 			setDaemon(true);
 		}
 
@@ -173,14 +180,12 @@ public enum ConfigurationSourceRegistry {
 					final Collection<ConfigurationSource> allSources = watchedSources.values();
 					for (final ConfigurationSource source : allSources) {
 						final SourceLoader loader = loaders.get(source.getKey().getType());
-//						System.out.println("source: "+source);
 
 						try {
 							long lastUpdate = loader.getLastChangeTimestamp(source.getKey());
 							log.debug("Checking source: " + source + ", lastUpdateFromLoader= " + DateUtils.toISO8601String(lastUpdate) + ", storedLastUpdate=" + DateUtils.toISO8601String(source.getLastChangeTimestamp()));
 							if (source.isOlderAs(lastUpdate)) {
 								log.debug("firing update event: " + source);
-//								System.out.println("firing update on source: "+source);
 								source.fireUpdateEvent(lastUpdate);
 							}
 						} catch (final IllegalArgumentException e) {
@@ -208,4 +213,14 @@ public enum ConfigurationSourceRegistry {
 		watchedSources = new ConcurrentHashMap<>();
 		initLoaders();
 	}
+
+	/**
+	 * Stops the watcher thread in case the application need a proper shutdown and cleanup of resources, for example in
+	 * case of a reload.
+	 */
+	public void shutdown() {
+		watcherThread.interrupt();
+	}
+
+
 }

@@ -1,15 +1,19 @@
 package org.configureme;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.configureme.annotations.AfterConfiguration;
@@ -46,6 +50,21 @@ import org.configureme.util.ReflectionUtils;
 import org.configureme.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Configuration manager (this is the one YOU must use) is a utility class for retrieval of configurations and automatical configurations of components.
@@ -715,5 +734,13 @@ public enum ConfigurationManager {
 			globalCache.put(name, environmentCache);
 		}
 		environmentCache.put(environment, o);
+	}
+
+	/**
+	 * Used to shutdown the confirmation manager in a reloadable environment like tomcat or any other web container.
+	 * If you want to ensure cleanup on application stop, call ConfigurationManager.INSTANCE.shutdown();
+	 */
+	public void shutdown(){
+		ConfigurationSourceRegistry.INSTANCE.shutdown();
 	}
 }
