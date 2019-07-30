@@ -1,9 +1,9 @@
 {
-    live:{
+    "live":{
         $<includedfile1>
     },
-    test:{
-        country: "Ukraine",
-        city: "Kyiv",
+    "test": {
+        "country": "Ukraine",
+        "city": "Kyiv"
     },
 }

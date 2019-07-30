@@ -77,7 +77,7 @@ public class FileLoader implements SourceLoader{
 			log.info("load configuration from file: " + f.getAbsolutePath());
 		try{
 			if (!f.exists())
-				return getContentFromJar(f.getName());
+				return getContentFromJar(getFileName(key));
 			
 			return IOUtils.readFileBufferedAsString(f, "UTF-8");
 		}catch(final IOException e){

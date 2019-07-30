@@ -1,17 +1,18 @@
 package org.configureme.sources.configurationrepository;
 
 
+
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Map;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.config.ClientConfig;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
-import com.sun.jersey.api.json.JSONConfiguration;
-import org.codehaus.jackson.jaxrs.JacksonJaxbJsonProvider;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.configureme.sources.ConfigurationSourceKey;
 import org.configureme.sources.SourceLoader;
 import org.slf4j.Logger;
@@ -50,7 +51,7 @@ public class RestConfigurationRepositorySourceLoader implements SourceLoader {
         if (key == null) {
             throw new IllegalArgumentException("getLastChangeTimestamp(): ConfigurationSourceKey is null");
         }
-        final ReplyObject replyObject = getConfigurationReplyObject(key, PATH_LAST_CHANGE_TIMESTAMP);
+        final ReplyObject replyObject = this.getConfigurationReplyObject(key, PATH_LAST_CHANGE_TIMESTAMP);
         final Map<String, Object> result = replyObject.getResults();
         return ((long) result.get(key.getName()));
     }
@@ -60,8 +61,8 @@ public class RestConfigurationRepositorySourceLoader implements SourceLoader {
         if (key.getType() != ConfigurationSourceKey.Type.REST) {
             throw new IllegalStateException("Can only get configuration for type: " + ConfigurationSourceKey.Type.REST);
         }
-        final Map<String, Object> result = getConfigurationReplyObject(key, PATH_CONFIGURATION).getResults();
-        return mapObjectToString(result.get(key.getName()), key.getName());
+        final Map<String, Object> result = this.getConfigurationReplyObject(key, PATH_CONFIGURATION).getResults();
+        return this.mapObjectToString(result.get(key.getName()), key.getName());
     }
 
     private String mapObjectToString(final Object toMap, final String configName) {
@@ -83,15 +84,32 @@ public class RestConfigurationRepositorySourceLoader implements SourceLoader {
         if (key.getRemoteConfigurationRepositoryUrl() == null) {
             throw new IllegalArgumentException("Target url unknown");
         }
-        final Client client = Client.create(getClientConfig());
-        final WebResource resource = client.resource(key.getRemoteConfigurationRepositoryUrl()).path(additionalPath).path(key.getName());
-        return resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).get(ReplyObject.class);
+        final Client client = getClientConfig().build();
+        final WebTarget resource = client.target(key.getRemoteConfigurationRepositoryUrl()).path(additionalPath).path(key.getName());
+        return resource.request(MediaType.APPLICATION_JSON).header("Content-type", MediaType.APPLICATION_JSON).get(ReplyObject.class);
     }
 
-    private ClientConfig getClientConfig() {
-        final ClientConfig clientConfig = new DefaultClientConfig();
-        clientConfig.getClasses().add(JacksonJaxbJsonProvider.class);
-        clientConfig.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
+    private ClientBuilder getClientConfig() {
+        ClientBuilder clientConfig;
+
+        try {
+            clientConfig = ClientBuilder.newBuilder();
+            Class clazz = Class.forName("org.glassfish.jersey.jackson.JacksonFeature");
+            clientConfig.register(clazz);
+        } catch (ClassNotFoundException e) {
+            try {
+                Class clazz = Class.forName("org.jboss.resteasy.spi.ResteasyProviderFactory");
+                Method factoryMethod = clazz.getDeclaredMethod("getInstance");
+                Object singleton = factoryMethod.invoke(null, null);
+
+                Class clazz2 = Class.forName(" org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder");
+                final Constructor constructor = clazz2.getConstructor(clazz);
+                clientConfig = (ClientBuilder) constructor.newInstance(singleton);
+            } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e1) {
+                throw new IllegalStateException("No Jackson provider available");
+            }
+        }
+
         return clientConfig;
     }
 }
