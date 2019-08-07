@@ -16,6 +16,9 @@ public class TestComplexArrays{
 	@Configure private List<Boolean> listBoolean = new LinkedList<>();
 	@Configure private List<List<String>> listListString;
 
+	@Configure private List<ConfigObject> listObject;
+	@Configure private List<List<ConfigObject>> listListObject;
+
 	@Configure private Set<String> setString;
 	@Configure private Set<Integer> setInteger;
 	@Configure private HashSet<Boolean> setBoolean;
@@ -94,6 +97,22 @@ public class TestComplexArrays{
 		this.listSetString = listSetString;
 	}
 
+	public List<ConfigObject> getListObject() {
+		return listObject;
+	}
+
+	public void setListObject(List<ConfigObject> listObject) {
+		this.listObject = listObject;
+	}
+
+	public List<List<ConfigObject>> getListListObject() {
+		return listListObject;
+	}
+
+	public void setListListObject(List<List<ConfigObject>> listListObject) {
+		this.listListObject = listListObject;
+	}
+
 	@Override
 	public String toString() {
 		final StringBuilder sb = new StringBuilder(this.getClass().getSimpleName());
@@ -106,10 +125,33 @@ public class TestComplexArrays{
 		sb.append(", setBoolean=").append(setBoolean);
 		sb.append(", setsetString=").append(setsetString);
 		sb.append(", listSetString=").append(listSetString);
+		sb.append(", listObject=").append(listObject);
+		sb.append(", listListObject=").append(listListObject);
 		sb.append(']');
 		return sb.toString();
 	}
 
+	public static class ConfigObject{
+		@Configure
+		private Integer integerTest;
+		@Configure
+		private String stringTest;
 
+		public Integer getIntegerTest() {
+			return integerTest;
+		}
+
+		public void setIntegerTest(Integer integerTest) {
+			this.integerTest = integerTest;
+		}
+
+		public String getStringTest() {
+			return stringTest;
+		}
+
+		public void setStringTest(String stringTest) {
+			this.stringTest = stringTest;
+		}
+	}
 
 }
