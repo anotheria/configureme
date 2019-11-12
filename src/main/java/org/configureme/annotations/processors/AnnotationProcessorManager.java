@@ -9,12 +9,12 @@ import java.util.List;
 import org.configureme.Configuration;
 import org.configureme.Environment;
 import org.configureme.annotations.processors.field.FieldAnnotationProcessor;
-import org.configureme.annotations.processors.field.FieldAnnotationProcessorConfigure;
-import org.configureme.annotations.processors.field.FieldAnnotationProcessorConfigureAlso;
+import org.configureme.annotations.processors.field.ConfigureFAProcessor;
+import org.configureme.annotations.processors.field.ConfigureAlsoFAProcessor;
 import org.configureme.annotations.processors.method.MethodAnnotationProcessor;
-import org.configureme.annotations.processors.method.MethodAnnotationProcessorSet;
-import org.configureme.annotations.processors.method.MethodAnnotationProcessorSetAll;
-import org.configureme.annotations.processors.method.MethodAnnotationProcessorSetIf;
+import org.configureme.annotations.processors.method.SetMAProcessor;
+import org.configureme.annotations.processors.method.SetAllMAProcessor;
+import org.configureme.annotations.processors.method.SetIfMAProcessor;
 import org.configureme.parser.ConfigurationParserManager;
 import org.configureme.sources.ConfigurationSourceKey;
 
@@ -49,12 +49,12 @@ public class AnnotationProcessorManager {
      * Private constructor.
      */
     private AnnotationProcessorManager() {
-        methodProcessors.add(new MethodAnnotationProcessorSetAll());
-        methodProcessors.add(new MethodAnnotationProcessorSetIf());
-        methodProcessors.add(new MethodAnnotationProcessorSet());
+        methodProcessors.add(new SetAllMAProcessor());
+        methodProcessors.add(new SetIfMAProcessor());
+        methodProcessors.add(new SetMAProcessor());
 
-        fieldProcessors.add(new FieldAnnotationProcessorConfigureAlso());
-        fieldProcessors.add(new FieldAnnotationProcessorConfigure());
+        fieldProcessors.add(new ConfigureAlsoFAProcessor());
+        fieldProcessors.add(new ConfigureFAProcessor());
     }
 
     /**

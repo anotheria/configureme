@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Ivan Batura
  */
-public class MethodAnnotationProcessorSet implements MethodAnnotationProcessor {
+public class SetMAProcessor implements MethodAnnotationProcessor {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodAnnotationProcessor.class);
 
 

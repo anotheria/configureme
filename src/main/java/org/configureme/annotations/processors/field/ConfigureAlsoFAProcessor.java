@@ -18,8 +18,8 @@ import org.slf4j.LoggerFactory;
  *
  * @author Ivan Batura
  */
-public class FieldAnnotationProcessorConfigureAlso implements FieldAnnotationProcessor {
-    private static final Logger LOGGER = LoggerFactory.getLogger(FieldAnnotationProcessorConfigureAlso.class);
+public class ConfigureAlsoFAProcessor implements FieldAnnotationProcessor {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConfigureAlsoFAProcessor.class);
 
     @Override
     public boolean isApplicable(final Field f, final boolean configureAllFields) {

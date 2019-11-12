@@ -19,8 +19,8 @@ import org.slf4j.LoggerFactory;
  *
  * @author Ivan Batura
  */
-public class FieldAnnotationProcessorConfigure implements FieldAnnotationProcessor {
-    private static final Logger LOGGER = LoggerFactory.getLogger(FieldAnnotationProcessorConfigure.class);
+public class ConfigureFAProcessor implements FieldAnnotationProcessor {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConfigureFAProcessor.class);
 
     @Override
     public boolean isApplicable(final Field f, final boolean configureAllFields) {

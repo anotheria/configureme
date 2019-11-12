@@ -103,7 +103,7 @@ public class Artefact {
 			valueMap = new HashMap<>();
 		valueMap.put(attributeName, attributeValue.getRaw());
 		contentMap.put(in, valueMap);
-		//TODO check for loops and processFields such situation
+		//TODO check for loops and process such situation
 		if (attributeValue instanceof IncludeValue)
 			externalConfigurations.add(((IncludeValue) attributeValue).getConfigName());
 	}
