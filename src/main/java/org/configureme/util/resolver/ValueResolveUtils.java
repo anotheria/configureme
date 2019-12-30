@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 
-import org.configureme.ConfigurationProcessor;
+import org.configureme.ConfigurationProcessorUtils;
 import org.configureme.Environment;
 import org.configureme.repository.ArrayValue;
 import org.configureme.repository.CompositeValue;

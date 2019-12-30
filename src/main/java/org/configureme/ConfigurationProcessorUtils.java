@@ -28,18 +28,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Should be in this package. Needed to decrease number of code in ConfigurationManager.
+ *
  * @author Ivan Batura
  */
 public final class ConfigurationProcessorUtils {
     /**
      * Logger.
      */
-    private static final Logger LOGGER = LoggerFactory.getLogger(ResolveManager.class);
-
-    /**
-     * Lock object for singleton creation.
-     */
-    private static final Object LOCK = new Object();
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationProcessorUtils.class);
 
     /**
      * Annotations to call before initial configuration.
@@ -114,7 +111,7 @@ public final class ConfigurationProcessorUtils {
         final Class<?> clazz = o.getClass();
         final ConfigureMe annInternal = ann != null ? ann : clazz.getAnnotation(ConfigureMe.class);
         if (annInternal == null)
-            throw new AssertionError("An unannotated class shouldn't make it sofar, obj: " + o + " class " + o.getClass());
+            throw new AssertionError("An unannotated class shouldn't make it so far, obj: " + o + " class " + o.getClass());
 
         final boolean configureAllFields = annInternal.allfields();
 
@@ -131,7 +128,7 @@ public final class ConfigurationProcessorUtils {
         }
 
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Finished configuration of " + o + " as " + key);
+            LOGGER.debug("Finished configuration of {} as {}", o, key);
         }
     }
 
