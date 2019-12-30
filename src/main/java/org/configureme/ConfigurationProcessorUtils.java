@@ -14,15 +14,15 @@ import org.configureme.annotations.BeforeConfiguration;
 import org.configureme.annotations.BeforeInitialConfiguration;
 import org.configureme.annotations.BeforeReConfiguration;
 import org.configureme.annotations.ConfigureMe;
-import org.configureme.annotations.processors.AnnotationProcessorManager;
+import org.configureme.annotations.processors.AnnotationProcessorUtils;
 import org.configureme.mbean.ConfigInfo;
 import org.configureme.mbean.util.MBeanRegisterUtil;
 import org.configureme.parser.ConfigurationParserManager;
 import org.configureme.parser.ParsedConfiguration;
 import org.configureme.repository.ConfigurationRepository;
-import org.configureme.resolver.ResolveManager;
 import org.configureme.sources.ConfigurationSourceKey;
 import org.configureme.sources.ConfigurationSourceRegistry;
+import org.configureme.util.LocalCacheUtils;
 import org.configureme.util.ReflectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Ivan Batura
  */
-public class ConfigurationProcessor {
+public final class ConfigurationProcessorUtils {
     /**
      * Logger.
      */
@@ -40,11 +40,6 @@ public class ConfigurationProcessor {
      * Lock object for singleton creation.
      */
     private static final Object LOCK = new Object();
-
-    /**
-     * {@link ConfigurationProcessor} instance,
-     */
-    private static ConfigurationProcessor instance;
 
     /**
      * Annotations to call before initial configuration.
@@ -81,25 +76,10 @@ public class ConfigurationProcessor {
     /**
      * Private constructor.
      */
-    private ConfigurationProcessor() {
+    private ConfigurationProcessorUtils() {
+        throw new UnsupportedOperationException("Cannot be initiated");
     }
-
-    /**
-     * Get singleton instance of {@link ResolveManager}.
-     *
-     * @return {@link ResolveManager}
-     */
-    public static ConfigurationProcessor instance() {
-        if (instance != null)
-            return instance;
-        synchronized (LOCK) {
-            if (instance != null)
-                return instance;
-
-            instance = new ConfigurationProcessor();
-            return instance;
-        }
-    }
+    
 
     /**
      * Internal method used at initial, user triggered configuration.
@@ -109,7 +89,7 @@ public class ConfigurationProcessor {
      * @param in  the environment
      * @param ann the configureme annotation instance with which o.getClass() was annotated.
      */
-    public void configureInitially(final ConfigurationSourceKey key, final Object o, final Environment in, final ConfigureMe ann) {
+    public static void configureInitially(final ConfigurationSourceKey key, final Object o, final Environment in, final ConfigureMe ann) {
 
         configure(key, o, in, CALL_BEFORE_INITIAL_CONFIGURATION, CALL_AFTER_INITIAL_CONFIGURATION, ann);
 
@@ -130,7 +110,7 @@ public class ConfigurationProcessor {
      * @param callBefore annotations, methods annotated with those will be called prior to the configuration
      * @param callAfter  annotations, methods annotated with those will be called after the configuration
      */
-    public void configure(final ConfigurationSourceKey key, final Object o, final Environment in, final Class<? extends Annotation>[] callBefore, final Class<? extends Annotation>[] callAfter, ConfigureMe ann) {
+    public static void configure(final ConfigurationSourceKey key, final Object o, final Environment in, final Class<? extends Annotation>[] callBefore, final Class<? extends Annotation>[] callAfter, ConfigureMe ann) {
         final Class<?> clazz = o.getClass();
         final ConfigureMe annInternal = ann != null ? ann : clazz.getAnnotation(ConfigureMe.class);
         if (annInternal == null)
@@ -165,19 +145,19 @@ public class ConfigurationProcessor {
      * @param callAfter          annotations, methods annotated with those will be called after the configuration
      * @param configureAllFields specifies whether to set all fields regardless if they are marked configured or not
      */
-    public void configure(final Configuration config, final Object o, final Class<? extends Annotation>[] callBefore, final Class<? extends Annotation>[] callAfter, final boolean configureAllFields, final Environment environment) {
-        LocalCacheManager.instance().setCachedObject(config.getName(), environment, o);
+    public static void configure(final Configuration config, final Object o, final Class<? extends Annotation>[] callBefore, final Class<? extends Annotation>[] callAfter, final boolean configureAllFields, final Environment environment) {
+        LocalCacheUtils.setCachedObject(config.getName(), environment, o);
         final Class<?> clazz = o.getClass();
         final Method[] methods = clazz.getDeclaredMethods();
         callAnnotations(o, methods, callBefore);
 
         final List<Field> fields = ReflectionUtils.getAllFields(clazz);
         for (final Field f : fields) {
-            AnnotationProcessorManager.instance().processFields(config, o, callBefore, callAfter, configureAllFields, environment, clazz, f);
+            AnnotationProcessorUtils.processFields(config, o, callBefore, callAfter, configureAllFields, environment, clazz, f);
         }
 
         for (final Method method : methods) {
-            AnnotationProcessorManager.instance().processMethods(config, o, callBefore, callAfter, configureAllFields, environment, method);
+            AnnotationProcessorUtils.processMethods(config, o, callBefore, callAfter, configureAllFields, environment, method);
         }
 
         callAnnotations(o, methods, callAfter);
@@ -190,7 +170,7 @@ public class ConfigurationProcessor {
      * @param o object to configure
      * @param in {@link Environment}
      */
-    public void reconfigure(final ConfigurationSourceKey key, final Object o, final Environment in) {
+    public static void reconfigure(final ConfigurationSourceKey key, final Object o, final Environment in) {
         configure(key, o, in, CALL_BEFORE_RE_CONFIGURATION, CALL_AFTER_RE_CONFIGURATION, null);
     }
 
@@ -201,7 +181,7 @@ public class ConfigurationProcessor {
      * @param in the environment
      * @return {@link Configuration}
      */
-    public Configuration getConfiguration(final ConfigurationSourceKey configSourceKey, final Environment in) {
+    public static Configuration getConfiguration(final ConfigurationSourceKey configSourceKey, final Environment in) {
         //for the first we will hardcode file as config source and json as config format.
         final String configurationName = configSourceKey.getName();
         if (ConfigurationRepository.INSTANCE.hasConfiguration(configurationName))
@@ -225,7 +205,7 @@ public class ConfigurationProcessor {
      * @param methods methods to call
      * @param annotationClasses annotations of the configurable class
      */
-    private void callAnnotations(final Object configurable, final Method[] methods, final Class<? extends Annotation>[] annotationClasses) {
+    private static void callAnnotations(final Object configurable, final Method[] methods, final Class<? extends Annotation>[] annotationClasses) {
         //check for annotations to call and call 'before' annotations
         for (final Method m : methods) {
             //System.out.println("Checking methid "+m);

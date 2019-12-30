@@ -78,7 +78,7 @@ public class ConfigurableWrapper implements ConfigurationSourceListener{
 	 */
 	@Override
 	public void configurationSourceUpdated(final ConfigurationSource source) {
-		ConfigurationProcessor.instance().reconfigure(key, configurable, environment);
+		ConfigurationProcessorUtils.reconfigure(key, configurable, environment);
 	}
 	
 	@Override public boolean equals(Object anotherObject){

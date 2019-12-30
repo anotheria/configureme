@@ -9,7 +9,7 @@ import org.configureme.annotations.Configure;
 import org.configureme.annotations.ConfigureAlso;
 import org.configureme.annotations.DontConfigure;
 import org.configureme.repository.Value;
-import org.configureme.resolver.ResolveManager;
+import org.configureme.util.resolver.ValueResolveUtils;
 import org.configureme.util.ReflectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +34,7 @@ public class ConfigureFAProcessor implements FieldAnnotationProcessor {
         if (attributeValue == null)
             return;
         try {
-            ReflectionUtils.invokeSetter(f, clazz, o, ResolveManager.instance().resolveValue(f.getGenericType(), attributeValue, callBefore, callAfter, configureAllFields, environment));
+            ReflectionUtils.invokeSetter(f, clazz, o, ValueResolveUtils.resolveValue(f.getGenericType(), attributeValue, callBefore, callAfter, configureAllFields, environment));
         } catch (final Exception e) {
             LOGGER.error("can't set " + attributeName + " to " + attributeValue + ", because: ", e);
         }

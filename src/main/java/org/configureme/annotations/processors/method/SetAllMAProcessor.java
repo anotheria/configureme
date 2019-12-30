@@ -9,7 +9,7 @@ import org.configureme.Configuration;
 import org.configureme.Environment;
 import org.configureme.annotations.SetAll;
 import org.configureme.repository.Value;
-import org.configureme.resolver.ResolveManager;
+import org.configureme.util.resolver.ValueResolveUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +32,7 @@ public class SetAllMAProcessor implements MethodAnnotationProcessor {
         LOGGER.debug("Calling method " + method + " with " + entries);
         for (final Map.Entry<String, Value> entry : entries) {
             try {
-                method.invoke(o, entry.getKey(), ResolveManager.instance().resolveValue(method.getParameterTypes()[1], entry.getValue(), callBefore, callAfter, configureAllFields, environment));
+                method.invoke(o, entry.getKey(), ValueResolveUtils.resolveValue(method.getParameterTypes()[1], entry.getValue(), callBefore, callAfter, configureAllFields, environment));
             } catch (final Exception e) {
                 LOGGER.warn(method.getName() + "invoke(" + o + ", " + entry.getKey() + ", " + entry.getValue() + ')', e);
             }

@@ -48,7 +48,7 @@ public final class ReflectionUtils {
 
     public static boolean hasParameterlessPublicConstructor(Class<?> clazz) {
         for (final Constructor<?> constructor : clazz.getConstructors()) {
-            if (constructor.getParameterTypes().length == 0)
+            if (constructor.getParameterTypes().length == 0)//TODO: when move to java 1.8 change it to constructor.getParameterCount()
                 return true;
         }
         return false;

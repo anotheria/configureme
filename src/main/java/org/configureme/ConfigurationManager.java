@@ -7,6 +7,7 @@ import org.configureme.annotations.ConfigureMe;
 import org.configureme.environments.DynamicEnvironment;
 import org.configureme.mbean.WatchedConfigFiles;
 import org.configureme.mbean.util.MBeanRegisterUtil;
+import org.configureme.repository.ConfigurationRepository;
 import org.configureme.sources.ConfigurationSourceKey;
 import org.configureme.sources.ConfigurationSourceKey.Format;
 import org.configureme.sources.ConfigurationSourceKey.Type;
@@ -221,7 +222,7 @@ public enum ConfigurationManager {
         configSourceKey.setName(name);
         configSourceKey.setRemoteConfigurationRepositoryUrl(remoteConfigurationRepositoryUrl);
 
-        ConfigurationProcessor.instance().configureInitially(configSourceKey, o, in, ann);
+        ConfigurationProcessorUtils.configureInitially(configSourceKey, o, in, ann);
     }
 
     /**
@@ -267,7 +268,7 @@ public enum ConfigurationManager {
             throw new IllegalArgumentException("Class " + o.getClass() + " is not annotated as ConfigureMe, called with: " + o + ", class: " + o.getClass());
 
         final ConfigureMe ann = o.getClass().getAnnotation(ConfigureMe.class);
-        ConfigurationProcessor.instance().configureInitially(configSourceKey, o, in, ann);
+        ConfigurationProcessorUtils.configureInitially(configSourceKey, o, in, ann);
     }
 
     /**
@@ -331,7 +332,7 @@ public enum ConfigurationManager {
         configSourceKey.setType(defaultConfigurationSourceType);
         configSourceKey.setName(configurationName);
 
-        return ConfigurationProcessor.instance().getConfiguration(configSourceKey, in);
+        return ConfigurationProcessorUtils.getConfiguration(configSourceKey, in);
     }
 
     /**
@@ -358,7 +359,9 @@ public enum ConfigurationManager {
      * Used to shutdown the confirmation manager in a reloadable environment like tomcat or any other web container.
      * If you want to ensure cleanup on application stop, call ConfigurationManager.INSTANCE.shutdown();
      */
+    //TODO: check this
     public void shutdown() {
         ConfigurationSourceRegistry.INSTANCE.shutdown();
+        ConfigurationRepository.INSTANCE.resetForUnitTests();
     }
 }

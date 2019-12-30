@@ -6,7 +6,7 @@ import java.lang.reflect.Field;
 import org.configureme.Configuration;
 import org.configureme.ConfigurationManager;
 import org.configureme.Environment;
-import org.configureme.LocalCacheManager;
+import org.configureme.util.LocalCacheUtils;
 import org.configureme.annotations.ConfigureAlso;
 import org.configureme.annotations.ConfigureMe;
 import org.configureme.util.ReflectionUtils;
@@ -39,10 +39,10 @@ public class ConfigureAlsoFAProcessor implements FieldAnnotationProcessor {
             }
             externalConfig = externalConfigClass.newInstance();
             final ConfigureMe ann = externalConfigClass.getAnnotation(ConfigureMe.class);
-            final Object cachedObject = LocalCacheManager.instance().getCachedObject(ann.name(), environment);
+            final Object cachedObject = LocalCacheUtils.getCachedObject(ann.name(), environment);
             if (cachedObject == null) {
                 ConfigurationManager.INSTANCE.configure(externalConfig, environment);
-                LocalCacheManager.instance().setCachedObject(ann.name(), environment, externalConfig);
+                LocalCacheUtils.setCachedObject(ann.name(), environment, externalConfig);
             } else {
                 externalConfig = cachedObject;
             }

@@ -7,7 +7,7 @@ import org.configureme.Configuration;
 import org.configureme.Environment;
 import org.configureme.annotations.Set;
 import org.configureme.repository.Value;
-import org.configureme.resolver.ResolveManager;
+import org.configureme.util.resolver.ValueResolveUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +34,7 @@ public class SetMAProcessor implements MethodAnnotationProcessor {
         if (attributeValue != null) {
             LOGGER.debug("setting " + method.getName() + " to " + attributeValue + " configured by " + attributeName);
             try {
-                method.invoke(o, ResolveManager.instance().resolveValue(method.getParameterTypes()[0], attributeValue, callBefore, callAfter, configureAllFields, environment));
+                method.invoke(o, ValueResolveUtils.resolveValue(method.getParameterTypes()[0], attributeValue, callBefore, callAfter, configureAllFields, environment));
             } catch (final Exception e) {
                 LOGGER.warn(method.getName() + "invoke(" + o + ", " + attributeValue + ')', e);
             }

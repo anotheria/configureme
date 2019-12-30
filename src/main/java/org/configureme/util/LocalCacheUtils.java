@@ -1,51 +1,27 @@
-package org.configureme;
+package org.configureme.util;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.configureme.resolver.ResolveManager;
+import org.configureme.Environment;
 
 /**
  * Cache for object in oder to cover situation with loops in ConfigureAlso.
  *
  * @author Ivan Batura
  */
-public class LocalCacheManager {
+public final class LocalCacheUtils {
 
-    /**
-     * Lock object for singleton creation.
-     */
-    private static final Object LOCK = new Object();
-    /**
-     * {@link ResolveManager} instance,
-     */
-    private static LocalCacheManager instance;
     /**
      * Cache.
      */
-    private final ThreadLocal<Map<String, Map<Environment, Object>>> localCache = new ThreadLocal<>();
+    private static final ThreadLocal<Map<String, Map<Environment, Object>>> LOCAL_CACHE = new ThreadLocal<>();
 
     /**
      * Private constructor.
      */
-    private LocalCacheManager() {
-    }
-
-    /**
-     * Get singleton instance of {@link LocalCacheManager}.
-     *
-     * @return {@link LocalCacheManager}
-     */
-    public static LocalCacheManager instance() {
-        if (instance != null)
-            return instance;
-        synchronized (LOCK) {
-            if (instance != null)
-                return instance;
-
-            instance = new LocalCacheManager();
-            return instance;
-        }
+    private LocalCacheUtils() {
+        throw new UnsupportedOperationException("Cannot be initiated");
     }
 
     /**
@@ -57,11 +33,11 @@ public class LocalCacheManager {
      *         environment
      * @return instance of the already configures object
      */
-    public Object getCachedObject(final String name, final Environment environment) {
-        Map<String, Map<Environment, Object>> globalCache = localCache.get();
+    public static Object getCachedObject(final String name, final Environment environment) {
+        Map<String, Map<Environment, Object>> globalCache = LOCAL_CACHE.get();
         if (globalCache == null) {
             globalCache = new HashMap<>();
-            localCache.set(globalCache);
+            LOCAL_CACHE.set(globalCache);
         }
         Map<Environment, Object> environmentCache = globalCache.get(name);
         if (environmentCache == null) {
@@ -82,11 +58,11 @@ public class LocalCacheManager {
      * @param o
      *         object to cache
      */
-    public void setCachedObject(final String name, final Environment environment, final Object o) {
-        Map<String, Map<Environment, Object>> cache = localCache.get();
+    public static void setCachedObject(final String name, final Environment environment, final Object o) {
+        Map<String, Map<Environment, Object>> cache = LOCAL_CACHE.get();
         if (cache == null) {
             cache = new HashMap<>();
-            localCache.set(cache);
+            LOCAL_CACHE.set(cache);
         }
         Map<Environment, Object> environmentCache = cache.get(name);
         if (environmentCache == null) {
@@ -95,4 +71,5 @@ public class LocalCacheManager {
         }
         environmentCache.put(environment, o);
     }
+
 }

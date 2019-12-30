@@ -95,6 +95,7 @@ public enum ConfigurationRepository implements ConfigurationSourceListener {
 		final ConfigurationImpl configurationImpl = new ConfigurationImpl(a.getName());
 		final List<String> attributeNames = a.getAttributeNames();
 
+		// TODO: why we need it? Reconsider this!!!
 		configurationImpl.clearExternalConfigurations();
 		for (final ConfigurationSourceKey include : a.getExternalConfigurations())
 			configurationImpl.addExternalConfiguration(include);

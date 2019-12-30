@@ -1,4 +1,4 @@
-package org.configureme.resolver;
+package org.configureme.util.resolver;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
@@ -24,7 +24,7 @@ import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 /**
  * @author Ivan Batura
  */
-public class ResolveManager {
+public final class ValueResolveUtils {
     /**
      * Set of classes specifying plain attribute types.
      * Allows quickly check whether an attribute is plain or not.
@@ -41,36 +41,10 @@ public class ResolveManager {
                     Double.class, double.class));
 
     /**
-     * Lock object for singleton creation.
-     */
-    private static final Object LOCK = new Object();
-
-    /**
-     * {@link ResolveManager} instance,
-     */
-    private static ResolveManager instance;
-
-    /**
      * Private constructor.
      */
-    private ResolveManager() {
-    }
-
-    /**
-     * Get singleton instance of {@link ResolveManager}.
-     *
-     * @return {@link ResolveManager}
-     */
-    public static ResolveManager instance() {
-        if (instance != null)
-            return instance;
-        synchronized (LOCK) {
-            if (instance != null)
-                return instance;
-
-            instance = new ResolveManager();
-            return instance;
-        }
+    private ValueResolveUtils() {
+        throw new UnsupportedOperationException("Cannot be initiataed");
     }
 
     /**
@@ -82,7 +56,7 @@ public class ResolveManager {
      * @param callAfter      annotations, methods annotated with those will be called after the configuration
      * @return an instance of the specified value class which is configured according to the specified attribute value.
      */
-    public Object resolveValue(final java.lang.reflect.Type valueType, Value attributeValue,
+    public static Object resolveValue(final java.lang.reflect.Type valueType, Value attributeValue,
                                final Class<? extends Annotation>[] callBefore,
                                final Class<? extends Annotation>[] callAfter,
                                final boolean configureAllFields,
@@ -162,7 +136,7 @@ public class ResolveManager {
      * @param callAfter      annotations, methods annotated with those will be called after the configuration
      * @return an array instance of the specified value class which is configured according to the specified array attribute value.
      */
-    private Object resolveCollectionValue(final Class<?> valueClass, final java.lang.reflect.Type paramClass,
+    private static Object resolveCollectionValue(final Class<?> valueClass, final java.lang.reflect.Type paramClass,
                                           final ArrayValue attributeValue,
                                           final Class<? extends Annotation>[] callBefore,
                                           final Class<? extends Annotation>[] callAfter,
@@ -188,7 +162,7 @@ public class ResolveManager {
      * @param callAfter      annotations, methods annotated with those will be called after the configuration
      * @return an array instance of the specified value class which is configured according to the specified array attribute value.
      */
-    private Object resolveArrayValue(final Class<?> valueClass, final ArrayValue attributeValue,
+    private static Object resolveArrayValue(final Class<?> valueClass, final ArrayValue attributeValue,
                                      final Class<? extends Annotation>[] callBefore,
                                      final Class<? extends Annotation>[] callAfter,
                                      final boolean configureAllFields,
@@ -214,7 +188,7 @@ public class ResolveManager {
      * @param callAfter      annotations, methods annotated with those will be called after the configuration
      * @return an instance of the specified value class which is configured according to the specified composite attribute value.
      */
-    private Object resolveCompositeValue(final Class<?> valueClass, final CompositeValue attributeValue,
+    private static Object resolveCompositeValue(final Class<?> valueClass, final CompositeValue attributeValue,
                                          final Class<? extends Annotation>[] callBefore,
                                          final Class<? extends Annotation>[] callAfter,
                                          final boolean configureAllFields,
@@ -225,7 +199,7 @@ public class ResolveManager {
             return new JSONObject((Map<?, ?>) attributeValue.getRaw()).toString();
 
         final Object resolvedValue = valueClass.newInstance();
-        ConfigurationProcessor.instance().configure(attributeValue.get(), resolvedValue, callBefore, callAfter, configureAllFields, environment);
+        ConfigurationProcessorUtils.configure(attributeValue.get(), resolvedValue, callBefore, callAfter, configureAllFields, environment);
         return resolvedValue;
     }
 }
