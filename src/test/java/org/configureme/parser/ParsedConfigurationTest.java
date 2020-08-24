@@ -2,6 +2,7 @@ package org.configureme.parser;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,7 @@ import org.junit.Test;
 public class ParsedConfigurationTest {
 	@Test public void basicFunctionality(){
 		ParsedConfiguration bla = new ParsedConfiguration("foo");
-		assertEquals(bla.getParseTimestamp(), System.currentTimeMillis());
+		assertTrue(bla.getParseTimestamp() <= System.currentTimeMillis());
 		assertNotNull(bla.toString());
 
 		ParsedAttribute dummy = new PlainParsedAttribute("test", GlobalEnvironment.INSTANCE, "test");
