@@ -1,14 +1,14 @@
 package org.configureme.repository;
 
-import org.configureme.Environment;
-import org.configureme.GlobalEnvironment;
-import org.configureme.sources.ConfigurationSourceKey;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.configureme.Environment;
+import org.configureme.GlobalEnvironment;
+import org.configureme.sources.ConfigurationSourceKey;
 
 /**
  * The artefact is the internal representation of a configuration.

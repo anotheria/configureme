@@ -1,0 +1,41 @@
+{
+    "listString": ["string1","string2","string3", "string3"],
+    "listInteger": [1,2,3,3],
+    "listBoolean": [true,false,false],
+    "listListString": [["string1", "string1"],["string2","string2"],["string3","string3"]],
+    "setString": ["string1","string2","string3", "string3"],
+    "setInteger": [1,2,3,3],
+    "setBoolean": [true,false,false, true],
+    "setsetString": [["string1", "string1"],["string2","string2"],["string3","string3"]],
+    "listSetString": [["string1", "string1"],["string1","string1"],["string3","string3"]],
+    "@listObject":[
+        {
+            "integerTest": 1,
+            "stringTest": "string1"
+        },
+        {
+            "integerTest": 2,
+            "stringTest": "string2"
+        }
+    ],
+    "@listListObject":[[
+        {
+            "integerTest": 1,
+            "stringTest": "string1"
+        },
+        {
+            "integerTest": 2,
+            "stringTest": "string2"
+        }
+    ],[
+        {
+            "integerTest": 11,
+            "stringTest": "string11"
+        },
+        {
+            "integerTest": 22,
+            "stringTest": "string22"
+        }
+    ]]
+    
+}

@@ -1,11 +1,11 @@
 package org.configureme.githubissues.issue16;
 
+import static org.junit.Assert.assertEquals;
+
 import org.configureme.ConfigurationManager;
 import org.configureme.environments.DynamicEnvironment;
 import org.configureme.sources.ConfigurationSourceKey;
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * Test for https://github.com/anotheria/configureme/issues/16

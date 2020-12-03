@@ -110,6 +110,11 @@ public class JsonParser implements ConfigurationParser {
         }
     }
 
+    @Override
+    public ConfigurationSourceKey.Format getFormat() {
+        return ConfigurationSourceKey.Format.JSON;
+    }
+
     private String getSystemProperty(final String name) {
         String[] parts = name.split(":", 2);
         String propertyName = parts[0];

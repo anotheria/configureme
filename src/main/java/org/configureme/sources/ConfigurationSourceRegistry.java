@@ -1,5 +1,11 @@
 package org.configureme.sources;
 
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
 import org.configureme.ConfigurableWrapper;
 import org.configureme.sources.ConfigurationSourceKey.Type;
 import org.configureme.sources.configurationrepository.ConfigurationHolderSourceLoader;
@@ -7,12 +13,6 @@ import org.configureme.sources.configurationrepository.RestConfigurationReposito
 import org.configureme.util.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * ConfigurationSourceRegistry is the singleton object that controls and manages all known configuration sources. It also has an internal thread that checks the sources for update in defined time periods.
@@ -44,7 +44,7 @@ public enum ConfigurationSourceRegistry {
 	/**
 	 * Reference to the watcher thread.
 	 */
-	private WatcherThread watcherThread;
+	private final WatcherThread watcherThread;
 
 	/**
 	 * Creates a new registry and starts the watcher thread.

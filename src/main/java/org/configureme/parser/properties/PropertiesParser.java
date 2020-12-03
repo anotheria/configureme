@@ -6,10 +6,11 @@ import org.configureme.parser.ConfigurationParserException;
 import org.configureme.parser.ParsedAttribute;
 import org.configureme.parser.ParsedConfiguration;
 import org.configureme.parser.PlainParsedAttribute;
+import org.configureme.sources.ConfigurationSourceKey;
 import org.configureme.util.StringUtils;
 
 /**
- * COnfigurationparser implementation for Property files.
+ * Configuration parser implementation for Property files.
  *
  * @author another
  * @version $Id: $Id
@@ -48,6 +49,11 @@ public class PropertiesParser implements ConfigurationParser {
         }
 
         return configuration;
+    }
+
+    @Override
+    public ConfigurationSourceKey.Format getFormat() {
+        return ConfigurationSourceKey.Format.PROPERTIES;
     }
 
 }

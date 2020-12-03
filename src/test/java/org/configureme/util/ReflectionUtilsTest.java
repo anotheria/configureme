@@ -1,13 +1,13 @@
 package org.configureme.util;
 
-import org.junit.Test;
+import static org.hamcrest.CoreMatchers.hasItems;
+import static org.junit.Assert.assertThat;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.hasItems;
-import static org.junit.Assert.assertThat;
+import org.junit.Test;
 
 public class ReflectionUtilsTest {
 
@@ -27,10 +27,10 @@ public class ReflectionUtilsTest {
         assertThat(fieldNames, hasItems("parentField", "childField"));
     }
 
-    private static List<String> fields2names(List<Field> fields) {
-        List<String> names = new ArrayList<>(fields.size());
+    private static List<String> fields2names(final List<Field> fields) {
+        final List<String> names = new ArrayList<>(fields.size());
 
-        for (Field field : fields) {
+        for (final Field field : fields) {
             names.add(field.getName());
         }
 
