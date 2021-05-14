@@ -19,16 +19,11 @@ public class ConfigurationSourceKey {
 		 * Configuration comes from a test fixture.
 		 */
 		FIXTURE,
-
 		/**
-		 * Configuration comes from a REST API.
+		 * Used by the configuration manager if configuration repository is configured and the rule is first repository, then file fallback.
 		 */
-		REST,
-
-		/**
-		 * Configuration comes from a repository.
-		 */
-		REPOSITORY
+		FILE_AFTER_REPOSITORY
+		;
 	}
 
 	/**
@@ -70,11 +65,7 @@ public class ConfigurationSourceKey {
 	 * The name of the source.
 	 */
 	private String name;
-	/**
-	 * Externally provided url for remote configuration repository.
-	 */
-	private String remoteConfigurationRepositoryUrl;
-	
+
 	/**
 	 * Creates a new key.
 	 */
@@ -152,22 +143,6 @@ public class ConfigurationSourceKey {
 	public void setName(String name) {
 		this.name = name;
 	}
-	/**
-	 * <p>Getter for the field {@code remoteConfigurationRepositoryUrl}.</p>
-	 *
-	 * @return a {@link java.lang.String} object.
-	 */
-	public String getRemoteConfigurationRepositoryUrl() {
-		return remoteConfigurationRepositoryUrl;
-	}
-	/**
-	 * <p>Setter for the field {@code remoteConfigurationRepositoryUrl}.</p>
-	 *
-	 * @param remoteConfigurationRepositoryUrl a {@link java.lang.String} object.
-	 */
-	public void setRemoteConfigurationRepositoryUrl(String remoteConfigurationRepositoryUrl) {
-		this.remoteConfigurationRepositoryUrl = remoteConfigurationRepositoryUrl;
-	}
 
 	@Override
 	public String toString(){
@@ -220,6 +195,19 @@ public class ConfigurationSourceKey {
 	 */
 	public static final ConfigurationSourceKey jsonFile(final String name){
 		return new ConfigurationSourceKey(Type.FILE, Format.JSON, name);
+	}
+
+	/**
+	 * Returns new ConfigurationSourceKey with changed type.
+	 * @param targetType type to use in new key.
+	 * @return
+	 */
+	public ConfigurationSourceKey toType(Type targetType){
+		ConfigurationSourceKey ret = new ConfigurationSourceKey();
+		ret.format = format;
+		ret.name = name;
+		ret.type = targetType;
+		return ret;
 	}
 
 }

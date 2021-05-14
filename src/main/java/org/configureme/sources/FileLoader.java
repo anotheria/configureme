@@ -1,20 +1,19 @@
 package org.configureme.sources;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-
 import org.configureme.util.DateUtils;
 import org.configureme.util.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+
 /**
  * A source loader for files.
  *
  * @author lrosenberg
- * @version $Id: $Id
  */
 public class FileLoader implements SourceLoader{
 	

@@ -2,21 +2,18 @@ package org.configureme.sources.configurationrepository;
 
 
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Map;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.configureme.sources.ConfigurationSourceKey;
 import org.configureme.sources.SourceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.ws.rs.client.ClientBuilder;
+import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Map;
 
 /**
  * A source loader for rest api configuration repositories
@@ -58,9 +55,6 @@ public class RestConfigurationRepositorySourceLoader implements SourceLoader {
 
     @Override
     public String getContent(final ConfigurationSourceKey key) {
-        if (key.getType() != ConfigurationSourceKey.Type.REST) {
-            throw new IllegalStateException("Can only get configuration for type: " + ConfigurationSourceKey.Type.REST);
-        }
         final Map<String, Object> result = this.getConfigurationReplyObject(key, PATH_CONFIGURATION).getResults();
         return this.mapObjectToString(result.get(key.getName()), key.getName());
     }
@@ -81,12 +75,11 @@ public class RestConfigurationRepositorySourceLoader implements SourceLoader {
 
 
     private ReplyObject getConfigurationReplyObject(final ConfigurationSourceKey key, final String additionalPath) {
-        if (key.getRemoteConfigurationRepositoryUrl() == null) {
-            throw new IllegalArgumentException("Target url unknown");
-        }
-        final Client client = getClientConfig().build();
-        final WebTarget resource = client.target(key.getRemoteConfigurationRepositoryUrl()).path(additionalPath).path(key.getName());
-        return resource.request(MediaType.APPLICATION_JSON).header("Content-type", MediaType.APPLICATION_JSON).get(ReplyObject.class);
+        
+//        final Client client = getClientConfig().build();
+  //      final WebTarget resource = client.target(key.getRemoteConfigurationRepositoryUrl()).path(additionalPath).path(key.getName());
+    //    return resource.request(MediaType.APPLICATION_JSON).header("Content-type", MediaType.APPLICATION_JSON).get(ReplyObject.class);
+	return null;
     }
 
     private ClientBuilder getClientConfig() {

@@ -64,9 +64,9 @@ public class RestConfigurationRepositorySourceLoaderTest {
     public static ConfigurationSourceKey getTestKey() {
         ConfigurationSourceKey key = new ConfigurationSourceKey();
         key.setName("Test");
-        key.setType(ConfigurationSourceKey.Type.REST);
+        //key.setType(ConfigurationSourceKey.Type.REST);
         key.setFormat(ConfigurationSourceKey.Format.JSON);
-        key.setRemoteConfigurationRepositoryUrl("http://localhost:10080");
+        //key.setRemoteConfigurationRepositoryUrl("http://localhost:10080");
         return key;
     }
 
