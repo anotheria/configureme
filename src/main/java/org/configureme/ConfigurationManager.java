@@ -149,6 +149,7 @@ public enum ConfigurationManager {
      * Property name for the system property which ConfigurationManager checks to set its remote configuration repository url with at startup.
      */
     public static final String PROP_NAME_REPOSITORY_URL = "configureme.repositoryUrl";
+    public static final String PROP_NAME_DEFAULT_PROFILE = "configureme.defaultProfile";
 
     /**
 	 * Logger.

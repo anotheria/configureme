@@ -29,6 +29,9 @@ public class ReplyObject {
     @XmlElement
     private String message;
 
+    @XmlElement
+    private String errorCode;
+
     /**
      * Map with results object.
      */
