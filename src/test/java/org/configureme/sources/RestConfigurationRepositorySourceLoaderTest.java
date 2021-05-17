@@ -3,7 +3,7 @@ package org.configureme.sources;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import org.configureme.sources.configurationrepository.RestConfigurationRepositorySourceLoader;
+import org.configureme.sources.configurationrepository.ConfigurationRepositorySourceLoader;
 import org.configureme.sources.configurationrepository.ReplyObject;
 import org.eclipse.jetty.util.log.Slf4jLog;
 import org.junit.Before;
@@ -23,7 +23,7 @@ public class RestConfigurationRepositorySourceLoaderTest {
     private static final Logger log = LoggerFactory.getLogger(Slf4jLog.class);
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(10088);
-    private RestConfigurationRepositorySourceLoader loader = new RestConfigurationRepositorySourceLoader();
+    private ConfigurationRepositorySourceLoader loader = new ConfigurationRepositorySourceLoader();
 
     @Before
     public void init() {

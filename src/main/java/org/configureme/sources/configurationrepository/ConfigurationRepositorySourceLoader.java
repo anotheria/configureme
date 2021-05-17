@@ -1,7 +1,6 @@
 package org.configureme.sources.configurationrepository;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.configureme.ConfigurationManager;
 import org.configureme.sources.ConfigurationSourceKey;
 import org.configureme.sources.SourceLoader;
@@ -12,7 +11,6 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -24,11 +22,11 @@ import java.util.Map;
  * @author andriiskrypnyk
  * @version $Id: $Id
  */
-public class RestConfigurationRepositorySourceLoader implements SourceLoader {
+public class ConfigurationRepositorySourceLoader implements SourceLoader {
     /**
      * Logger.
      */
-    private static final Logger log = LoggerFactory.getLogger(RestConfigurationRepositorySourceLoader.class);
+    private static final Logger log = LoggerFactory.getLogger(ConfigurationRepositorySourceLoader.class);
     /**
      * Configuration path.
      */
@@ -42,7 +40,7 @@ public class RestConfigurationRepositorySourceLoader implements SourceLoader {
     private String repositoryUrl;
     private String profile = "";
 
-	public RestConfigurationRepositorySourceLoader(){
+	public ConfigurationRepositorySourceLoader(){
 		repositoryUrl = System.getProperty(ConfigurationManager.PROP_NAME_REPOSITORY_URL);
 		profile       = System.getProperty(ConfigurationManager.PROP_NAME_DEFAULT_PROFILE);
 
@@ -68,7 +66,6 @@ public class RestConfigurationRepositorySourceLoader implements SourceLoader {
             throw new IllegalArgumentException("getLastChangeTimestamp(): ConfigurationSourceKey is null");
         }
         final ReplyObject replyObject = this.getConfigurationReplyObject(key, PATH_LAST_CHANGE_TIMESTAMP);
-        System.out.println("Refresh got result object "+replyObject);
         final Map<String, Object> result = replyObject.getResults();
         return (long) result.get(getArtefactNameInRepository(key));
     }
@@ -76,38 +73,16 @@ public class RestConfigurationRepositorySourceLoader implements SourceLoader {
     @Override
     public String getContent(final ConfigurationSourceKey key) {
 		ReplyObject replyObject = getConfigurationReplyObject(key, PATH_FILE);
-		System.out.println("ReplyObject: "+replyObject);
 		String content = (String)replyObject.getResults().get(getArtefactNameInRepository(key));
-		System.out.println(content);
 		if (replyObject.isSuccess()==false)
 			return null;
 		return content;
-        //final Map<String, Object> result = replyObject.getResults();
-        //System.out.println("Map: "+result);
-
-        //return this.mapObjectToString(result.get(key.getName()), key.getName());
     }
-
-    private String mapObjectToString(final Object toMap, final String configName) {
-        if (toMap == null) {
-            throw new IllegalStateException("No configuration with name: " + configName);
-        }
-        final ObjectMapper mapper = new ObjectMapper();
-        String resultString = null;
-        try {
-            resultString = mapper.writeValueAsString(toMap);
-        } catch (final IOException e) {
-            log.error("Json parsing exception: ", e);
-        }
-        return resultString;
-    }
-
-
+    
     private ReplyObject getConfigurationReplyObject(final ConfigurationSourceKey key, final String additionalPath) {
         
     	final Client client = getClientConfig().build();
 	    final WebTarget resource = client.target(repositoryUrl).path(additionalPath).path(profile).path(getArtefactNameInRepository(key));
-	    System.out.println(resource.getUri());
 	    return resource.request(MediaType.APPLICATION_JSON).header("Content-type", MediaType.APPLICATION_JSON).get(ReplyObject.class);
 
     }

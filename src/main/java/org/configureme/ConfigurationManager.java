@@ -385,11 +385,8 @@ public enum ConfigurationManager {
 	private void callAnnotations(final Object configurable, final Method[] methods, final Class<? extends Annotation>[] annotationClasses) {
 		//check for annotations to call and call 'before' annotations
 		for (final Method m : methods) {
-			//System.out.println("Checking methid "+m);
 			for (final Class<? extends Annotation> anAnnotationClass : annotationClasses) {
-				//System.out.println("\tChecking annotation "+anAnnotationClass);
 				final Annotation anAnnotation = m.getAnnotation(anAnnotationClass);
-				//System.out.println("\t\t-->"+anAnnotation);
 				if (anAnnotation == null)
 					continue;
 
@@ -641,7 +638,6 @@ public enum ConfigurationManager {
 				log.error("getConfiguration(" + configurationName + ", " + in + ')', e);
 				throw new IllegalArgumentException(configSourceKey + " is not parseable: " + e.getMessage(), e);
 			}
-			//System.out.println("Parsed "+pa);
 			final List<? extends ParsedAttribute<?>> attributes = pa.getAttributes();
 			final Artefact art = ConfigurationRepository.INSTANCE.createArtefact(configurationName);
 			// set external includes
