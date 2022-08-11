@@ -815,8 +815,13 @@ public enum ConfigurationManager {
 		if (valueClass.equals(String.class))
 			return new JSONObject((Map<?, ?>) attributeValue.getRaw()).toString();
 
+		boolean configureAllFieldsNested = configureAllFields;
+		if (valueClass.isAnnotationPresent(ConfigureMe.class)){
+			configureAllFieldsNested = valueClass.getAnnotation(ConfigureMe.class).allfields();
+		}
+
 		final Object resolvedValue = valueClass.newInstance();
-		configure(attributeValue.get(), resolvedValue, callBefore, callAfter, configureAllFields, defaultEnvironment);
+		configure(attributeValue.get(), resolvedValue, callBefore, callAfter, configureAllFieldsNested, defaultEnvironment);
 		return resolvedValue;
 	}
 
