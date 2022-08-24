@@ -1,0 +1,115 @@
+name: 'Java CI on commit'
+
+on:
+   push:
+    branches: [ master ]
+   pull_request:
+    branches: [ master ]
+
+jobs:
+  checkstyle:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+    - uses: actions/cache@v1
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
+          
+  
+    - name: CheckStyle
+      run: mvn -B verify checkstyle:checkstyle
+    - uses: jwgmeligmeyling/checkstyle-github-action@master
+      with:
+        path: '**/checkstyle-result.xml'
+  pmd:
+   runs-on: ubuntu-latest
+   steps:
+    - uses: actions/checkout@v2
+    
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+    - uses: actions/cache@v1
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
+          
+    - name: PMD 
+      run: mvn -B verify pmd:pmd
+    - uses: jwgmeligmeyling/pmd-github-action@master
+      with:
+        path: '**/pmd.xml'
+  spotbug: 
+   runs-on: ubuntu-latest
+   steps:
+    - uses: actions/checkout@v2
+    
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+        
+    - uses: actions/cache@v1
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
+          
+    - name: SpotBugs
+      run: mvn -B verify spotbugs:spotbugs
+    - uses: jwgmeligmeyling/spotbugs-github-action@master
+      with:
+        path: '**/spotbugsXml.xml'
+  cobertura: 
+   runs-on: ubuntu-latest
+   steps:
+    - uses: actions/checkout@v2
+    
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+        
+    - uses: actions/cache@v1
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
+          
+    - name: Cobertura
+      run: mvn -B verify cobertura:cobertura
+    - name: Copy Coverage To Predictable Location
+      run: cp target/site/cobertura/coverage.xml coverage.cobertura.xml
+    - name: Code Coverage Summary Report
+      uses: irongut/CodeCoverageSummary@v1.2.0
+      with:
+        filename: coverage.cobertura.xml
+        badge: true
+        fail_below_min: true
+        format: markdown
+        hide_branch_rate: false
+        hide_complexity: true
+        indicators: true
+        output: both
+        thresholds: '60 80'
+
+    - name: Add Coverage PR Comment
+      uses: marocchino/sticky-pull-request-comment@v2
+      if: github.event_name == 'pull_request'
+      with:
+        recreate: true
+        path: code-coverage-results.md
+    
