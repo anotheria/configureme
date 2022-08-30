@@ -204,4 +204,9 @@ public final class IOUtils {
 			closeIgnoringException(buffer);
 		}
 	}
+
+	//test-commit for CI.
+	public void doNothing(String notUsedParameter){
+
+	}
 }
