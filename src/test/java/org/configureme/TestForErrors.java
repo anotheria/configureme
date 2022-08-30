@@ -68,7 +68,9 @@ public class TestForErrors {
 
 	@Test public void configureWithUnsupportedAttributeType(){
 		ObjectWithUnsupportedAttribute a = new ObjectWithUnsupportedAttribute();
-		ConfigurationManager.INSTANCE.configure(a);
+		try {
+			ConfigurationManager.INSTANCE.configure(a);
+		}catch(IllegalArgumentException ee){}
 
 		assertTrue("setInt should have been called", a.isSetIntCalled());
 		assertFalse("setObject shouldn't have been called", a.isSetDateCalled());

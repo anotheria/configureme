@@ -569,7 +569,7 @@ public enum ConfigurationManager {
 						try {
 							method.invoke(o, entry.getKey(), resolveValue(method.getParameterTypes()[1], entry.getValue(), callBefore, callAfter, configureAllFields, environment));
 						} catch (final Exception e) {
-							log.warn(method.getName() + "invoke(" + o + ", " + entry.getKey() + ", " + entry.getValue() + ')', e);
+							log.warn(method.getName() + ".invoke(" + o + ", " + entry.getKey() + ", " + entry.getValue() + ')', e);
 						}
 					}
 				}
@@ -581,10 +581,21 @@ public enum ConfigurationManager {
 				final Value attributeValue = config.getAttribute(attributeName);
 				if (attributeValue != null) {
 					log.debug("setting " + method.getName() + " to " + attributeValue + " configured by " + attributeName);
+					Object value = null;
 					try {
-						method.invoke(o, resolveValue(method.getParameterTypes()[0], attributeValue, callBefore, callAfter, configureAllFields, environment));
+						value = resolveValue(method.getParameterTypes()[0], attributeValue, callBefore, callAfter, configureAllFields, environment);
+					}catch(final Exception e){
+						log.warn("Can't resolve value '"+attributeName+
+								(method.getParameterTypes().length == 0 ? "'" :"' as '"+method.getParameterTypes()[0])
+								+"' value: '"+attributeValue+"'", e);
+					}
+
+					try {
+						if (value!=null) {
+							method.invoke(o, value);
+						}
 					} catch (final Exception e) {
-						log.warn(method.getName() + "invoke(" + o + ", " + attributeValue + ')', e);
+						log.warn(method.getName() + ".invoke(" + o + ", " + attributeValue + ')', e);
 					}
 				}
 
