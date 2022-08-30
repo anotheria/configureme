@@ -17,7 +17,7 @@ public class SystemPropertiesTest {
 		System.setProperty("TEST_PROPERTY", "HELLO");
 		SystemPropertiesConfigurable spc = new SystemPropertiesConfigurable();
 		ConfigurationManager.INSTANCE.configure(spc);
-		assertEquals("HELLO",spc.getValue());
+		assertEquals("HELLO-BROKEN-TEST",spc.getValue());
 	}
 	
 	@Before public void ensureReload(){
