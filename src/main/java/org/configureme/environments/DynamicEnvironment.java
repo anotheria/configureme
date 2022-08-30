@@ -31,7 +31,7 @@ public class DynamicEnvironment implements Environment, Cloneable{
 	}
 	
 	/**
-	 * Creates a new DynamicEnvironment with at least one element. Favor this constructor for modifyable DynamicEnvironment.
+	 * Creates a new DynamicEnvironment with at least one element. Favor this constructor for modifiable DynamicEnvironment.
 	 *
 	 * @param start a {@link java.lang.String} object.
 	 * @param additional a {@link java.lang.String} object.

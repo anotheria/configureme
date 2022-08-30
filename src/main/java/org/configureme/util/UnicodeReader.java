@@ -16,14 +16,20 @@ import java.nio.charset.Charset;
  */
 @SuppressWarnings("PMD.UselessParentheses")
 public class UnicodeReader extends Reader {
+	/**
+	 * Byte order mark size.
+	 */
 	private static final int BOM_SIZE = 4;
 
 	private final PushbackInputStream internalIn;
 	private InputStreamReader internalIn2 = null;
+	/**
+	 * Charset of this instance.
+	 */
 	private final Charset charset;
 
 	/**
-	 * <p>Constructor for UnicodeReader.</p>
+	 * Constructor for UnicodeReader.
 	 *
 	 * @param in a {@link java.io.InputStream} object.
 	 */
@@ -42,7 +48,7 @@ public class UnicodeReader extends Reader {
 	}
 
 	/**
-	 * <p>Constructor for UnicodeReader.</p>
+	 * Constructor for UnicodeReader.
 	 *
 	 * @param aIn a {@link java.io.InputStream} object.
 	 * @param aCharset a {@link java.nio.charset.Charset} object.
