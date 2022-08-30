@@ -55,7 +55,7 @@ public final class IOUtils {
 	/**
 	 * Reads the contents of the file input stream. (Why not an InputStream btw?).
 	 * 
-	 * @param fIn
+	 * @param fIn FileStream.
 	 * @return
 	 * @throws IOException
 	 */
@@ -203,10 +203,5 @@ public final class IOUtils {
 		} finally {
 			closeIgnoringException(buffer);
 		}
-	}
-
-	//test-commit for CI.
-	public void doNothing(String notUsedParameter){
-
 	}
 }
