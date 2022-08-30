@@ -14,6 +14,7 @@ import java.nio.charset.Charset;
  * @author another
  * @version $Id: $Id
  */
+@SuppressWarnings("PMD.UselessParentheses")
 public class UnicodeReader extends Reader {
 	private static final int BOM_SIZE = 4;
 
@@ -67,6 +68,7 @@ public class UnicodeReader extends Reader {
 	 *
 	 * @throws java.io.IOException if any.
 	 */
+
 	protected void init() throws IOException {
 		if (internalIn2 != null)
 			return;
