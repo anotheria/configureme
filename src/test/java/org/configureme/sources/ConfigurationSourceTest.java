@@ -16,8 +16,5 @@ public class ConfigurationSourceTest {
 		});
 		
 		source.fireUpdateEvent(System.currentTimeMillis());
-		
 	}
-	
-	
 }

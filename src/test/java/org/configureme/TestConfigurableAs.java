@@ -10,9 +10,14 @@ import org.configureme.annotations.Configure;
 import org.configureme.annotations.ConfigureMe;
 import org.configureme.annotations.SetAll;
 import org.configureme.sources.ConfigurationSourceKey;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @ConfigureMe(name="notusedname", type=ConfigurationSourceKey.Type.FIXTURE, watch=false)
 public class TestConfigurableAs {
+
+	private static Logger log = LoggerFactory.getLogger(TestConfigurableAs.class);
+
 	@Configure private short shortValue;
 	@Configure private long longValue;
 	@Configure private int intValue;
@@ -135,7 +140,7 @@ public class TestConfigurableAs {
 	@AfterReConfiguration public void afterRe(){ afterReConfigCalled = true; }
 
 	@SetAll public void debugOutConfig(String name, String property){
-		System.out.println("Config property "+name+" = "+property);
+		log.debug("Config property "+name+" = "+property);
 	}
 
 

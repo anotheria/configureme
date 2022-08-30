@@ -12,6 +12,8 @@ import org.configureme.annotations.Configure;
 import org.configureme.annotations.ConfigureMe;
 import org.configureme.annotations.SetAll;
 import org.configureme.sources.ConfigurationSourceKey;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @ConfigureMe(name="fixture", type=ConfigurationSourceKey.Type.FIXTURE, watch=false)
 public class TestConfigurable {
@@ -30,6 +32,8 @@ public class TestConfigurable {
 	@Configure private int[] intArray;
 	@Configure private boolean[] booleanArray;
 	@Configure private int[] emptyIntArray;
+
+	private static Logger log = LoggerFactory.getLogger(TestConfigurable.class);
 
 	private boolean beforeConfigCalled, afterConfigCalled, beforeInitialConfigCalled, afterInitialConfigCalled, beforeReConfigCalled, afterReConfigCalled;
 
@@ -174,6 +178,7 @@ public class TestConfigurable {
 	@AfterReConfiguration public void afterRe(){ afterReConfigCalled = true; }
 
 	@SetAll public void debugOutConfig(String name, String property){
-		System.out.println("Config property "+name+" = "+property);
+		log.debug("Config property "+name+" = "+property);
+		//System.out.println("Config property "+name+" = "+property);
 	}
 }

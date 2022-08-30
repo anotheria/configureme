@@ -46,8 +46,8 @@ public class AutoConfigTest {
 
 		assertEquals(100, configurable.getShortValue());
 		assertEquals(1234567890123L, configurable.getLongValue());
-		System.out.println("C VALUE: "+configurable.getIntValue());
-		System.out.println("FIXTURE: "+FixtureLoader.getContent());
+		//System.out.println("C VALUE: "+configurable.getIntValue());
+		//System.out.println("FIXTURE: "+FixtureLoader.getContent());
 		assertEquals(1000, configurable.getIntValue());
 		assertEquals(true, configurable.getBooleanValue());
 		assertEquals("foo", configurable.getStringValue());
