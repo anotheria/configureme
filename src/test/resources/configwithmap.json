@@ -1,0 +1,21 @@
+{
+  "@children": [
+    {
+      "pubAttribute":  1,
+      "@data": {
+        "a": "b",
+        "c": "d"
+      }
+    },
+
+    {
+      "pubAttribute":  2,
+      "@data": {
+        "fooooo": "bar"
+      }
+    }
+
+
+  ]
+
+}
