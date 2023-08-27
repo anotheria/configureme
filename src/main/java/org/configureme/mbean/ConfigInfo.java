@@ -1,5 +1,6 @@
 package org.configureme.mbean;
 
+import com.google.gson.Gson;
 import org.configureme.Configuration;
 import org.configureme.ConfigurationManager;
 import org.configureme.Environment;
@@ -82,7 +83,7 @@ public class ConfigInfo implements ConfigInfoMBean {
 		final Artefact artefact = ConfigurationRepository.INSTANCE.getArtefact(configName);
 		if (artefact == null)
 			throw new IllegalArgumentException("No such artefact: " + configName);
-		final List<? extends ParsedAttribute<?>> attList = JsonParser.parse(attrName, attrValue, dynamicEnvironment);
+		final List<? extends ParsedAttribute<?>> attList = JsonParser.parse(attrName, new Gson().toJsonTree(attrValue), dynamicEnvironment);
 		if (attList == null || attList.isEmpty())
 			throw new JSONException("Nothing to parse. Please fill out attribute name and value.");
 		final ParsedAttribute<?> parsedAttribute = attList.get(0);

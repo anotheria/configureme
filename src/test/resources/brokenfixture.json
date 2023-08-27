@@ -20,7 +20,7 @@
 		b: {
 			intValue : 3000,
 			stringValue: "bbbbb",
-			onlyInB: 1000,
-		},
-	},
+			onlyInB: 1000
+		}
+	}
 }

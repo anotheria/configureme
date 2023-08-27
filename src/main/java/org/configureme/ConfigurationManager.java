@@ -1,5 +1,7 @@
 package org.configureme;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.configureme.annotations.AfterConfiguration;
 import org.configureme.annotations.AfterInitialConfiguration;
@@ -37,8 +39,6 @@ import org.configureme.sources.ConfigurationSourceKey.Type;
 import org.configureme.sources.ConfigurationSourceRegistry;
 import org.configureme.util.ReflectionUtils;
 import org.configureme.util.StringUtils;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -556,7 +556,8 @@ public enum ConfigurationManager {
 					try {
 						method.invoke(o, entry.getKey(), resolveValue(method.getParameterTypes()[1], entry.getValue(), callBefore, callAfter, configureAllFields, environment));
 					} catch (final Exception e) {
-						log.warn(method.getName() + "invoke(" + o + ", " + entry.getKey() + ", " + entry.getValue() + ')', e);
+						log.warn(method.getName()
+								+ "invoke(" + o + ", " + entry.getKey() + ", " + entry.getValue() + ')', e);
 					}
 				}
 			}
@@ -674,7 +675,7 @@ public enum ConfigurationManager {
 				log.error("getConfiguration(" + configurationName + ", " + in + ')', e);
 				throw new IllegalArgumentException(configSourceKey + " is not parseable: " + e.getMessage(), e);
 			}
-			//System.out.println("Parsed "+pa);
+			System.out.println("Parsed "+pa);
 			final List<? extends ParsedAttribute<?>> attributes = pa.getAttributes();
 			final Artefact art = ConfigurationRepository.INSTANCE.createArtefact(configurationName);
 			// set external includes
@@ -799,10 +800,13 @@ public enum ConfigurationManager {
 	 * @return an array instance of the specified value class which is configured according to the specified array attribute value.
 	 */
 	private Object resolveArrayValue(final Class<?> valueClass, final ArrayValue attributeValue, final Class<? extends Annotation>[] callBefore, final Class<? extends Annotation>[] callAfter, final boolean configureAllFields, final Environment environment) throws InstantiationException, IllegalAccessException {
+
+		Gson gson = new Gson();
+
 		if (valueClass.equals(Object.class))
 			return attributeValue.getRaw();
 		if (valueClass.equals(String.class))
-			return new JSONArray((Collection<?>) attributeValue.getRaw()).toString();
+			return (gson.toJsonTree(attributeValue.getRaw()).getAsJsonArray());
 
 		final Object resolvedValue = Array.newInstance(valueClass.getComponentType(), attributeValue.get().size());
 		for (int i = 0; i < attributeValue.get().size(); ++i)
@@ -821,10 +825,14 @@ public enum ConfigurationManager {
 	 * @return an instance of the specified value class which is configured according to the specified composite attribute value.
 	 */
 	private Object resolveCompositeValue(final Class<?> valueClass, final CompositeValue attributeValue, final Class<? extends Annotation>[] callBefore, final Class<? extends Annotation>[] callAfter, final boolean configureAllFields) throws InstantiationException, IllegalAccessException {
+		Gson gson = new Gson();
+
 		if (valueClass.equals(Object.class))
 			return attributeValue.getRaw();
-		if (valueClass.equals(String.class))
-			return new JSONObject((Map<?, ?>) attributeValue.getRaw()).toString();
+		if (valueClass.equals(String.class)) {
+			String jsonString = gson.toJson(attributeValue.getRaw());
+			return gson.fromJson(jsonString, JsonObject.class);
+		}
 
 		boolean configureAllFieldsNested = configureAllFields;
 		if (valueClass.isAnnotationPresent(ConfigureMe.class)){

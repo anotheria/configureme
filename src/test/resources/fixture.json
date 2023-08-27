@@ -1,52 +1,52 @@
 /** This is a camment! */
 {
-	shortValue : 100,
-	longValue  : 1234567890123,
-	intValue   : 1000,
-	booleanValue : true,
-	stringValue  : "foo",
-	byteValue    : -125,
-	floatValue   : 12.5,
-	doubleValue  : 1234.11,
+	"shortValue" : 100,
+	"longValue"  : 1234567890123,
+	"intValue"   : 1000,
+	"booleanValue" : true,
+	"stringValue"  : "foo",
+	"byteValue"    : -125,
+	"floatValue"   : 12.5,
+	"doubleValue"  : 1234.11,
 
-	stringArray	: ["sa1.1 " , "sa2.1,sa2.2" , "sa3"],
-	floatArray	: [2.3, 3],
-	intArray	: [2, 3, 5],
-	booleanArray	: [true, false, true],
-	emptyIntArray	: [],
+	"stringArray"	: ["sa1.1 " , "sa2.1,sa2.2" , "sa3"],
+	"floatArray"	: [2.3, 3],
+	"intArray"	: [2, 3, 5],
+	"booleanArray"	: [true, false, true],
+	"emptyIntArray"	: [],
 
-	enumValue: "B",
+	"enumValue": "B",
 
-	a: {
-		intValue : 2000,
-		stringValue : "aaaaa",
-		onlyInA: 1000,
+	"a": {
+		"intValue" : 2000,
+		"stringValue" : "aaaaa",
+		"onlyInA": 1000,
 
-		b: {
-			intValue : 3000,
-			stringValue: "bbbbb",
-			onlyInB: 1000,
+		"b": {
+			"intValue" : 3000,
+			"stringValue": "bbbbb",
+			"onlyInB": 1000,
             "@innerValue" : {
-                stringValue: "foo",
-                booleanValue: true,
+                "stringValue": "foo",
+                "booleanValue": true
             },
             "@innerValueArray" : [
 	            {
-	                stringValue: "foo",
-	                booleanValue: true,
+	                "stringValue": "foo",
+	                "booleanValue": true
 	            },
 	            {
-	                stringValue: "bar",
-	                booleanValue: false,
+	                "stringValue": "bar",
+	                "booleanValue": false
 	            },
 	            {
-	                stringValue: "foobar",
-	                booleanValue: true,
+	                "stringValue": "foobar",
+	                "booleanValue": true
 	            }
             ]
-		},
+		}
 	},
 
 	// Lets test whether we can remove c++ comments properly
-	url: "http://www.google.com",
+	"url": "http://www.google.com"
 }
