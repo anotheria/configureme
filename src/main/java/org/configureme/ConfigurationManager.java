@@ -676,7 +676,7 @@ public enum ConfigurationManager {
 				log.error("getConfiguration(" + configurationName + ", " + in + ')', e);
 				throw new IllegalArgumentException(configSourceKey + " is not parseable: " + e.getMessage(), e);
 			}
-			System.out.println("Parsed "+pa);
+			//System.out.println("Parsed "+pa);
 			final List<? extends ParsedAttribute<?>> attributes = pa.getAttributes();
 			final Artefact art = ConfigurationRepository.INSTANCE.createArtefact(configurationName);
 			// set external includes
