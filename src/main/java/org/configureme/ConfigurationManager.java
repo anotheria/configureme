@@ -1,7 +1,8 @@
 package org.configureme;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonPrimitive;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.configureme.annotations.AfterConfiguration;
 import org.configureme.annotations.AfterInitialConfiguration;
@@ -76,7 +77,7 @@ public enum ConfigurationManager {
 	 * Set of classes specifying plain attribute types.
 	 * Allows quickly check whether an attribute is plain or not.
 	 */
-	private static final Collection<Class<?>> PLAIN_TYPES = new HashSet<Class<?>>(
+	private static final Collection<Class<?>> PLAIN_TYPES = new HashSet<>(
 			Arrays.asList(
 					String.class,
 					Boolean.class, boolean.class,
@@ -761,34 +762,39 @@ public enum ConfigurationManager {
 	}
 
 	private static Object resolvePlainValue(final Class<?> type, final PlainValue value) {
-		if (type == null)
-			throw new IllegalArgumentException("Checkstyle forced me to do this, apparently type is null which can't happen in resolveValue(null, " + value + ')');
-		if (type.equals(String.class) || type.equals(Object.class))
-			return value.get();
-		if (type.equals(Boolean.class) || type.equals(boolean.class))
-			return Boolean.valueOf(value.get());
-		if (type.equals(Short.class) || type.equals(short.class))
-			return Short.valueOf(value.get());
-		if (type.equals(Integer.class) || type.equals(int.class))
-			return Integer.valueOf(value.get());
-		if (type.equals(Long.class) || type.equals(long.class))
-			return Long.valueOf(value.get());
-		if (type.equals(Byte.class) || type.equals(byte.class))
-			return Byte.valueOf(value.get());
-		if (type.equals(Float.class) || type.equals(float.class))
-			return Float.valueOf(value.get());
-		if (type.equals(Double.class) || type.equals(double.class))
-			return Double.valueOf(value.get());
+		final Gson gson = new Gson();
 
-		if (Enum.class.isAssignableFrom(type))
+		if (type == null){
+			throw new IllegalArgumentException("Checkstyle forced me to do this, apparently type is null which can't happen in resolveValue(null, " + value + ')');
+		}
+		if (type.equals(String.class) || type.equals(Object.class)) {
+			return gson.fromJson(new JsonPrimitive(value.get()), type);
+		} else if (type.equals(Boolean.class) || type.equals(boolean.class)) {
+			return Boolean.valueOf(value.get());
+		} else if (type.equals(Short.class) || type.equals(short.class)) {
+			return Short.valueOf(value.get());
+		} else if (type.equals(Integer.class) || type.equals(int.class)) {
+			return Integer.valueOf(value.get());
+		} else if (type.equals(Long.class) || type.equals(long.class)) {
+			return Long.valueOf(value.get());
+		} else if (type.equals(Byte.class) || type.equals(byte.class)) {
+			return Byte.valueOf(value.get());
+		} else if (type.equals(Float.class) || type.equals(float.class)) {
+			return Float.valueOf(value.get());
+		} else if (type.equals(Double.class) || type.equals(double.class)) {
+			return Double.valueOf(value.get());
+		} else if (Enum.class.isAssignableFrom(type)) {
 			try {
 				return type.cast(type.getMethod("valueOf", String.class).invoke(null, value.get()));
-			} catch (final SecurityException | IllegalArgumentException | ClassCastException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+			} catch (final Exception e) {
 				throw new IllegalArgumentException("Can not resolve '" + value + "' to " + type.getCanonicalName(), e);
 			}
+		}
 
-        throw new IllegalArgumentException("Can not resolve '" + value + "' to " + type.getCanonicalName());
+		throw new IllegalArgumentException("Can not resolve '" + value + "' to " + type.getCanonicalName());
 	}
+
+
 
 	/**
 	 * Resolves array attribute value to an instance of specified array value class.
@@ -800,13 +806,15 @@ public enum ConfigurationManager {
 	 * @return an array instance of the specified value class which is configured according to the specified array attribute value.
 	 */
 	private Object resolveArrayValue(final Class<?> valueClass, final ArrayValue attributeValue, final Class<? extends Annotation>[] callBefore, final Class<? extends Annotation>[] callAfter, final boolean configureAllFields, final Environment environment) throws InstantiationException, IllegalAccessException {
-
-		Gson gson = new Gson();
+		final Gson gson = new Gson();
 
 		if (valueClass.equals(Object.class))
 			return attributeValue.getRaw();
+
+		JsonArray jsonArray = gson.toJsonTree(attributeValue.get()).getAsJsonArray();
+
 		if (valueClass.equals(String.class))
-			return (gson.toJsonTree(attributeValue.getRaw()).getAsJsonArray());
+			return jsonArray.toString();
 
 		final Object resolvedValue = Array.newInstance(valueClass.getComponentType(), attributeValue.get().size());
 		for (int i = 0; i < attributeValue.get().size(); ++i)
@@ -825,14 +833,12 @@ public enum ConfigurationManager {
 	 * @return an instance of the specified value class which is configured according to the specified composite attribute value.
 	 */
 	private Object resolveCompositeValue(final Class<?> valueClass, final CompositeValue attributeValue, final Class<? extends Annotation>[] callBefore, final Class<? extends Annotation>[] callAfter, final boolean configureAllFields) throws InstantiationException, IllegalAccessException {
-		Gson gson = new Gson();
+		final Gson gson = new Gson();
 
 		if (valueClass.equals(Object.class))
 			return attributeValue.getRaw();
-		if (valueClass.equals(String.class)) {
-			String jsonString = gson.toJson(attributeValue.getRaw());
-			return gson.fromJson(jsonString, JsonObject.class);
-		}
+		if (valueClass.equals(String.class))
+			return gson.toJson(attributeValue.getRaw());
 
 		boolean configureAllFieldsNested = configureAllFields;
 		if (valueClass.isAnnotationPresent(ConfigureMe.class)){

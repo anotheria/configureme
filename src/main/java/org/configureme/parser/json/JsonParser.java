@@ -23,7 +23,6 @@ import org.configureme.parser.PlainParsedAttribute;
 import org.configureme.sources.ConfigurationSourceKey;
 import org.configureme.sources.ConfigurationSourceRegistry;
 import org.configureme.util.StringUtils;
-import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,7 +84,8 @@ public class JsonParser implements ConfigurationParser {
         }
 
         try {
-            final JsonObject j = new Gson().fromJson(filteredContent, JsonObject.class);
+            final Gson gson = new Gson();
+            final JsonObject j = gson.fromJson(filteredContent, JsonObject.class);
             final ParsedConfiguration pa = new ParsedConfiguration(name);
 
             final DynamicEnvironment env = new DynamicEnvironment();
@@ -104,7 +104,7 @@ public class JsonParser implements ConfigurationParser {
             includes.put(name, include);
             return pa;
 
-        } catch (final JSONException e) {
+        } catch (final JsonParseException e) {
             throw new ConfigurationParserException("JSON Error", e);
         }
     }
@@ -172,7 +172,7 @@ public class JsonParser implements ConfigurationParser {
      * @return a {@link java.util.List} object.
      * @throws org.json.JSONException if any.
      */
-    public static List<? extends ParsedAttribute<?>> parse(final String key, final JsonElement value, final DynamicEnvironment environment) throws JSONException {
+    public static List<? extends ParsedAttribute<?>> parse(final String key, final JsonElement value, final DynamicEnvironment environment) throws JsonParseException {
         // an object value means a change in environment, let's see what it is
         if (value instanceof JsonObject && key.startsWith(COMPOSITE_ATTR_PREFIX)) {
             return Collections.singletonList(parseComposite(key, (JsonObject) value, environment));
@@ -180,23 +180,23 @@ public class JsonParser implements ConfigurationParser {
         if (value instanceof JsonArray && key.startsWith(COMPOSITE_ATTR_PREFIX)) {
             return Collections.singletonList(parseArray(key, (JsonArray) value, environment));
         }
-        if (value.isJsonPrimitive() && (value.getAsString()).startsWith(INCLUDE_ATTR_PREFIX)) {
+        if (value instanceof JsonPrimitive && (value.getAsString()).startsWith(INCLUDE_ATTR_PREFIX)) {
             return Collections.singletonList(parseInclude(key, value.getAsString(), environment));
         }
-        if (value.isJsonObject()) {
+        if (value instanceof JsonObject) {
             return parseObject(key, (JsonObject) value, environment);
         }
-        if (value.isJsonArray()) {
+        if (value instanceof JsonArray) {
             return Collections.singletonList(parseArray(key, (JsonArray) value, environment));
         }
-        return Collections.singletonList(new PlainParsedAttribute(key, (Environment) environment.clone(), JsonNull.INSTANCE.equals(value) ? null : value.toString()));
+        return Collections.singletonList(new PlainParsedAttribute(key, (Environment) environment.clone(), JsonNull.INSTANCE.equals(value) ? null : value.getAsString()));
     }
 
-    private static IncludeParsedAttribute parseInclude(final String key, final String value, final DynamicEnvironment environment) throws JSONException {
+    private static IncludeParsedAttribute parseInclude(final String key, final String value, final DynamicEnvironment environment) throws JsonParseException {
         return new IncludeParsedAttribute(key, (Environment) environment.clone(), value);
     }
 
-    private static List<ParsedAttribute<?>> parseObject(final String key, final JsonObject value, final DynamicEnvironment environment) throws JSONException {
+    private static List<ParsedAttribute<?>> parseObject(final String key, final JsonObject value, final DynamicEnvironment environment) throws JsonParseException {
         final List<ParsedAttribute<?>> parsed = new ArrayList<>();
 
         environment.extendThis(key);
@@ -212,7 +212,7 @@ public class JsonParser implements ConfigurationParser {
         return parsed;
     }
 
-    private static CompositeParsedAttribute parseComposite(final String key, final JsonObject value, final DynamicEnvironment environment) throws JSONException {
+    private static CompositeParsedAttribute parseComposite(final String key, final JsonObject value, final DynamicEnvironment environment) throws JsonParseException {
         final String[] names = value.keySet().toArray(new String[value.size()]);
         if (names.length == 0)
             return new CompositeParsedAttribute(stripKey(key), (Environment) environment.clone(), Collections.<ParsedAttribute<?>>emptyList());
@@ -224,7 +224,7 @@ public class JsonParser implements ConfigurationParser {
         return new CompositeParsedAttribute(stripKey(key), (Environment) environment.clone(), leafAttr);
     }
 
-    private static ArrayParsedAttribute parseArray(final String key, final JsonArray value, final DynamicEnvironment environment) throws JSONException {
+    private static ArrayParsedAttribute parseArray(final String key, final JsonArray value, final DynamicEnvironment environment) throws JsonParseException {
         final List<ParsedAttribute<?>> parsed = new ArrayList<>(value.size());
         for (int index = 0; index < value.size(); index++) {
             parsed.addAll(parse(key, value.get(index), environment));

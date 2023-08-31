@@ -15,7 +15,7 @@
 	a: {
 		intValue : 2000,
 		stringValue : "aaaaa",
-		onlyInA: 1000,
+		onlyInA: 1000
 		
 		b: {
 			intValue : 3000,
