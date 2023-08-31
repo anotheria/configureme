@@ -1,6 +1,7 @@
 package org.configureme.mbean;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
 import org.configureme.Configuration;
 import org.configureme.ConfigurationManager;
 import org.configureme.Environment;
@@ -11,7 +12,6 @@ import org.configureme.repository.Artefact;
 import org.configureme.repository.ConfigurationRepository;
 import org.configureme.repository.Value;
 import org.configureme.util.StringUtils;
-import org.json.JSONException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -76,7 +76,7 @@ public class ConfigInfo implements ConfigInfoMBean {
 	}
 
 	@Override
-	public void setAttributeValue(final String attrName, final String attrValue) throws JSONException {
+	public void setAttributeValue(final String attrName, final String attrValue) throws JsonParseException {
 		if (StringUtils.isEmpty(attrName))
 			throw new IllegalArgumentException("Please enter attribute name!");
 		final DynamicEnvironment dynamicEnvironment = (DynamicEnvironment) ConfigurationManager.INSTANCE.getDefaultEnvironment();
@@ -85,7 +85,7 @@ public class ConfigInfo implements ConfigInfoMBean {
 			throw new IllegalArgumentException("No such artefact: " + configName);
 		final List<? extends ParsedAttribute<?>> attList = JsonParser.parse(attrName, new Gson().toJsonTree(attrValue), dynamicEnvironment);
 		if (attList == null || attList.isEmpty())
-			throw new JSONException("Nothing to parse. Please fill out attribute name and value.");
+			throw new JsonParseException("Nothing to parse. Please fill out attribute name and value.");
 		final ParsedAttribute<?> parsedAttribute = attList.get(0);
 		artefact.addAttributeValue(attrName, parsedAttribute.getValue(), dynamicEnvironment);
 		ConfigurationRepository.INSTANCE.updateArtefact(artefact);

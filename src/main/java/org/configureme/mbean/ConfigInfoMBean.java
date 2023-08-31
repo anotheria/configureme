@@ -1,6 +1,6 @@
 package org.configureme.mbean;
 
-import org.json.JSONException;
+import com.google.gson.JsonParseException;
 
 import java.util.Map;
 
@@ -37,7 +37,7 @@ public interface ConfigInfoMBean {
 	 *
 	 * @param attrName  attribute name
 	 * @param attrValue attribute value
-	 * @throws org.json.JSONException on errors
+	 * @throws com.google.gson.JsonParseException on errors
 	 */
-	void setAttributeValue(final String attrName, final String attrValue) throws JSONException;
+	void setAttributeValue(final String attrName, final String attrValue) throws JsonParseException;
 }

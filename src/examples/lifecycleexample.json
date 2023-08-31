@@ -1,11 +1,11 @@
 {
-	somevalue: 10,
+	"somevalue": 10,
 
-	live: {
-		somevalue: 50,
+	"live": {
+		"somevalue": 50
 	},
 	
-	test: {
-		somevalue: 32,
-	},
+	"test": {
+		"somevalue": 32
+	}
 } 

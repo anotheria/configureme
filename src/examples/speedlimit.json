@@ -1,22 +1,22 @@
 {
-	motorway: 130,
-	buildUpAreas: 50,
+	"motorway": 130,
+	"buildUpAreas": 50,
 	
-	Spain: {
-		motorway: 120,
+	"Spain": {
+		"motorway": 120,
 		//for sake of testing we assume in madrid the speed limit is 30km/h 
-		Madrid : {
-			buildUpAreas : 30,
-		},
+		"Madrid" : {
+			"buildUpAreas" : 30
+		}
 	},
 	
-	Belgium: {
-		motorway: 120, 
+	"Belgium": {
+		"motorway": 120
 	},
 	
-	Denmark: {
-		motorway: 110,
-	},
+	"Denmark": {
+		"motorway": 110
+	}
 	
 }	
  

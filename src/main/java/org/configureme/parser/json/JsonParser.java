@@ -170,7 +170,7 @@ public class JsonParser implements ConfigurationParser {
      * @param value       a {@link java.lang.Object} object.
      * @param environment a {@link org.configureme.environments.DynamicEnvironment} object.
      * @return a {@link java.util.List} object.
-     * @throws org.json.JSONException if any.
+     * @throws com.google.gson.JsonParseException if any.
      */
     public static List<? extends ParsedAttribute<?>> parse(final String key, final JsonElement value, final DynamicEnvironment environment) throws JsonParseException {
         // an object value means a change in environment, let's see what it is

@@ -1,10 +1,10 @@
 {
-    externalAttribute: "external",
-    live:{
-        externalAttribute: "external live",
+    "externalAttribute": "external",
+    "live":{
+        "externalAttribute": "external live"
     },
-    test: {
-        externalAttribute: "external test",
-    },
+    "test": {
+        "externalAttribute": "external test"
+    }
 
 }
