@@ -7,6 +7,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>configureme</artifactId>
+	<name>ConfigureMe</name>
 	<version>2.5.3-SNAPSHOT</version>
     <build>
         <plugins>
@@ -20,7 +21,6 @@
             </plugin>
         </plugins>
     </build>
-    <name>ConfigureMe</name>
 
 	<properties>
 		<jersey-version>2.38</jersey-version>
