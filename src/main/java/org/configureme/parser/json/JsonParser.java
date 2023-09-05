@@ -105,7 +105,7 @@ public class JsonParser implements ConfigurationParser {
             return pa;
 
         } catch (final JsonParseException e) {
-            throw new ConfigurationParserException("JSON Error", e);
+            throw new ConfigurationParserException("JSON Error: unable to parse json file with name " + name );
         }
     }
 

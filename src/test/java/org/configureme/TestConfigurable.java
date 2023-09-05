@@ -179,6 +179,6 @@ public class TestConfigurable {
 
 	@SetAll public void debugOutConfig(String name, String property){
 		log.debug("Config property "+name+" = "+property);
-		System.out.println("Config property "+name+" = "+property);
+	//	System.out.println("Config property "+name+" = "+property);
 	}
 }
