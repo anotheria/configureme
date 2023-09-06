@@ -21,7 +21,7 @@ ConfigureMe is free and distributed under the [MIT license](http://www.opensourc
 * Handling of simple and complex properies (objects).
 
 ## Getting started
-Take your first steps with [getting started](https://confluence.opensource.anotheria.net/display/CONFIGUREME/01+Getting+Started)
+Take your first steps with [getting started](https://github.com/anotheria/configureme/wiki#getting-started-with-configureme)
 
 ## How to get/use
 Just add your maven/ivy/gradle dependency:
