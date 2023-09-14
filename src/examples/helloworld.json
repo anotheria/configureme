@@ -1,23 +1,23 @@
 /** Dis is a camment! */
 { 
-	world: "World",
-	greeting: "Hello",
+	"world": "World",
+	"greeting": "Hello",
 
-	de : {
-		world: "Welt",
-		greeting: "Hallo",
-		DE : {
-			bayern: {
-				greeting : "Servus",
+	"de" : {
+		"world": "Welt",
+		"greeting": "Hallo",
+		"DE" : {
+			"bayern": {
+				"greeting" : "Servus"
 			},
-			berlin: {
-				greeting : "Moin",
-			},
+			"berlin": {
+				"greeting" : "Moin"
+			}
 		}
 	},
 	
-	es : {
-		greeting: "Hola",
-		world: "Mundo",
-	},
+	"es" : {
+		"greeting": "Hola",
+		"world": "Mundo"
+	}
 }

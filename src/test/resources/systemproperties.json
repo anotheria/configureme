@@ -1,5 +1,5 @@
 {
 	"value": "${TEST_PROPERTY}",
 	"brokentag1" :"$TEST_PROPERTY}", 
-	"brokentag2" :"$TEST_PROPERTY", 
+	"brokentag2" :"$TEST_PROPERTY"
 }

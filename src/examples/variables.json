@@ -1,8 +1,8 @@
 {
-    live:{
-        variable: "${testVariable}"
+    "live":{
+        "variable": "${testVariable}"
     },
-    test:{
-        variable: "simple value"
-    },
+    "test":{
+        "variable": "simple value"
+    }
 }

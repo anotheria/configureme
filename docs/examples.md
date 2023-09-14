@@ -16,7 +16,7 @@
     "mark": {
         "user": "mark@mailserver.net",
         "password": "markpass"
-    },
+    }
 }
 ```
 
@@ -83,9 +83,9 @@ String password = MailConfig.getInstance().getPassword();
 *setall-example-config.json*
 ```json
 {
-    propertyA: 123,
-    propertyB: "valueC",
-    propertyC: "valueC",
+    "propertyA": 123,
+    "propertyB": "valueC",
+    "propertyC": "valueC"
 }
 ```
 ### Configuration Class Implementation
@@ -136,13 +136,13 @@ All of conditions are checked by calling the String methods of the same name on 
 *setif-example-config.json*
 ```javascript
 {
-    url.1 = "http://buy.server.com",
-    url.2 = "http://fun.server.com",
-    url.3 = "http://dev.server.com",
+    "url.1"= "http://buy.server.com",
+    "url.2" = "http://fun.server.com",
+    "url.3" = "http://dev.server.com",
  
-    country.UK = "United Kingdom",
-    country.US = "USA",
-    country.IT = "Italy",
+    "country.UK" = "United Kingdom",
+    "country.US" = "USA",
+    "country.IT" = "Italy"
 }
 ```
 
@@ -212,11 +212,11 @@ Supported array types: String[], boolean[], short[], int[], long[], byte[], floa
 *arrays-example-config.json*
 ```json
 {
-    stringArrayValue    : "str1,str2,str3",
-    stringArray : ["sa1.1 " , "sa2.1,sa2.2" , "sa3"],
-    floatArrayValue : "1.2,2.3, 3",
-    floatArray  : [2.3, 3],
-    booleanArray    : [true, false, true],
+    "stringArrayValue"    : "str1,str2,str3",
+    "stringArray" : ["sa1.1 " , "sa2.1,sa2.2" , "sa3"],
+    "floatArrayValue" : "1.2,2.3, 3",
+    "floatArray"  : [2.3, 3],
+    "booleanArray"    : [true, false, true]
 }
 ```
 
@@ -278,7 +278,7 @@ Shows the opportunity to use environment (system) property in config file
     },
     "test":{
         "variable": "simple value"
-    },
+    }
 }
 ```
 ### Configuration Class Implementation 
@@ -304,25 +304,25 @@ Shows the opportunity to include one configure file to the another one. In order
 *include.json*
 ```json
 {
-    live:{
+    "live":{
         $<includedfile1>
     },
-    test:{
-        country: "Ukraine",
-        city: "Kyiv",
-    },
+    "test":{
+        "country": "Ukraine",
+        "city": "Kyiv"
+    }
 }
 First included JSON Config
 includefile1.json
 ```json{
-    country: "Spain",
+    "country": "Spain",
     $<includedfile2>
 }
 ```
 Second included JSON Config
 includefile2.json
 ```json{
-    city: "Barcelona",
+    "city": "Barcelona"
 }
 ```
 
@@ -345,15 +345,15 @@ Shows the opportunity to use links in file A to attribute, that localed in file 
 *links.json*
 ```json
 {
-    inner:$<linkedattributes.innerOne>,
-    live:{
-        street: $<linkedattributes.street>,
-        blockNumbers: $<linkedattributes.numbers>,
+    "inner":$<linkedattributes.innerOne>,
+    "live":{
+        "street": $<linkedattributes.street>,
+        "blockNumbers": $<linkedattributes.numbers>
     },
-    test:{
-        street: $<linkedattributes.street>,
-        blockNumbers: $<linkedattributes.numbers>,
-    },
+    "test":{
+        "street": $<linkedattributes.street>,
+        "blockNumbers": $<linkedattributes.numbers>
+    }
 }
 ```
 
@@ -361,17 +361,17 @@ Shows the opportunity to use links in file A to attribute, that localed in file 
 *linkedattributes.json*
 ```json
 {
-    live:{
-        street: "Live included street",
-        numbers: [ 7, 6, 5],
-        @innerOne:{
-            innerString:"inner string Live",
-        },
+    "live":{
+        "street": "Live included street",
+        "numbers": [ 7, 6, 5],
+        "@innerOne":{
+            "innerString":"inner string Live",
+        }
     },
-    test:{
-        street: "Test included street",
-        numbers: [ 1, 2, 3],
-    },
+    "test":{
+        "street": "Test included street",
+        "numbers": [ 1, 2, 3]
+    }
 }
 ```
 
@@ -396,13 +396,13 @@ Shows the opportunity to use config A in the config B, without visibly (formal) 
 *configurealso.json*
 ```json
 {
-    simple: "global simple",
-    live:{
-        simple: "live simple"
+    "simple": "global simple",
+    "live":{
+        "simple": "live simple"
     },
-    test:{
-        simple: "test simple"
-    },
+    "test":{
+        "simple": "test simple"
+    }
 }
 ```
 
@@ -410,13 +410,13 @@ Shows the opportunity to use config A in the config B, without visibly (formal) 
 *externalConfig.json*
 ```json
 {
-    externalAttribute: "external",
-    live:{
-        externalAttribute: "external live",
+    "externalAttribute": "external",
+    "live":{
+        "externalAttribute": "external live"
     },
-    test: {
-        externalAttribute: "external test",
-    },
+    "test": {
+        "externalAttribute": "external test"
+    }
 }
 ```
 ### Configuration Class Implementation
