@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import org.configureme.sources.configurationrepository.RestConfigurationRepositorySourceLoader;
 import org.configureme.sources.configurationrepository.ReplyObject;
-import org.eclipse.jetty.util.log.Slf4jLog;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -20,7 +19,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 @Ignore
 public class RestConfigurationRepositorySourceLoaderTest {
-    private static final Logger log = LoggerFactory.getLogger(Slf4jLog.class);
+    private static final Logger log = LoggerFactory.getLogger(RestConfigurationRepositorySourceLoaderTest.class);
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(10088);
     private RestConfigurationRepositorySourceLoader loader = new RestConfigurationRepositorySourceLoader();

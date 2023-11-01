@@ -90,6 +90,16 @@ public class JsonParser implements ConfigurationParser {
 
             final DynamicEnvironment env = new DynamicEnvironment();
 
+            try {
+                j.keySet();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            try {
+                j.keySet().toArray(new String[j.size()]);
+            }  catch (Exception e) {
+                e.printStackTrace();
+            }
             final String[] names = j.keySet().toArray(new String[j.size()]);
             if (names.length != 0) {
                 for (final String key : names) {
