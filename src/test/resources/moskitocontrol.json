@@ -1,0 +1,433 @@
+{
+
+  "@charts": [
+
+    {
+      "name": "Memory web01",
+      "limit": 100,
+      "tags": "frontend",
+      "@lines": [
+        {
+          "component": "web01",
+          "accumulator": "Mem OldGenFree MB 1m"
+        },
+        {
+          "component": "web01",
+          "accumulator": "Mem OldGenUsed MB 1m"
+        },
+        {
+          "component": "web01",
+          "accumulator": "Mem PermGenFree MB 1m"
+        }
+      ]
+    },
+    {
+      "name": "Memory mobile01",
+      "limit": 100,
+      "tags": "frontend",
+      "@lines": [
+        {
+          "component": "mobile01",
+          "accumulator": "Mem OldGenFree MB 1m"
+        },
+        {
+          "component": "mobile01",
+          "accumulator": "Mem OldGenUsed MB 1m"
+        },
+        {
+          "component": "mobile01",
+          "accumulator": "Mem PermGenFree MB 1m"
+        }
+      ]
+    },
+    {
+      "name": "Threads web01",
+      "limit": 100,
+      "tags": "frontend",
+      "@lines": [
+        {
+          "component": "web01",
+          "accumulator": "ThreadCount"
+        },
+        {
+          "component": "web01",
+          "accumulator": "ThreadStateBlocked-1m"
+        },
+        {
+          "component": "web01",
+          "accumulator": "ThreadStateRunnable-1m"
+        },
+        {
+          "component": "web01",
+          "accumulator": "ThreadStateTimedWaiting-1m"
+        },
+        {
+          "component": "web01",
+          "accumulator": "ThreadStateWaiting-1m"
+        }
+      ]
+    },
+    {
+      "name": "Threads mobile01",
+      "limit": 100,
+      "tags": "frontend",
+      "@lines": [
+        {
+          "component": "mobile01",
+          "accumulator": "ThreadCount"
+        },
+        {
+          "component": "mobile01",
+          "accumulator": "ThreadStateBlocked-1m"
+        },
+        {
+          "component": "mobile01",
+          "accumulator": "ThreadStateRunnable-1m"
+        },
+        {
+          "component": "mobile01",
+          "accumulator": "ThreadStateTimedWaiting-1m"
+        },
+        {
+          "component": "mobile01",
+          "accumulator": "ThreadStateWaiting-1m"
+        }
+      ]
+    },
+    {
+      "name": "URL REQ 1m",
+      "limit": 100,
+      "tags": "frontend",
+      "@lines": [
+        {
+          "component": "web01",
+          "accumulator": "URL REQ 1m"
+        },
+        {
+          "component": "mobile01",
+          "accumulator": "URL REQ 1m"
+        }
+      ]
+    },
+    {
+      "name": "URL Time 1m",
+      "limit": 100,
+      "tags": "frontend",
+      "@lines": [
+        {
+          "component": "web01",
+          "accumulator": "URL Time 1m"
+        },
+        {
+          "component": "mobile01",
+          "accumulator": "URL Time 1m"
+        }
+
+      ]
+    },
+    {
+      "name": "URL AVG 1m",
+      "tags": "frontend",
+      "limit": 100,
+      "@lines": [
+        {
+          "component": "web01",
+          "accumulator": "URL AVG 1m"
+        },
+        {
+          "component": "mobile01",
+          "accumulator": "URL AVG 1m"
+        }
+      ]
+    },
+    {
+      "name": "SessionCount",
+      "limit": 100,
+      "tags": "frontend",
+      "@lines": [
+        {
+          "component": "web01",
+          "accumulator": "SessionCount Cur Absolute"
+        },
+        {
+          "component": "mobile01",
+          "accumulator": "SessionCount Cur Absolute"
+        }
+      ]
+    },
+    {
+      "name": "CPU Time 1m",
+      "limit": 100,
+      "tags": "frontend",
+      "@lines": [
+        {
+          "component": "web01",
+          "accumulator": "CPU Time 1m"
+        },
+        {
+          "component": "mobile01",
+          "accumulator": "CPU Time 1m"
+        },
+        {
+          "component": "solr01",
+          "accumulator": "CPU Time 1m"
+        },
+        {
+          "component": "stats",
+          "accumulator": "CPU Time 1m"
+        },
+        {
+          "component": "admin",
+          "accumulator": "CPU Time 1m"
+        }
+
+      ]
+    },
+    {
+      "name": "Process and System CPU Load 1m web01",
+      "limit": 100,
+      "tags": "frontend",
+      "@lines": [
+        {
+          "component": "web01",
+          "accumulator": "Process CPU Load 1m"
+        },
+        {
+          "component": "web01",
+          "accumulator": "System CPU Load 1m"
+        }
+
+
+      ]
+    },
+    {
+      "name": "Process and System CPU Load 1m mobile01",
+      "limit": 100,
+      "tags": "frontend",
+      "@lines": [
+        {
+          "component": "mobile01",
+          "accumulator": "Process CPU Load 1m"
+        },
+        {
+          "component": "mobile01",
+          "accumulator": "System CPU Load 1m"
+        }
+
+
+      ]
+    },
+    {
+      "name": "Process and System CPU Load 1m solr01",
+      "tags": "frontend",
+      "limit": 100,
+      "@lines": [
+        {
+          "component": "solr01",
+          "accumulator": "Process CPU Load 1m"
+        },
+        {
+          "component": "solr01",
+          "accumulator": "System CPU Load 1m"
+        }
+      ]
+    },
+    {
+      "name": "Process CPU Load 1m",
+      "limit": 100,
+      "tags": "frontend",
+      "@lines": [
+        {
+          "component": "*",
+          "accumulator": "Process CPU Load 1m",
+          "componentTags": "frontend"
+        }
+      ]
+    },
+    {
+      "name": "System CPU Load 1m",
+      "limit": 100,
+      "tags": "frontend",
+      "@lines": [
+        {
+          "component": "*",
+          "accumulator": "System CPU Load 1m",
+          "componentTags": "frontend"
+        }
+      ]
+    },
+    //charts for backend
+    {
+      "name": "CPU Time 1m - NEW",
+      "limit": 100,
+      "tags": "backend",
+      "@lines": [
+        {
+          "component": "*",
+          "accumulator": "CPU Time 1m",
+          "componentTags": "backend"
+        }
+      ]
+    },
+    {
+      "name": "Errors Initial",
+      "limit": 100,
+      "tags": "backend",
+      "@lines": [
+        {
+          "component": "*",
+          "accumulator": "Errors.Cumulated.Initial",
+          "componentTags": "backend"
+
+        }
+      ]
+    },
+
+    {
+      "name": "MemFree 1MB",
+      "limit": 100,
+      "tags": "backend",
+      "@lines": [
+        {
+          "component": "*",
+          "accumulator": "Mem OldGenFree MB 1m",
+          "componentTags": "backend"
+        }
+      ]
+    },
+    {
+      "name": "MemUsed 1MB",
+      "limit": 100,
+      "tags": "backend",
+      "@lines": [
+        {
+          "component": "*",
+          "accumulator": "Mem OldGenUsed MB 1m",
+          "componentTags": "backend"
+        }
+      ]
+    },
+    {
+      "name": "GC Count",
+      "limit": 100,
+      "tags": "backend",
+      "@lines": [
+        {
+          "component": "*",
+          "accumulator": "GC PS MarkSweep collection count 1m",
+          "componentTags": "backend"
+        }
+      ]
+    },
+    {
+      "name": "GC Time",
+      "limit": 100,
+      "tags": "backend",
+      "@lines": [
+        {
+          "component": "*",
+          "accumulator": "GC PS MarkSweep collection time 1m",
+          "componentTags": "backend"
+        }
+      ]
+    },
+    //Charts for URL Getter
+    {
+      "name": "Average Duration 1Minute (TCL)",
+      "limit": 100,
+      "tags": "mobile_tcl",
+      "@lines": [
+        {
+          "component": "*",
+          "accumulator": "AVG.1m",
+          "componentTags": "mobile_tcl"
+        }
+      ]
+    },
+    {
+      "name": "Average Duration 1H (TCL)",
+      "limit": 100,
+      "tags": "mobile_tcl",
+      "@lines": [
+        {
+          "component": "*",
+          "accumulator": "AVG.1h",
+          "componentTags": "mobile_tcl"
+        }
+      ]
+    },
+    {
+      "name": "Average Duration 1Minute (TCL)",
+      "limit": 100,
+      "tags": "desktop_tcl",
+      "@lines": [
+        {
+          "component": "*",
+          "accumulator": "AVG.1m",
+          "componentTags": "desktop_tcl"
+        }
+      ]
+    },
+    {
+      "name": "Average Duration 1H (TCL)",
+      "limit": 100,
+      "tags": "desktop_tcl",
+      "@lines": [
+        {
+          "component": "*",
+          "accumulator": "AVG.1h",
+          "componentTags": "desktop_tcl"
+        }
+      ]
+    },
+    {
+      "name": "Average Duration 1Minute (ETL)",
+      "limit": 100,
+      "tags": "desktop_etl",
+      "@lines": [
+        {
+          "component": "*",
+          "accumulator": "AVG.1m",
+          "componentTags": "desktop_etl"
+        }
+      ]
+    },
+    {
+      "name": "Average Duration 1H (ETL)",
+      "limit": 100,
+      "tags": "desktop_etl",
+      "@lines": [
+        {
+          "component": "*",
+          "accumulator": "AVG.1h",
+          "componentTags": "desktop_etl"
+        }
+      ]
+    },
+    {
+      "name": "Average Duration 1Minute",
+      "limit": 100,
+      "tags": "use-case",
+      "@lines": [
+        {
+          "component": "*",
+          "accumulator": "AVG.1m",
+          "componentTags": "use-case"
+        }
+      ]
+    },
+    {
+      "name": "Average Duration 1Hour",
+      "limit": 100,
+      "tags": "use-case",
+      "@lines": [
+        {
+          "component": "*",
+          "accumulator": "AVG.1h",
+          "componentTags": "use-case"
+        }
+      ]
+    }
+  ]
+
+}
