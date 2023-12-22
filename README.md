@@ -36,3 +36,8 @@ Just add your maven/ivy/gradle dependency:
 * [Supported annotations](https://github.com/anotheria/configureme/wiki/Annotations)
 * [Examples](https://github.com/anotheria/configureme/wiki/Examples)
 * [What are environments](https://github.com/anotheria/configureme/wiki/Environments)
+
+
+## Java Version
+* 4.x versions require and are built for Java11 and above.
+* 2.x versions require and are built for Java8. 
