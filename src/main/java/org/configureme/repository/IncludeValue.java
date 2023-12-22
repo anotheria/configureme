@@ -7,7 +7,6 @@ import org.configureme.sources.ConfigurationSourceKey;
 /**
  * Value of a include attribute. Link to the another config with a configurable attribute name.
  *
- * @since: 26.09.12
  * @version $Id: $Id
  */
 public class IncludeValue implements Value {
