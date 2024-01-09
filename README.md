@@ -5,6 +5,10 @@
 ConfigureMe
 ===========
 
+![ConfigureMe](https://github.com/anotheria/configureme/assets/2864497/3e014e61-f1d7-41c7-9eb8-31bb26bce545)
+
+
+
 ## What is ConfigureMe
 ConfigureMe is a configuration utility for really simple autoconfiguration of java objects. ConfigureMe focuses on different configuration of the same object in different Environments during staging (dev, test, prod). ConfigureMe configures POJOs based on annotations.
 ConfigureMe is free and distributed under the [MIT license](http://www.opensource.org/licenses/mit-license.php).
