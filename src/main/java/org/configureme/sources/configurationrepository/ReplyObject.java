@@ -12,7 +12,6 @@ import java.util.Map;
  * with requested information.
  *
  * @author lrosenberg
- * @since 13.02.13 15:26
  * @version $Id: $Id
  */
 @XmlRootElement(name = "reply")

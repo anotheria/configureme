@@ -9,7 +9,6 @@ import org.configureme.util.StringUtils;
  * Include attribute contains link attribute in the another config.
  *
  * @author ivanbatura
- * @since: 26.09.12
  * @version $Id: $Id
  */
 public class IncludeParsedAttribute extends ParsedAttribute<IncludeValue> {

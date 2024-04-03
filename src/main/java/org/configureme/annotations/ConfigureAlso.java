@@ -9,7 +9,6 @@ import java.lang.annotation.Target;
  * Mark config as External config
  *
  * @author ivanbatura
- * @since: 26.09.12
  * @version $Id: $Id
  */
 @Retention(RetentionPolicy.RUNTIME)
