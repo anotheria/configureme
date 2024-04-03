@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * A dynamic environment class. This class can be used for any type of environments, for any environment deepth. However, we recommend the usage of more strict Application/LocaleBased Environment if
+ * A dynamic environment class. This class can be used for any type of environments, for any environment depth. However, we recommend the usage of more strict Application/LocaleBased Environment if
  * applicable, since they allow less and can prevent you from absolute environmental chaos. The DynamicEnvironment is the ultima ratio, a class that is capable of everything, but
  * requires not testable discipline of the developers.
  *
