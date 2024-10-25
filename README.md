@@ -33,7 +33,7 @@ Just add your maven/ivy/gradle dependency:
 <dependency>
   <groupId>net.anotheria</groupId>
   <artifactId>configureme</artifactId>
-  <version>2.6.0</version>
+  <version>4.0.0</version>
 </dependency>
 ```
 ## Further documentation
