@@ -1,4 +1,4 @@
-[![MvnRepository](https://badges.mvnrepository.com/badge/net.anotheria/moskito-core/badge.svg?label=MvnRepository)](https://mvnrepository.com/artifact/net.anotheria/configureme)
+[![MvnRepository](https://badges.mvnrepository.com/badge/net.anotheria/configureme/badge.svg?label=MvnRepository)](https://mvnrepository.com/artifact/net.anotheria/configureme)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
 
