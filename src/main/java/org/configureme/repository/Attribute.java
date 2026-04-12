@@ -52,7 +52,7 @@ public class Attribute {
 	 * @return the value of the attribute in the given environment
 	 */
 	public Value getValue(final Environment in){
-		log.debug("looking up value for "+name+" in "+in);
+        log.debug("looking up value for {} in {}", name, in);
 		return attributeValue.get(in);
 
 	}

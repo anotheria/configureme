@@ -12,8 +12,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * The configurationrepository is the internal storage for configurations. It caches all configuration which are ever loaded by the ConfigurationManager.
- * The configuration repository listens to the configuration source registry and removes the cached version from the internal storage to implicitely allow
+ * The ConfigurationRepository is the internal storage for configurations. It caches all configuration which are ever loaded by the ConfigurationManager.
+ * The configuration repository listens to the configuration source registry and removes the cached version from the internal storage to implicitly allow
  * reloading (which is triggered by another listener).
  *
  * @author lrosenberg

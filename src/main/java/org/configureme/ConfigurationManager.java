@@ -673,7 +673,7 @@ public enum ConfigurationManager {
 			try {
 				pa = parser.parseConfiguration(configurationName, content);
 			} catch (final ConfigurationParserException e) {
-				log.error("getConfiguration(" + configurationName + ", " + in + ')', e);
+                log.error("getConfiguration({}, {})", configurationName, in, e);
 				throw new IllegalArgumentException(configSourceKey + " is not parseable: " + e.getMessage(), e);
 			}
 			//System.out.println("Parsed "+pa);
