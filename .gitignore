@@ -27,3 +27,4 @@ tmp/
 # Other temporary dir's/files
 logs/
 .claude/*
+qodana.yaml
