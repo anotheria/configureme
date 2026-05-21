@@ -1,4 +1,4 @@
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.anotheria/configureme/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.anotheria/configureme)
+[![MvnRepository](https://badges.mvnrepository.com/badge/net.anotheria/configureme/badge.svg?label=MvnRepository)](https://mvnrepository.com/artifact/net.anotheria/configureme)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
 
@@ -33,7 +33,7 @@ Just add your maven/ivy/gradle dependency:
 <dependency>
   <groupId>net.anotheria</groupId>
   <artifactId>configureme</artifactId>
-  <version>2.6.0</version>
+  <version>4.0.0</version>
 </dependency>
 ```
 ## Further documentation
