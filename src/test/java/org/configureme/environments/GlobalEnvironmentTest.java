@@ -2,9 +2,9 @@ package org.configureme.environments;
 
 import org.configureme.Environment;
 import org.configureme.GlobalEnvironment;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class GlobalEnvironmentTest {
 	@Test public void testInstance(){
@@ -22,9 +22,9 @@ public class GlobalEnvironmentTest {
 
 }
 	
-	@Test(expected=AssertionError.class) public void testReduceability(){
+	@Test public void testReduceability(){
 		assertFalse(GlobalEnvironment.INSTANCE.isReduceable());
-		GlobalEnvironment.INSTANCE.reduce();
+		assertThrows(AssertionError.class, () -> GlobalEnvironment.INSTANCE.reduce());
 	}
 	
 	@Test public void testString(){
@@ -34,7 +34,7 @@ public class GlobalEnvironmentTest {
 	
 	@Test public void whatElse(){
 		GlobalEnvironment env[] = GlobalEnvironment.values();
-		assertEquals("The can be only one global environment", 1, env.length);
+		assertEquals(1, env.length, "The can be only one global environment");
 		
 		
 	}

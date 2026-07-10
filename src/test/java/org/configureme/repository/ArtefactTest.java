@@ -1,8 +1,9 @@
 package org.configureme.repository;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ArtefactTest {
 	@Test public void testForDefaultEnvironment(){
@@ -11,8 +12,8 @@ public class ArtefactTest {
 		assertEquals(new PlainValue("value"), toTest.getAttribute("test").getValue());
 	}
 
-	@Test (expected=IllegalArgumentException.class) public void testForNonExistingAttribute(){
+	@Test public void testForNonExistingAttribute(){
 		Artefact toTest = new Artefact("foo");
-		toTest.getAttribute("not-existing");
+		assertThrows(IllegalArgumentException.class, () -> toTest.getAttribute("not-existing"));
 	}
 }

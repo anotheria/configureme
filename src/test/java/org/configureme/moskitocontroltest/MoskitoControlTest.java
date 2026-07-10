@@ -1,9 +1,9 @@
 package org.configureme.moskitocontroltest;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class MoskitoControlTest {
     @Test
@@ -19,8 +19,8 @@ public class MoskitoControlTest {
                 System.out.println(line.getAccumulator());
                 assertNotNull(line.getComponent());
                 assertNotNull(line.getAccumulator());
-                Assert.assertNotEquals(0, line.getComponent().length());
-                Assert.assertNotEquals(0, line.getAccumulator().length());
+                Assertions.assertNotEquals(0, line.getComponent().length());
+                Assertions.assertNotEquals(0, line.getAccumulator().length());
 
             }
         }

@@ -6,10 +6,10 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import org.configureme.sources.configurationrepository.RestConfigurationRepositorySourceLoader;
 import org.configureme.sources.configurationrepository.ReplyObject;
 import org.eclipse.jetty.util.log.Slf4jLog;
-import org.junit.Before;
-import org.junit.Ignore;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,14 +18,16 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-@Ignore
+// TODO: migrate the JUnit 4 WireMockRule below to the JUnit 5 WireMockExtension when WireMock is
+// upgraded (>= 2.31). Kept @Disabled for now; it still relies on JUnit 4 (transitive via WireMock).
+@Disabled
 public class RestConfigurationRepositorySourceLoaderTest {
     private static final Logger log = LoggerFactory.getLogger(Slf4jLog.class);
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(10088);
     private RestConfigurationRepositorySourceLoader loader = new RestConfigurationRepositorySourceLoader();
 
-    @Before
+    @BeforeEach
     public void init() {
         stubFor(get(urlEqualTo("/configurations/Test"))
                 .withHeader("Accept", equalTo("application/json"))

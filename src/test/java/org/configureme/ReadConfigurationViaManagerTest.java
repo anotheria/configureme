@@ -3,15 +3,15 @@ package org.configureme;
 import org.configureme.environments.DynamicEnvironment;
 import org.configureme.repository.PlainValue;
 import org.configureme.sources.ConfigurationSourceRegistryTest;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
 
-public class ReadConfigurationViaManager {
-	@BeforeClass public static void setupRegistry(){
+public class ReadConfigurationViaManagerTest {
+	@BeforeAll public static void setupRegistry(){
 		//use the other test which can access protected methods
 		ConfigurationSourceRegistryTest.setupRegistry();
 	}

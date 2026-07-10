@@ -4,16 +4,15 @@ import java.util.Locale;
 
 import org.configureme.Environment;
 import org.configureme.GlobalEnvironment;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class LocaleBasedEnvironmentTest {
 	
-	@Test(expected=AssertionError.class) public void testForReduceError(){
+	@Test public void testForReduceError(){
 		LocaleBasedEnvironment empty = new LocaleBasedEnvironment(new Locale("","",""));
 		assertFalse(empty.isReduceable());
-		empty.reduce();
-		fail("assertion error should be thrown by reducing not reduceble environment");
+		assertThrows(AssertionError.class, () -> empty.reduce());
 	}
 	
 	@Test public void testEquals(){
@@ -21,11 +20,11 @@ public class LocaleBasedEnvironmentTest {
 		LocaleBasedEnvironment env2 = new LocaleBasedEnvironment(new Locale("de", "DE", "munich"));
 		LocaleBasedEnvironment env3 = new LocaleBasedEnvironment(new Locale("de", "DE", "cologne"));
 		
-		assertEquals("object must be equal to itself", env1, env1);
-		assertEquals("object must be equal to itself", env2, env2);
-		assertEquals("object must be equal to itself", env3, env3);
+		assertEquals(env1, env1, "object must be equal to itself");
+		assertEquals(env2, env2, "object must be equal to itself");
+		assertEquals(env3, env3, "object must be equal to itself");
 		
-		assertEquals("object must be equal to the same object", env1, env2);
+		assertEquals(env1, env2, "object must be equal to the same object");
 		assertFalse(env1.equals(env3));
 		assertFalse(env1.equals(null));
 	}
@@ -35,12 +34,12 @@ public class LocaleBasedEnvironmentTest {
 		LocaleBasedEnvironment env2 = new LocaleBasedEnvironment(new Locale("de", "DE", "munich"));
 		LocaleBasedEnvironment env3 = new LocaleBasedEnvironment(new Locale("de", "DE", "cologne"));
 		
-		assertEquals("object must have the same hashcode as itself", env1.hashCode(), env1.hashCode());
-		assertEquals("object must be equal to itself", env2.hashCode(), env2.hashCode());
-		assertEquals("object must be equal to itself", env3.hashCode(), env3.hashCode());
+		assertEquals(env1.hashCode(), env1.hashCode(), "object must have the same hashcode as itself");
+		assertEquals(env2.hashCode(), env2.hashCode(), "object must be equal to itself");
+		assertEquals(env3.hashCode(), env3.hashCode(), "object must be equal to itself");
 		
-		assertEquals("objects must have same hashCode is they are equal", env1.equals(env2), env1.hashCode()==env2.hashCode());
-		assertEquals("objects must have same hashCode is they are equal", env1.equals(env3), env1.hashCode()==env3.hashCode());
+		assertEquals(env1.equals(env2), env1.hashCode()==env2.hashCode(), "objects must have same hashCode is they are equal");
+		assertEquals(env1.equals(env3), env1.hashCode()==env3.hashCode(), "objects must have same hashCode is they are equal");
 	}
 
 	@Test public void testEmptyVariant(){
@@ -76,11 +75,11 @@ public class LocaleBasedEnvironmentTest {
 		  Environment toreduce = env;
 		  while(toreduce.isReduceable()){
 			  Environment reduced = toreduce.reduce();
-			  assertFalse("Reduced environment shouldn't be equals to the parent environment", toreduce.equals(reduced));
+			  assertFalse(toreduce.equals(reduced), "Reduced environment shouldn't be equals to the parent environment");
 			  toreduce = reduced;
 		  }
 		  
-		  assertSame("final reduced environment must be the global environment", toreduce, GlobalEnvironment.INSTANCE); 
+		  assertSame(toreduce, GlobalEnvironment.INSTANCE, "final reduced environment must be the global environment"); 
 		  
 		
 	}

@@ -2,9 +2,9 @@ package org.configureme.environments;
 
 import org.configureme.Environment;
 import org.configureme.GlobalEnvironment;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DynamicEnvironmentTest {
 	@Test public void parseForthAndBack(){
@@ -20,12 +20,12 @@ public class DynamicEnvironmentTest {
 		DynamicEnvironment de4 = de1.add("dummy"); de4.reduceThis();
 		DynamicEnvironment de5 = (DynamicEnvironment)de1.clone(); de5.extendThis("a"); de5.reduceThis();
 		
-		assertEquals("Object must be equal to itself", de1, de1);
-		assertEquals("Object must be equal to the same object", de1, de2);
-		assertEquals("Object must be equal to the cloned object", de1, de3);
-		assertEquals("Object must be equal to the reduced object", de1, de4);
-		assertEquals("Object must be equal to the extended and reduced object", de1, de5);
-		assertFalse("Object must not be equal to GlobalEnvironment :", de1.equals(GlobalEnvironment.INSTANCE));
+		assertEquals(de1, de1, "Object must be equal to itself");
+		assertEquals(de1, de2, "Object must be equal to the same object");
+		assertEquals(de1, de3, "Object must be equal to the cloned object");
+		assertEquals(de1, de4, "Object must be equal to the reduced object");
+		assertEquals(de1, de5, "Object must be equal to the extended and reduced object");
+		assertFalse(de1.equals(GlobalEnvironment.INSTANCE), "Object must not be equal to GlobalEnvironment :");
 		
 		assertTrue(de1.isReduceable());
 		assertTrue(de2.isReduceable());
@@ -37,14 +37,13 @@ public class DynamicEnvironmentTest {
 	private void testDynamicEnvironment(Environment de){
 		String s = de.expandedStringForm();
 		Environment parsed = DynamicEnvironment.parse(s);
-		assertEquals("Parsed environment is not equal to parameter environment", de, parsed);
-		assertEquals("Parsed environment expanded form is not equal to parameter environment extended form", s, parsed.expandedStringForm());
+		assertEquals(de, parsed, "Parsed environment is not equal to parameter environment");
+		assertEquals(s, parsed.expandedStringForm(), "Parsed environment expanded form is not equal to parameter environment extended form");
 	} 
 	
-	@Test(expected=AssertionError.class) public void reduceUnreduceable(){
+	@Test public void reduceUnreduceable(){
 		DynamicEnvironment empty = new DynamicEnvironment();
 		assertFalse(empty.isReduceable());
-		empty.reduceThis();
-		fail("assertion error should be thrown if trying to reduce an unreduceable environment");
+		assertThrows(AssertionError.class, () -> empty.reduceThis());
 	}
 }

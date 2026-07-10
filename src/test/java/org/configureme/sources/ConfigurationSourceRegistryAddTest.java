@@ -2,13 +2,13 @@ package org.configureme.sources;
 
 import org.configureme.sources.ConfigurationSourceKey.Format;
 import org.configureme.sources.ConfigurationSourceKey.Type;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ConfigurationSourceRegistryAddTest {
 	
-	@BeforeClass public static void resetSourceRegistry(){
+	@BeforeAll public static void resetSourceRegistry(){
 		ConfigurationSourceRegistry.INSTANCE.reset();
 	}
 	
@@ -23,9 +23,8 @@ public class ConfigurationSourceRegistryAddTest {
 		}
 	}
 
-	@Test(expected=IllegalArgumentException.class) public void testUnsupportedTypeFailureLoading(){
+	@Test public void testUnsupportedTypeFailureLoading(){
 		ConfigurationSourceKey key = new ConfigurationSourceKey(Type.FIXTURE, Format.JSON, "fixture");
-		ConfigurationSourceRegistry.INSTANCE.readConfigurationSource(key);
-		fail("ConfigurationSourceRegistry should have thrown an exception");
+		assertThrows(IllegalArgumentException.class, () -> ConfigurationSourceRegistry.INSTANCE.readConfigurationSource(key));
 	}
 }

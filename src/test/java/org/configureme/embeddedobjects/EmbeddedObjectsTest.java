@@ -1,8 +1,8 @@
 package org.configureme.embeddedobjects;
 
 import org.configureme.ConfigurationManager;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test for weird combinations of embeding, see embeddedobjects for details.

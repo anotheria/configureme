@@ -1,10 +1,10 @@
 package org.configureme.external;
 
 import org.configureme.ConfigurationManager;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author ivanbatura
@@ -13,7 +13,7 @@ import static org.junit.Assert.assertEquals;
 public class IncludeTest {
 	IncludeConfig includeConfig = null;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		includeConfig = new IncludeConfig();
 		ConfigurationManager.INSTANCE.configure(includeConfig);
@@ -22,15 +22,15 @@ public class IncludeTest {
 	@Test
 	public void includeTest() {
 		//verification
-		assertEquals("Simple value not correct", 1, includeConfig.getNormal().intValue());
-		assertEquals("Included value not correct", "included", includeConfig.getInclude());
+		assertEquals(1, includeConfig.getNormal().intValue(), "Simple value not correct");
+		assertEquals("included", includeConfig.getInclude(), "Included value not correct");
 	}
 
 	@Test
 	public void linkedTest() {
 		//verification
-		assertEquals("Simple value not correct", 1, includeConfig.getNormal().intValue());
-		assertEquals("Linked value not correct", "linked", includeConfig.getLinked());
+		assertEquals(1, includeConfig.getNormal().intValue(), "Simple value not correct");
+		assertEquals("linked", includeConfig.getLinked(), "Linked value not correct");
 	}
 
 	@Test
@@ -38,7 +38,7 @@ public class IncludeTest {
 		//verification
 		ExternalConfig externalConfig = new ExternalConfig();
 		ConfigurationManager.INSTANCE.configure(externalConfig);
-		assertEquals("External config value not correct", externalConfig.getExternal(), includeConfig.getExternalConfig().getExternal());
-		assertEquals("Loop handled successfully", externalConfig.getExternal(), includeConfig.getCircleConfig().getExternalConfig().getExternal());
+		assertEquals(externalConfig.getExternal(), includeConfig.getExternalConfig().getExternal(), "External config value not correct");
+		assertEquals(externalConfig.getExternal(), includeConfig.getCircleConfig().getExternalConfig().getExternal(), "Loop handled successfully");
 	}
 }

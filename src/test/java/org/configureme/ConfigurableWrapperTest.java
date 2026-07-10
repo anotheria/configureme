@@ -1,12 +1,12 @@
 package org.configureme;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.configureme.environments.DynamicEnvironment;
 import org.configureme.sources.ConfigurationSourceKey;
 import org.configureme.sources.ConfigurationSourceKey.Format;
 import org.configureme.sources.ConfigurationSourceKey.Type;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 public class ConfigurableWrapperTest {
 	
 	@Test public void testEquals(){
@@ -52,6 +52,6 @@ public class ConfigurableWrapperTest {
 		assertEquals(w1, w2);
 		assertFalse(w1.equals(w3));
 		
-		assertFalse("equals should check for proper class type", w1.equals(k1));
+		assertFalse(w1.equals(k1), "equals should check for proper class type");
 	}
 }

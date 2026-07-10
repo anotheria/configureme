@@ -1,8 +1,8 @@
 package org.configureme.parser.json;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -17,7 +17,7 @@ import org.configureme.repository.ArrayValue;
 import org.configureme.repository.PlainValue;
 import org.configureme.repository.Value;
 import org.configureme.util.StringUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 
 public class JsonParserTest {
@@ -32,7 +32,7 @@ public class JsonParserTest {
 //		try{
 //			//Testing void configuration: no any json statements
 //			bla = parser.parseConfiguration("foo", "");
-//			assertEquals("Void configuration must be empty ParsedConfiguration!",0, bla.getAttributes().size());
+//			assertEquals(0, bla.getAttributes().size(), "Void configuration must be empty ParsedConfiguration!");
 //		}catch(NullPointerException e){
 //			fail("Must not throws exception on empty configuration!");
 //		}
@@ -40,7 +40,7 @@ public class JsonParserTest {
         try {
             //Testing empty configuration: only empty JSON Object
             bla = parser.parseConfiguration("foobar", "{}");
-            assertEquals("For empty configuration must be empty ParsedConfiguration!", 0, bla.getAttributes().size());
+            assertEquals(0, bla.getAttributes().size(), "For empty configuration must be empty ParsedConfiguration!");
         } catch (NullPointerException e) {
             fail("Must not throws exception on empty configuration!");
         }
@@ -48,7 +48,7 @@ public class JsonParserTest {
         try {
             //Testing empty configuration with cascades
             bla = parser.parseConfiguration("foo", "{dev:{},test:{}}");
-            assertEquals("For empty configuration must be empty ParsedConfiguration!", 0, bla.getAttributes().size());
+            assertEquals(0, bla.getAttributes().size(), "For empty configuration must be empty ParsedConfiguration!");
         } catch (NullPointerException e) {
             fail("Must not throws exception on empty configuration!");
         }
