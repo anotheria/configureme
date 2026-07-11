@@ -2,11 +2,10 @@ package org.configureme.sources.configurationrepository;
 
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -66,14 +65,12 @@ public enum ConfigurationsHolder {
     }
 
     private String mapObjectToString(final Object toMap) {
-        final ObjectMapper mapper = new ObjectMapper();
-        String resultString = null;
         try {
-            resultString = mapper.writeValueAsString(toMap);
-        } catch (final IOException e) {
+            return new Gson().toJson(toMap);
+        } catch (final RuntimeException e) {
             log.error("Json parsing exception: ", e);
+            return null;
         }
-        return resultString;
     }
 
     /**
