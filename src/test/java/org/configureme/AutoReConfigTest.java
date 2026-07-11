@@ -1,25 +1,25 @@
 package org.configureme;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.configureme.sources.ConfigurationSourceRegistryTest;
 import org.configureme.sources.FixtureLoader;
 import org.configureme.util.StringUtils;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 
-public class AutoReConfig {
+public class AutoReConfigTest {
 
-	@BeforeClass public static void setupRegistry(){
+	@BeforeAll public static void setupRegistry(){
 		//use the other test which can access protected methods
 		ConfigurationSourceRegistryTest.setupRegistry();
 	}
 
-	@Ignore @Test public void configureAndWaitForReconfigure(){
+	@Disabled @Test public void configureAndWaitForReconfigure(){
 		TestReConfigurable configurable = new TestReConfigurable();
 		ConfigurationManager.INSTANCE.configure(configurable);
 
@@ -61,7 +61,7 @@ public class AutoReConfig {
 				}catch(InterruptedException e){}
 			}
 		}
-		assertTrue("waiting for the reconfiguration should be finished, intValue="+configurable.getIntValue(), finished);
+		assertTrue(finished, "waiting for the reconfiguration should be finished, intValue="+configurable.getIntValue());
 		assertTrue(configurable.isBeforeReConfigCalled());
 		assertTrue(configurable.isAfterReConfigCalled());
 		assertEquals(configurable.getStringValue(), "bar");

@@ -1,26 +1,27 @@
 package org.configureme.repository;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Map.Entry;
 import java.util.Set;
 
 import org.configureme.Configuration;
 import org.configureme.GlobalEnvironment;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ConfigurationRepositoryTest {
 	@Test public void testLookup(){
 		assertFalse(ConfigurationRepository.INSTANCE.hasConfiguration("foo"));
 	}
 
-	@Before public void setupConfigObject(){
+	@BeforeEach public void setupConfigObject(){
 		if (ConfigurationRepository.INSTANCE.hasConfiguration("test"))
 			return;
 		Artefact test = ConfigurationRepository.INSTANCE.createArtefact("test");
@@ -35,7 +36,7 @@ public class ConfigurationRepositoryTest {
 
 	}
 
-	@Before public void setupLargeConfig(){
+	@BeforeEach public void setupLargeConfig(){
 		if (ConfigurationRepository.INSTANCE.hasConfiguration("large"))
 			return;
 		Artefact large = ConfigurationRepository.INSTANCE.createArtefact("large");
@@ -64,14 +65,12 @@ public class ConfigurationRepositoryTest {
 		}
 	}
 
-	@Test (expected=IllegalArgumentException.class) public void recreate(){
-		ConfigurationRepository.INSTANCE.createArtefact("test");
-		fail("Exception expected");
+	@Test public void recreate(){
+		assertThrows(IllegalArgumentException.class, () -> ConfigurationRepository.INSTANCE.createArtefact("test"));
 	}
 
-	@Test (expected=IllegalArgumentException.class) public void queryNonExistent(){
-		ConfigurationRepository.INSTANCE.getConfiguration("foo", GlobalEnvironment.INSTANCE);
-		fail("Exception expected");
+	@Test public void queryNonExistent(){
+		assertThrows(IllegalArgumentException.class, () -> ConfigurationRepository.INSTANCE.getConfiguration("foo", GlobalEnvironment.INSTANCE));
 	}
 
 	@Test public void readConfig(){
@@ -90,7 +89,7 @@ public class ConfigurationRepositoryTest {
 	}
 
 	@Test public void coverEnumFunctions(){
-		assertEquals("Only one instance of repository is allowed", 1, ConfigurationRepository.values().length);
+		assertEquals(1, ConfigurationRepository.values().length, "Only one instance of repository is allowed");
 		assertSame(ConfigurationRepository.INSTANCE, ConfigurationRepository.valueOf("INSTANCE"));
 	}
 

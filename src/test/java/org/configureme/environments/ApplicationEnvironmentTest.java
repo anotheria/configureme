@@ -4,24 +4,24 @@ import java.util.Random;
 
 import org.configureme.Environment;
 import org.configureme.GlobalEnvironment;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ApplicationEnvironmentTest {
 	
 	@Test public void testEquals(){
 		ApplicationEnvironment env = new ApplicationEnvironment("a","b","c","d");
-		assertFalse("equals(null) should return false", env.equals(null));
-		assertTrue("object should be equal to itself", env.equals(env));
-		assertFalse("object should only be equal to objects of same type", env.equals(env.expandedStringForm()));
+		assertFalse(env.equals(null), "equals(null) should return false");
+		assertTrue(env.equals(env), "object should be equal to itself");
+		assertFalse(env.equals(env.expandedStringForm()), "object should only be equal to objects of same type");
 		DynamicEnvironment env2 = new DynamicEnvironment("a","b","c","d");
-		assertTrue("test failed, since both environments aren't represented by same string", env.expandedStringForm().equals(env2.expandedStringForm()));
-		assertFalse("test failed, similar environments aren't necessary equal", env.equals(env2));
+		assertTrue(env.expandedStringForm().equals(env2.expandedStringForm()), "test failed, since both environments aren't represented by same string");
+		assertFalse(env.equals(env2), "test failed, similar environments aren't necessary equal");
 		
 		Environment reduced = env;
 		while (reduced.isReduceable()){
 			reduced = reduced.reduce();
-			assertFalse("Environemnt shouldn't be equal to its reduced version", env.equals(reduced));
+			assertFalse(env.equals(reduced), "Environemnt shouldn't be equal to its reduced version");
 		}
 		assertTrue(reduced.equals(GlobalEnvironment.INSTANCE));
 		assertFalse(env.equals(GlobalEnvironment.INSTANCE));
@@ -38,12 +38,12 @@ public class ApplicationEnvironmentTest {
 		ApplicationEnvironment reversedOrder = new ApplicationEnvironment.Builder().host(host).app(app).service(service).system(system).build();
 		ApplicationEnvironment fromPublicConstructor = new ApplicationEnvironment(system, app, service, host );
 		
-		assertEquals("builder must be build order resistent", env, reversedOrder);
-		assertEquals("system doesn't match", system, env.getSystem());
-		assertEquals("app doesn't match", app, env.getApp());
-		assertEquals("host doesn't match", host, env.getHost());
-		assertEquals("service doesn't match", service, env.getService());
-		assertEquals("builder must be produce same result as the public constructor", env, fromPublicConstructor);
+		assertEquals(env, reversedOrder, "builder must be build order resistent");
+		assertEquals(system, env.getSystem(), "system doesn't match");
+		assertEquals(app, env.getApp(), "app doesn't match");
+		assertEquals(host, env.getHost(), "host doesn't match");
+		assertEquals(service, env.getService(), "service doesn't match");
+		assertEquals(env, fromPublicConstructor, "builder must be produce same result as the public constructor");
 		
 	}
 	
@@ -58,10 +58,10 @@ public class ApplicationEnvironmentTest {
 		
 		assertEquals(stringform, e1.expandedStringForm());
 		
-		assertTrue("Environment should be reduceable", e1.isReduceable());
-		assertTrue("Environment should be reduceable", e2.isReduceable());
-		assertTrue("Environment should be reduceable", e3.isReduceable());
-		assertTrue("Environment should be reduceable", e4.isReduceable());
+		assertTrue(e1.isReduceable(), "Environment should be reduceable");
+		assertTrue(e2.isReduceable(), "Environment should be reduceable");
+		assertTrue(e3.isReduceable(), "Environment should be reduceable");
+		assertTrue(e4.isReduceable(), "Environment should be reduceable");
 
 		Environment env = null;
 		env = e1.reduce();
@@ -77,19 +77,17 @@ public class ApplicationEnvironmentTest {
 		assertEquals(GlobalEnvironment.INSTANCE, env);
 	}
 	
-	@Test(expected=AssertionError.class) public void testInvalidObject(){
+	@Test public void testInvalidObject(){
 		ApplicationEnvironment env = new ApplicationEnvironment("","","","");
 		assertFalse(env.isReduceable());
 		//this must throw an error
-		env.reduce();
-		fail("An error should be thrown if trying to reduce unreduceable environment: "+env);
+		assertThrows(AssertionError.class, () -> env.reduce());
 	}
 
-	@Test(expected=AssertionError.class) public void testInvalidObject2(){
+	@Test public void testInvalidObject2(){
 		ApplicationEnvironment env = new ApplicationEnvironment(null,null,null,null);
 		assertFalse(env.isReduceable());
 		//this must throw an error
-		env.reduce();
-		fail("An error should be thrown if trying to reduce unreduceable environment: "+env);
+		assertThrows(AssertionError.class, () -> env.reduce());
 	}
 }

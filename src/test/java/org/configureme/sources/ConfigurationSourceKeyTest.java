@@ -2,8 +2,8 @@ package org.configureme.sources;
 
 import org.configureme.sources.ConfigurationSourceKey.Format;
 import org.configureme.sources.ConfigurationSourceKey.Type;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ConfigurationSourceKeyTest {
 	@Test public void testConstructors(){
@@ -38,7 +38,7 @@ public class ConfigurationSourceKeyTest {
 	}
 	
 	@Test public void ensureCodeIsWatchedWhenAddingNewFilesAndFormats(){
-		assertEquals(4, ConfigurationSourceKey.Type.values().length);
+		assertEquals(3, ConfigurationSourceKey.Type.values().length);
 		assertEquals(3, ConfigurationSourceKey.Format.values().length);
 	}
 	

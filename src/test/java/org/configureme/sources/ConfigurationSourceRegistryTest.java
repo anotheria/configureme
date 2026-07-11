@@ -4,34 +4,35 @@ import org.configureme.ConfigurableWrapper;
 import org.configureme.GlobalEnvironment;
 import org.configureme.sources.ConfigurationSourceKey.Format;
 import org.configureme.sources.ConfigurationSourceKey.Type;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class ConfigurationSourceRegistryTest {
-	@BeforeClass public static void setupRegistry(){
+	@BeforeAll public static void setupRegistry(){
 		ConfigurationSourceRegistry.INSTANCE.reset();
 		ConfigurationSourceRegistry.INSTANCE.addLoader(Type.FIXTURE, new FixtureLoader());
 	}
 	
-	@Before public void resetFixture(){
+	@BeforeEach public void resetFixture(){
 		FixtureLoader.reset();
 	}
 	
 	@Test public void testAvailability(){
 		ConfigurationSourceKey presentKey = new ConfigurationSourceKey(Type.FIXTURE, Format.JSON, "fixture");
 		ConfigurationSourceKey notPresentKey = new ConfigurationSourceKey(Type.FIXTURE, Format.JSON, "foobar");
-		assertTrue("expected "+presentKey+" to be there", ConfigurationSourceRegistry.INSTANCE.isConfigurationAvailable(presentKey));
-		assertFalse("expected "+notPresentKey+" not to be there", ConfigurationSourceRegistry.INSTANCE.isConfigurationAvailable(notPresentKey));
+		assertTrue(ConfigurationSourceRegistry.INSTANCE.isConfigurationAvailable(presentKey), "expected "+presentKey+" to be there");
+		assertFalse(ConfigurationSourceRegistry.INSTANCE.isConfigurationAvailable(notPresentKey), "expected "+notPresentKey+" not to be there");
 		
 		FixtureLoader.setContent(null);
-		assertFalse("expected "+presentKey+" now not to be there",ConfigurationSourceRegistry.INSTANCE.isConfigurationAvailable(presentKey));
+		assertFalse(ConfigurationSourceRegistry.INSTANCE.isConfigurationAvailable(presentKey), "expected "+presentKey+" now not to be there");
 	}
 	
 	@Test public void testWatchedResourceCaching(){
@@ -50,10 +51,9 @@ public class ConfigurationSourceRegistryTest {
 	}
 	
 	
-	@Test (expected=IllegalArgumentException.class) public void loadNonExistent(){
+	@Test public void loadNonExistent(){
 		ConfigurationSourceKey notPresentKey = new ConfigurationSourceKey(Type.FIXTURE, Format.JSON, "foobar");
-		ConfigurationSourceRegistry.INSTANCE.readConfigurationSource(notPresentKey);
-		fail("Exception should have been thrown");
+		assertThrows(IllegalArgumentException.class, () -> ConfigurationSourceRegistry.INSTANCE.readConfigurationSource(notPresentKey));
 	}
 	
 	@Test public void loadExistent(){
@@ -71,7 +71,7 @@ public class ConfigurationSourceRegistryTest {
 		ConfigurationSourceRegistry.INSTANCE.removeListener(new ConfigurationSourceKey(Type.FIXTURE, Format.JSON, "not-existent"), null);
 	}
 	
-	@Test(expected=AssertionError.class) public void addNullConfigurable(){
-		ConfigurationSourceRegistry.INSTANCE.addWatchedConfigurable(new ConfigurableWrapper(null, null, null));
+	@Test public void addNullConfigurable(){
+		assertThrows(AssertionError.class, () -> ConfigurationSourceRegistry.INSTANCE.addWatchedConfigurable(new ConfigurableWrapper(null, null, null)));
 	}
 }

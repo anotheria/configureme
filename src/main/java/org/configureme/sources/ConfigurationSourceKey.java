@@ -21,11 +21,6 @@ public class ConfigurationSourceKey {
 		FIXTURE,
 
 		/**
-		 * Configuration comes from a REST API.
-		 */
-		REST,
-
-		/**
 		 * Configuration comes from a repository.
 		 */
 		REPOSITORY
@@ -70,11 +65,7 @@ public class ConfigurationSourceKey {
 	 * The name of the source.
 	 */
 	private String name;
-	/**
-	 * Externally provided url for remote configuration repository.
-	 */
-	private String remoteConfigurationRepositoryUrl;
-	
+
 	/**
 	 * Creates a new key.
 	 */
@@ -152,23 +143,6 @@ public class ConfigurationSourceKey {
 	public void setName(String name) {
 		this.name = name;
 	}
-	/**
-	 * <p>Getter for the field {@code remoteConfigurationRepositoryUrl}.</p>
-	 *
-	 * @return a {@link java.lang.String} object.
-	 */
-	public String getRemoteConfigurationRepositoryUrl() {
-		return remoteConfigurationRepositoryUrl;
-	}
-	/**
-	 * <p>Setter for the field {@code remoteConfigurationRepositoryUrl}.</p>
-	 *
-	 * @param remoteConfigurationRepositoryUrl a {@link java.lang.String} object.
-	 */
-	public void setRemoteConfigurationRepositoryUrl(String remoteConfigurationRepositoryUrl) {
-		this.remoteConfigurationRepositoryUrl = remoteConfigurationRepositoryUrl;
-	}
-
 	@Override
 	public String toString(){
         return type +"::"+ name +"::"+ format;

@@ -2,37 +2,33 @@ package org.configureme.sources;
 
 import org.configureme.sources.ConfigurationSourceKey.Format;
 import org.configureme.sources.ConfigurationSourceKey.Type;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class FileLoaderTest {
-	@Test (expected=AssertionError.class) public void acceptOnlyFileKeys(){
+	@Test public void acceptOnlyFileKeys(){
 		ConfigurationSourceKey key = new ConfigurationSourceKey(Type.FIXTURE, Format.JSON, "foo");
-		new FileLoader().isAvailable(key);
-		fail("An error should have been thrown.");
+		assertThrows(AssertionError.class, () -> new FileLoader().isAvailable(key));
 	}
 
-	@Test (expected=IllegalArgumentException.class) public void checkNonExistingFile(){
+	@Test public void checkNonExistingFile(){
 		ConfigurationSourceKey key = new ConfigurationSourceKey(Type.FILE, Format.JSON, "foo");
 		FileLoader loader = new FileLoader();
 		assertFalse(loader.isAvailable(key));
-		loader.getLastChangeTimestamp(key);
-		fail("An exception should have been thrown.");
+		assertThrows(IllegalArgumentException.class, () -> loader.getLastChangeTimestamp(key));
 	}
 
-	@Test (expected=IllegalArgumentException.class) public void loadNonExistingFile(){
+	@Test public void loadNonExistingFile(){
 		ConfigurationSourceKey key = new ConfigurationSourceKey(Type.FILE, Format.JSON, "foo");
 		FileLoader loader = new FileLoader();
 		assertFalse(loader.isAvailable(key));
-		loader.getContent(key);
-		fail("An exception should have been thrown.");
+		assertThrows(IllegalArgumentException.class, () -> loader.getContent(key));
 	}
 
-	@Test (expected=RuntimeException.class) public void loadDirectory(){
+	@Test public void loadDirectory(){
 		ConfigurationSourceKey key = new ConfigurationSourceKey(Type.FILE, Format.JSON, "empty");
 		FileLoader loader = new FileLoader();
-		loader.getContent(key);
-		fail("An exception should have been thrown.");
+		assertThrows(RuntimeException.class, () -> loader.getContent(key));
 	}
 }
