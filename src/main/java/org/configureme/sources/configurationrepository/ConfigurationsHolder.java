@@ -34,13 +34,29 @@ public enum ConfigurationsHolder {
     private final Map<String, Configuration> configurations = new HashMap<>();
 
     /**
-     * <p>getConfigurationByname.</p>
+     * <p>getConfigurationByName.</p>
      *
      * @param name a {@link java.lang.String} object.
      * @return a {@link java.lang.String} object.
      */
+    public String getConfigurationByName(String name) {
+        Configuration configuration = configurations.get(name);
+        if (configuration == null) {
+            throw new IllegalArgumentException("No configuration found for name: " + name);
+        }
+        return configuration.getContent();
+    }
+
+    /**
+     * <p>getConfigurationByname.</p>
+     *
+     * @param name a {@link java.lang.String} object.
+     * @return a {@link java.lang.String} object.
+     * @deprecated Use {@link #getConfigurationByName(String)} instead.
+     */
+    @Deprecated
     public String getConfigurationByname(String name) {
-        return configurations.get(name).getContent();
+        return getConfigurationByName(name);
     }
 
     /**
@@ -90,7 +106,11 @@ public enum ConfigurationsHolder {
      * @return a long.
      */
     public long getConfigurationTimestamp(String name) {
-        return configurations.get(name).getTimestamp();
+        Configuration configuration = configurations.get(name);
+        if (configuration == null) {
+            throw new IllegalArgumentException("No configuration found for name: " + name);
+        }
+        return configuration.getTimestamp();
     }
 
     private class Configuration {
