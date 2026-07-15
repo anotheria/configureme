@@ -34,10 +34,11 @@ public enum ConfigurationsHolder {
     private final Map<String, Configuration> configurations = new HashMap<>();
 
     /**
-     * <p>getConfigurationByName.</p>
+     * Returns configuration content by configuration name.
      *
-     * @param name a {@link java.lang.String} object.
-     * @return a {@link java.lang.String} object.
+     * @param name the configuration name.
+     * @return configuration content as string.
+     * @throws IllegalArgumentException if no configuration exists for the given name.
      */
     public String getConfigurationByName(String name) {
         Configuration configuration = configurations.get(name);
@@ -48,10 +49,11 @@ public enum ConfigurationsHolder {
     }
 
     /**
-     * <p>getConfigurationByname.</p>
+     * Returns configuration content by configuration name.
      *
-     * @param name a {@link java.lang.String} object.
-     * @return a {@link java.lang.String} object.
+     * @param name the configuration name.
+     * @return configuration content as string.
+     * @throws IllegalArgumentException if no configuration exists for the given name.
      * @deprecated Use {@link #getConfigurationByName(String)} instead.
      */
     @Deprecated
