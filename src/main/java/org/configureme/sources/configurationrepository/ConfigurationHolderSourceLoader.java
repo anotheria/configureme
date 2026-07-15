@@ -39,6 +39,6 @@ public class ConfigurationHolderSourceLoader implements SourceLoader {
         if (key.getType() != ConfigurationSourceKey.Type.REPOSITORY) {
             throw new IllegalStateException("Can only get configuration for type: " + ConfigurationSourceKey.Type.REPOSITORY);
         }
-        return ConfigurationsHolder.INSTANCE.getConfigurationByname(key.getName());
+        return ConfigurationsHolder.INSTANCE.getConfigurationByName(key.getName());
     }
 }
