@@ -12,8 +12,9 @@ currently being supported with security updates.
 
 ## Reporting a Vulnerability
 
-Please report suspected security vulnerabilities **privately** to:
-- **Email:** security@example.com
+Please report suspected security vulnerabilities **privately** via GitHub's
+Private Vulnerability Reporting form for this repository:
+- **Disclosure form:** https://github.com/anotheria/configureme/security/advisories/new
 
 To help us validate and remediate quickly, please include:
 - A clear description of the issue and affected component/version
