@@ -25,7 +25,7 @@ ConfigureMe is free and distributed under the [MIT license](http://www.opensourc
 * Handling of simple and complex properies (objects).
 
 ## Getting started
-Take your first steps with [getting started](https://github.com/anotheria/configureme/wiki#getting-started-with-configureme)
+Take your first steps with [getting started](https://documentation.anotheria.net/projects/configureme/getting_started)
 
 ## How to get/use
 Just add your maven/ivy/gradle dependency:
@@ -33,13 +33,13 @@ Just add your maven/ivy/gradle dependency:
 <dependency>
   <groupId>net.anotheria</groupId>
   <artifactId>configureme</artifactId>
-  <version>4.0.0</version>
+  <version>4.1.0</version>
 </dependency>
 ```
 ## Further documentation
-* [Supported annotations](https://github.com/anotheria/configureme/wiki/Annotations)
-* [Examples](https://github.com/anotheria/configureme/wiki/Examples)
-* [What are environments](https://github.com/anotheria/configureme/wiki/Environments)
+* [Supported annotations](https://documentation.anotheria.net/projects/configureme/annotations)
+* [Examples](https://documentation.anotheria.net/projects/configureme/examples)
+* [What are environments](https://documentation.anotheria.net/projects/configureme/environments)
 
 
 ## Java Version
