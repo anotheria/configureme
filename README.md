@@ -43,5 +43,6 @@ Just add your maven/ivy/gradle dependency:
 
 
 ## Java Version
+* 4.1++ versions require and are built for Java17 and above
 * 4.x versions require and are built for Java11 and above.
 * 2.x versions require and are built for Java8. 
