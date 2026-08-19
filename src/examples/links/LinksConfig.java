@@ -1,5 +1,7 @@
 package links;
 
+import java.util.Arrays;
+
 import org.configureme.Environment;
 import org.configureme.annotations.AfterConfiguration;
 import org.configureme.annotations.AfterInitialConfiguration;
@@ -49,7 +51,7 @@ public class LinksConfig {
 
 	public void setBlockNumbers(int[] blockNumbers) {
 		this.blockNumbers = blockNumbers;
-		System.out.println(this + ": property blockNumbers has been set to: " + blockNumbers);
+		System.out.println(this + ": property blockNumbers has been set to: " + Arrays.toString(blockNumbers));
 	}
 
 	public void setInner(Inner inner) {
