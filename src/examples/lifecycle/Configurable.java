@@ -23,6 +23,7 @@ public class Configurable {
 		environment = anEnvironment;
 	}
 	
+	@Override
 	public String toString(){
 		return "!!! Configurable "+environment+" somevalue: "+somevalue;
 	}

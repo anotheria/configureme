@@ -8,6 +8,7 @@ public class HelloWorldRunnerProperties extends BaseHelloWorldRunner{
 		new HelloWorldRunnerProperties().runExample();
 	}
 	
+	@Override
 	protected Format getTargetConfigFormat(){
 		return Format.PROPERTIES;
 	}

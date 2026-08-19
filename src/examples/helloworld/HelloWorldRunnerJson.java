@@ -8,6 +8,7 @@ public class HelloWorldRunnerJson  extends BaseHelloWorldRunner{
 		new HelloWorldRunnerJson().runExample();
 	}
 	
+	@Override
 	protected Format getTargetConfigFormat(){
 		return Format.JSON;
 	}

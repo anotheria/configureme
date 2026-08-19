@@ -30,6 +30,7 @@ public class VariableConfig {
 		environment = anEnvironment;
 	}
 
+	@Override
 	public String toString() {
 		return "!!! Configurable " + environment + " variable: " + variable;
 	}
