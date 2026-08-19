@@ -26,10 +26,10 @@ public class PropertiesParser implements ConfigurationParser {
 
 
         for (final String line : lines) {
-        	if (line.startsWith("#"))
-        		continue;
             if (line == null || line.trim().isEmpty())
                 continue;
+        	if (line.startsWith("#"))
+        		continue;
             final String[] tokensQL = StringUtils.tokenize(line, '=');
             if (tokensQL.length != 2)
                 throw new IllegalArgumentException("Unparseable content, can't find = in line: " + line);
