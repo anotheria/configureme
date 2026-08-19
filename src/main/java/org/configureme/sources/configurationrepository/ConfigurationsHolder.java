@@ -115,7 +115,7 @@ public enum ConfigurationsHolder {
         return configuration.getTimestamp();
     }
 
-    private class Configuration {
+    private static class Configuration {
         private final long timestamp;
         private final String content;
 
