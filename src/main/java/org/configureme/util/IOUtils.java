@@ -60,10 +60,9 @@ public final class IOUtils {
 	 * @throws IOException
 	 */
 	private static byte[] readFileAtOnce(final FileInputStream fIn) throws IOException {
-		final byte[] ret = new byte[fIn.available()];
-		fIn.read(ret);
-		fIn.close();
-		return ret;
+		try (FileInputStream in = fIn) {
+			return readBytes(in);
+		}
 	}
 
 	/**
